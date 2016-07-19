@@ -316,6 +316,9 @@ void mousePressed() {
       if (!editMode) {
         editMode = true;
       } else {
+        pencilMode = true;
+        penSize = 2;
+        eraserMode = false;
         editMode = false;
         editOffset = 0;
         annotationsCanvas.save("../../files/annotations.png");
