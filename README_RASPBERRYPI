@@ -69,7 +69,7 @@ Setup suggestions for Raspberry Pi 3
 - cp /etc/X11/xinit/xinitrc ~/.xinitrc
 - nano ~./xinitrc
   Add before last command:
-  processing-java --sketch=/home/pi/Documents/Scores/stopMotion_linger/launcher/ --run
+  processing-java --sketch=/home/pi/PiScore/sketches/launcher/ --run
 
 - nano ~/.profile
   Add to end of file:
