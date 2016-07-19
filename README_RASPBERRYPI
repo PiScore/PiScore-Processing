@@ -53,6 +53,11 @@ Setup suggestions for Raspberry Pi 3
 - Download and install Processing:
   - curl https://processing.org/download/install-arm.sh | sudo sh
 
+- Install git:
+  sudo apt-get install git
+  cd ~
+  git clone https://github.com/PiScore/PiScore
+
 - Download Processing files and unzip eg. to /home/pi/Documents/Scores/PIECE/SKETCH
   mkdir -p ~/Documents/Scores && cd ~/Documents/Scores/
   wget http://www.davidgrant.no/filedrop/stopMotion_linger.zip
