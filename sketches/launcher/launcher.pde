@@ -174,7 +174,7 @@ void mousePressed() {
       currentTime = (year() + "-" + month() + "-" + day() + "-" + hour() + "-" + minute() + "-" + second() + "-" + millis());
       backupFile = (backupPath + currentTime + "-annotations" + ".png");
       deleteAnnotations[2] = backupFile;
-      annotationsPath = sketchPath("../files/annotations.png");
+      annotationsPath = sketchPath("../../files/annotations.png");
       annotationsFile = new File(annotationsPath);
 
       deletep = true;
