@@ -62,7 +62,7 @@ void setup() {
   score = loadImage("../../files/SCORE480p.PNG");
   clefs = loadImage("../../files/SCORE480p_clefs.PNG");
   annotationsCanvas = createGraphics(score.width, score.height);
-  annotationsPath = sketchPath("../files/annotations.png");
+  annotationsPath = sketchPath("../../files/annotations.png");
   annotationsFile = new File(annotationsPath);
   if (annotationsFile.exists())
   {
@@ -318,7 +318,7 @@ void mousePressed() {
       } else {
         editMode = false;
         editOffset = 0;
-        annotationsCanvas.save("../files/annotations.png");
+        annotationsCanvas.save("../../files/annotations.png");
       }
     }
      }
