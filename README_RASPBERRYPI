@@ -1,0 +1,81 @@
+Setup suggestions for Raspberry Pi 3
+
+- Flash Raspbian Lite to SD card
+- For wired network insert ethernet cable
+- Insert SD card and boot
+- Login: pi / raspberry
+- Set new user password: passwd
+- Set new root password: sudo passwd
+- For WiFi: sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+  Add to end of file:
+  network={
+    ssid="YOUR_SSID"
+    psk="YOUR_PASSWORD"
+  }
+
+- sudo reboot, login and check connection with ping -c3 http://www.google.com
+  NOTE: may require a couple of minutes to find connection after reboot
+
+- To flip screen 180 degrees:
+  sudo nano /boot/config.txt
+  Add to end of file:
+  lcd_rotate=2
+- Save and sudo reboot
+
+- sudo apt-get update
+- sudo apt-get upgrade
+- sudo apt-get dist-upgrade
+
+- sudo raspi-config
+  -> 3  Boot options
+  -> B2 Console Autologin
+- Finish and reboot
+
+- sudo apt-get install xserver-xorg xinit xterm xdg-utils
+- sudo reboot
+
+- sudo nano /etc/X11/xorg.conf
+  Add to end of file (disable monitor blanking):
+  Section "ServerFlags"
+       Option         "blank time" "0"
+       Option         "standby time" "0"
+       Option         "suspend time" "0"
+       Option         "off time" "0"
+   EndSection
+   Section "InputClass"
+       Identifier            "Keyboard Setting"
+       MatchIsKeyboard       "yes"
+       Option                "XkbOptions" "ctrl:swapcaps"
+   EndSection
+
+- Test X11 with xinit, then exit (with exit)
+
+- Download and install Processing:
+  - curl https://processing.org/download/install-arm.sh | sudo sh
+
+- Install git:
+  sudo apt-get install git
+  cd ~
+  git clone https://github.com/PiScore/PiScore
+
+- Download Processing files and unzip eg. to /home/pi/Documents/Scores/PIECE/SKETCH
+  mkdir -p ~/Documents/Scores && cd ~/Documents/Scores/
+  wget http://www.davidgrant.no/filedrop/stopMotion_linger.zip
+  unzip stopMotion_Linger.zip
+
+- Test Processing in X11, and set preferences
+  xinit
+  processing
+  - Uncheck welcome message on startup
+  - File -> Preferences
+    - Check "Increase maximum available memory to:" 512MB -> Enter to save
+  - Quit Processing
+
+- cp /etc/X11/xinit/xinitrc ~/.xinitrc
+- nano ~./xinitrc
+  Add before last command:
+  processing-java --sketch=/home/pi/Documents/Scores/stopMotion_linger/launcher/ --run
+
+- nano ~/.profile
+  Add to end of file:
+  exec startx
