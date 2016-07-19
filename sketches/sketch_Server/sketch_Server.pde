@@ -59,14 +59,14 @@ void setup() {
 
   scoreServer = new Server(this, 5208);
 
-  score = loadImage("../files/SCORE480p.PNG");
-  clefs = loadImage("../files/SCORE480p_clefs.PNG");
+  score = loadImage("../../files/SCORE480p.PNG");
+  clefs = loadImage("../../files/SCORE480p_clefs.PNG");
   annotationsCanvas = createGraphics(score.width, score.height);
-  annotationsPath = sketchPath("../files/annotations.png");
+  annotationsPath = sketchPath("../../files/annotations.png");
   annotationsFile = new File(annotationsPath);
   if (annotationsFile.exists())
   {
-    annotations = loadImage("../files/annotations.png");
+    annotations = loadImage("../../files/annotations.png");
     annotationsCanvas.beginDraw();
     annotations.loadPixels();
     annotationsCanvas.loadPixels();
@@ -78,17 +78,17 @@ void setup() {
     annotationsCanvas.beginDraw();
     annotationsCanvas.endDraw();
   }
-  editIcon = loadImage("../files/gui/edit-pencil-outline-in-circular-button.png");
-  resetIcon = loadImage("../files/gui/two-arrows-in-circular-outlined-interface-button.png");
-  pencilIcon = loadImage("../files/gui/pencil-outline-in-circular-button.png");
-  eraserIcon = loadImage("../files/gui/edit-eraser-outline-in-circular-button.png");
-  exitIcon = loadImage("../files/gui/upload-up-arrow-outline-in-circular-button.png");
-  exitYes = loadImage("../files/gui/checkmark-outlined-circular-button.png");
-  exitNo = loadImage("../files/gui/close-cross-thin-circular-button.png");
-  playIcon = loadImage("../files/gui/play-rounded-button-outline.png");
-  pauseIcon = loadImage("../files/gui/pause-thin-rounded-button.png");
-  prevIcon = loadImage("../files/gui/rewind-double-arrow-outlined-circular-button.png");
-  nextIcon = loadImage("../files/gui/fast-forward-thin-outlined-symbol-in-circular-button.png");
+  editIcon = loadImage("../../files/gui/edit-pencil-outline-in-circular-button.png");
+  resetIcon = loadImage("../../files/gui/two-arrows-in-circular-outlined-interface-button.png");
+  pencilIcon = loadImage("../../files/gui/pencil-outline-in-circular-button.png");
+  eraserIcon = loadImage("../../files/gui/edit-eraser-outline-in-circular-button.png");
+  exitIcon = loadImage("../../files/gui/upload-up-arrow-outline-in-circular-button.png");
+  exitYes = loadImage("../../files/gui/checkmark-outlined-circular-button.png");
+  exitNo = loadImage("../../files/gui/close-cross-thin-circular-button.png");
+  playIcon = loadImage("../../files/gui/play-rounded-button-outline.png");
+  pauseIcon = loadImage("../../files/gui/pause-thin-rounded-button.png");
+  prevIcon = loadImage("../../files/gui/rewind-double-arrow-outlined-circular-button.png");
+  nextIcon = loadImage("../../files/gui/fast-forward-thin-outlined-symbol-in-circular-button.png");
 
 
   playheadPos = round(width * 0.2);
@@ -318,7 +318,7 @@ void mousePressed() {
       } else {
         editMode = false;
         editOffset = 0;
-        annotationsCanvas.save("../files/annotations.png");
+        annotationsCanvas.save("../../files/annotations.png");
       }
     }
      }
