@@ -58,11 +58,6 @@ Setup suggestions for Raspberry Pi 3
   cd ~
   git clone https://github.com/PiScore/PiScore
 
-- Download Processing files and unzip eg. to /home/pi/Documents/Scores/PIECE/SKETCH
-  mkdir -p ~/Documents/Scores && cd ~/Documents/Scores/
-  wget http://www.davidgrant.no/filedrop/stopMotion_linger.zip
-  unzip stopMotion_Linger.zip
-
 - Test Processing in X11, and set preferences
   xinit
   processing
