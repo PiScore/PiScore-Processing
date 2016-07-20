@@ -57,7 +57,7 @@ int adjStart;
 int adjEnd;
 
 int frameCounter = 0;
-boolean playingp = false;
+boolean playingp = false; // playingp is only kept updated when !clientp
 int incrValue = 0;
 
 void setup() {
@@ -202,8 +202,9 @@ void draw() {
   }
 
   //EDIT ICON
-  // Raspberry Pi 3 cannot keep time while drawing annotations.
-  // Therefore annotations are disabled while playingp == true
+  // Raspberry Pi 3 cannot keep time as server while drawing annotations.
+  // Therefore annotations are disabled for server while playingp == true
+
   if (!playingp) {
     noStroke();
     if (!editMode) {
@@ -218,9 +219,9 @@ void draw() {
   //PENCIL/RESET ICON
   if (editMode) {
     noStroke();
-  fill(buttonBGcolor);
-  ellipse((width-iconSize-iconPadding+(iconSize*0.5)), (iconSize+(iconPadding*3)+(iconSize*0.5)), iconSize, iconSize);
-  
+    fill(buttonBGcolor);
+    ellipse((width-iconSize-iconPadding+(iconSize*0.5)), (iconSize+(iconPadding*3)+(iconSize*0.5)), iconSize, iconSize);
+
     if (pencilMode) {
       noStroke();
       fill(buttonActiveColor);
@@ -230,8 +231,8 @@ void draw() {
   } else {
     if (!clientp) {
       noStroke();
-  fill(buttonBGcolor);
-  ellipse((width-iconSize-iconPadding+(iconSize*0.5)), (iconSize+(iconPadding*3)+(iconSize*0.5)), iconSize, iconSize);
+      fill(buttonBGcolor);
+      ellipse((width-iconSize-iconPadding+(iconSize*0.5)), (iconSize+(iconPadding*3)+(iconSize*0.5)), iconSize, iconSize);
       image(resetIcon, (width-iconSize-iconPadding), (iconSize+(iconPadding*3)), iconSize, iconSize);
     }
   }
@@ -239,9 +240,9 @@ void draw() {
   //ERASER/PLAY/PAUSE ICON
   if (editMode) {
     noStroke();
-  fill(buttonBGcolor);
-  ellipse((width-iconSize-iconPadding+(iconSize*0.5)), ((iconSize*2)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
-  
+    fill(buttonBGcolor);
+    ellipse((width-iconSize-iconPadding+(iconSize*0.5)), ((iconSize*2)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
+
     if (eraserMode) {
       noStroke();
       fill(buttonActiveColor);
@@ -251,8 +252,8 @@ void draw() {
   } else {
     if (!clientp) {
       noStroke();
-  fill(buttonBGcolor);
-  ellipse((width-iconSize-iconPadding+(iconSize*0.5)), ((iconSize*2)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
+      fill(buttonBGcolor);
+      ellipse((width-iconSize-iconPadding+(iconSize*0.5)), ((iconSize*2)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
       if (playingp) {
         image(pauseIcon, (width-iconSize-iconPadding), ((iconSize*2)+(iconPadding*5)), iconSize, iconSize);
       } else {
@@ -357,8 +358,9 @@ void mousePressed() {
 
   if ((mouseX > (width-iconSize-iconPadding)) && (mouseX < width-iconPadding)) {
     //EDIT MODE
-    if (!playingp) {
-      if (mouseY < (iconSize+(iconPadding*1)) && mouseY > iconPadding) {
+
+    if (mouseY < (iconSize+(iconPadding*1)) && mouseY > iconPadding) {
+      if (!playingp) {
         if (!editMode) {
           editMode = true;
         } else {
@@ -481,7 +483,11 @@ void drawFunctionBegin(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.noStroke();
   annotationsCanvas.fill(c);
-  annotationsCanvas.ellipse(mouseX-localScoreXadj+editOffset, mouseY, penSize, penSize);
+  if (!clientp) {
+    annotationsCanvas.ellipse(mouseX-localScoreXadj+editOffset, mouseY, penSize, penSize);
+  } else {
+    annotationsCanvas.ellipse(mouseX-receiveInt, mouseY, penSize, penSize);
+  }
   annotationsCanvas.endDraw();
 }
 
@@ -489,7 +495,11 @@ void drawFunctionContinue(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.stroke(c);
   annotationsCanvas.strokeWeight(penSize);
-  annotationsCanvas.line(pmouseX-localScoreXadj+editOffset, pmouseY, mouseX-localScoreXadj+editOffset, mouseY);
+  if (!clientp) {
+    annotationsCanvas.line(pmouseX-localScoreXadj+editOffset, pmouseY, mouseX-localScoreXadj+editOffset, mouseY);
+  } else {
+    annotationsCanvas.line(pmouseX-receiveInt, pmouseY, mouseX-receiveInt, mouseY);
+  }
   annotationsCanvas.endDraw();
 }
 
@@ -497,7 +507,12 @@ void drawFunctionEnd(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.stroke(c);
   annotationsCanvas.strokeWeight(penSize);
-  annotationsCanvas.line(pmouseX-localScoreXadj+editOffset, pmouseY, mouseX-localScoreXadj+editOffset, mouseY);
+  if (!clientp) {
+    annotationsCanvas.line(pmouseX-localScoreXadj+editOffset, pmouseY, mouseX-localScoreXadj+editOffset, mouseY);
+  } else {
+    annotationsCanvas.line(pmouseX-receiveInt, pmouseY, mouseX-receiveInt, mouseY);
+  }
+
   annotationsCanvas.endDraw();
 }
 
