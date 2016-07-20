@@ -153,11 +153,6 @@ void draw() {
       }
     }
 
-    print("Received Package: ");
-    print(receiveData);
-    print ("  int(): ");
-    println(receiveInt);
-
     image(score, receiveInt, 0);
 
     image(annotationsCanvas, receiveInt, 0);
@@ -172,7 +167,11 @@ void draw() {
     textSize(32);
     fill(0, 102, 153);
     if (i != 0) {
+      if (!clientp) {
       text(j, (i+localScoreXadj-editOffset), 32);
+      } else {
+        text(j, (i+receiveInt), 32);
+      }
     }
   }
 
