@@ -15,8 +15,10 @@ File annotationsFile;
 PGraphics annotationsCanvas;
 boolean annotationsChangedp = false; // Only save when annotationsChangedp
 
-//To run as client set to true
-final boolean clientp = false;
+String[] clientpArray = { null };
+String clientpPath;
+File clientpFile;
+boolean clientp;
 
 // To export frames set export to true
 final boolean export = false;
@@ -65,6 +67,19 @@ void setup() {
   frameRate(fps);
   size(800, 480);
   noSmooth();
+
+  clientpPath = sketchPath("../../etc/clientp.txt");
+  clientpFile = new File(clientpPath);
+  if (clientpFile.exists()) {
+    println("yes");
+    clientpArray = loadStrings(clientpPath);
+  } else {
+    println("no");
+    println("clientpPath");
+    clientpArray[0] = "false"; // Defaults to server
+    saveStrings(clientpPath, clientpArray);
+  }
+  clientp = boolean(clientpArray[0]);
 
   if (!clientp) {
     scoreServer = new Server(this, serverPort);
@@ -369,7 +384,6 @@ void mousePressed() {
           eraserMode = false;
           editMode = false;
           editOffset = 0;
-          println(annotationsChangedp);
           if (annotationsChangedp) {
             annotationsChangedp = false; // reset
             annotationsCanvas.save("../../files/annotations.png");
