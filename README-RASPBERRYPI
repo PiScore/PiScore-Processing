@@ -34,6 +34,10 @@ Setup suggestions for Raspberry Pi 3
 - sudo apt-get install xserver-xorg xinit xterm xdg-utils
 - sudo reboot
 
+- nano ~/.Xresources
+  Add to end of file:
+  xterm*geometry: 133x36
+
 - sudo nano /etc/X11/xorg.conf
   Add to end of file (disable monitor blanking):
   Section "ServerFlags"
