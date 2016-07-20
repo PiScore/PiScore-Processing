@@ -1,5 +1,12 @@
 import processing.net.*;
 Server scoreServer;
+Client scoreClient;
+
+//Client variables
+String serverIP = "192.168.0.14";
+int    serverPort = 5208;
+String receiveData;
+int receiveInt = 0;
 
 PImage score, clefs, annotations;
 PImage editIcon, resetIcon, pencilIcon, eraserIcon, exitIcon, exitYes, exitNo, playIcon, pauseIcon, prevIcon, nextIcon;
@@ -7,12 +14,13 @@ String annotationsPath;
 File annotationsFile;
 PGraphics annotationsCanvas;
 
-/////////////////////////////////////////////////////
-// To export frames set export to true, else false //
-/////////////////////////////////////////////////////
+//To run as client set to true
+final boolean clientp = false;
+
+// To export frames set export to true
 final boolean export = false;
 
-final int fps = 25; // Integer frame rates
+final int fps = 25; // Frame rate
 
 final int start = 122;  // Enter px for first event here
 final int end = 19921;  // Enter px for "final barline" here
@@ -21,7 +29,6 @@ final float preRoll = 8;  // Preroll in seconds (adds to total durata)
 
 final int preRollFrames = ceil(preRoll * fps);
 final float totalFrames = ceil(dur * fps); // float for use as divisor
-
 
 boolean exitDialog = false;
 int exitTimeout = 0;
@@ -58,7 +65,11 @@ void setup() {
   size(800, 480);
   noSmooth();
 
-  scoreServer = new Server(this, 5208);
+  if (!clientp) {
+    scoreServer = new Server(this, serverPort);
+  } else {
+    scoreClient = new Client(this, serverIP, serverPort);
+  }
 
   score = loadImage("../../files/SCORE480p.PNG");
   clefs = loadImage("../../files/SCORE480p_clefs.PNG");
@@ -105,22 +116,55 @@ void setup() {
 
 void draw() {
   background(255);
+  cursor(CROSS);
 
-  // Replace "frameCounter" with frame number to inspect specific frame
-  scoreX = calcXPos(frameCounter);
-  preRollOffset = calcOffset(preRollFrames);
-  scoreXadj = (scoreX+preRollOffset);
+  if (!clientp) {
+    // Replace "frameCounter" with frame number to inspect specific frame
+    scoreX = calcXPos(frameCounter);
+    preRollOffset = calcOffset(preRollFrames);
+    scoreXadj = (scoreX+preRollOffset);
 
-  scoreServer.write(nfp(scoreXadj, 6));
+    scoreServer.write(nfp(scoreXadj, 6));
 
-  if (!editMode) {
-    localScoreXadj = scoreXadj;
-  }
-  image(score, localScoreXadj-editOffset, 0);
-  image(annotationsCanvas, localScoreXadj-editOffset, 0);
+    if (!editMode) {
+      localScoreXadj = scoreXadj;
+    }
+    image(score, localScoreXadj-editOffset, 0);
+    image(annotationsCanvas, localScoreXadj-editOffset, 0);
 
-  if (localScoreXadj-editOffset < 0) {
-    image(clefs, 0, 0);
+    if (localScoreXadj-editOffset < 0) {
+      image(clefs, 0, 0);
+    }
+  } else {
+    if (!editMode) {
+      // Packages can get lost, concatenated or scrambled in transit.
+      // Therefore multiple integrity checks are performed.
+      if (scoreClient.available() > 0) { 
+        receiveData = scoreClient.readString();
+        if (receiveData.charAt(0) == '+' | receiveData.charAt(0) == '-') {
+          if (receiveData.length() == 7) {
+            receiveInt = int(receiveData);
+          } else {
+            if (receiveData.length() > 7) {
+              receiveInt = int(receiveData.substring(0, 7));
+            }
+          }
+        }
+      }
+    }
+
+    print("Received Package: ");
+    print(receiveData);
+    print ("  int(): ");
+    println(receiveInt);
+
+    image(score, receiveInt, 0);
+
+    image(annotationsCanvas, receiveInt, 0);
+
+    if (receiveInt < 0) {
+      image(clefs, 0, 0);
+    }
   }
 
   // Draw ID markers
@@ -139,7 +183,7 @@ void draw() {
     strokeCap(SQUARE);
     line(playheadPos, 0, playheadPos, height);
   }
-  
+
   // penSize cursor
   if (editMode) {
     if (mouseX < (width-iconSize-(iconPadding*2))) {
@@ -152,30 +196,31 @@ void draw() {
 
   //ICON PANEL
   if (editMode) {
-  noStroke();
-  fill(0, 0, 0, 31);
-  rect((width-iconSize-(iconPadding*2)), 0, (iconSize+(iconPadding*2)), height);
+    noStroke();
+    fill(0, 0, 0, 31);
+    rect((width-iconSize-(iconPadding*2)), 0, (iconSize+(iconPadding*2)), height);
   }
 
   //EDIT ICON
   // Raspberry Pi 3 cannot keep time while drawing annotations.
   // Therefore annotations are disabled while playingp == true
   if (!playingp) {
-  noStroke();
-  if (!editMode) {
-    fill(buttonBGcolor);
-  } else {
-    fill(buttonActiveColor);
-  }
-  ellipse((width-iconSize-iconPadding+(iconSize*0.5)), iconPadding+(iconSize*0.5), iconSize, iconSize);
-  image(editIcon, (width-iconSize-iconPadding), iconPadding, iconSize, iconSize);
+    noStroke();
+    if (!editMode) {
+      fill(buttonBGcolor);
+    } else {
+      fill(buttonActiveColor);
+    }
+    ellipse((width-iconSize-iconPadding+(iconSize*0.5)), iconPadding+(iconSize*0.5), iconSize, iconSize);
+    image(editIcon, (width-iconSize-iconPadding), iconPadding, iconSize, iconSize);
   }
 
   //PENCIL/RESET ICON
-  noStroke();
+  if (editMode) {
+    noStroke();
   fill(buttonBGcolor);
   ellipse((width-iconSize-iconPadding+(iconSize*0.5)), (iconSize+(iconPadding*3)+(iconSize*0.5)), iconSize, iconSize);
-  if (editMode) {
+  
     if (pencilMode) {
       noStroke();
       fill(buttonActiveColor);
@@ -183,14 +228,20 @@ void draw() {
     }
     image(pencilIcon, (width-iconSize-iconPadding), (iconSize+(iconPadding*3)), iconSize, iconSize);
   } else {
-    image(resetIcon, (width-iconSize-iconPadding), (iconSize+(iconPadding*3)), iconSize, iconSize);
+    if (!clientp) {
+      noStroke();
+  fill(buttonBGcolor);
+  ellipse((width-iconSize-iconPadding+(iconSize*0.5)), (iconSize+(iconPadding*3)+(iconSize*0.5)), iconSize, iconSize);
+      image(resetIcon, (width-iconSize-iconPadding), (iconSize+(iconPadding*3)), iconSize, iconSize);
+    }
   }
 
   //ERASER/PLAY/PAUSE ICON
-  noStroke();
+  if (editMode) {
+    noStroke();
   fill(buttonBGcolor);
   ellipse((width-iconSize-iconPadding+(iconSize*0.5)), ((iconSize*2)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
-  if (editMode) {
+  
     if (eraserMode) {
       noStroke();
       fill(buttonActiveColor);
@@ -198,26 +249,30 @@ void draw() {
     }
     image(eraserIcon, (width-iconSize-iconPadding), ((iconSize*2)+(iconPadding*5)), iconSize, iconSize);
   } else {
-    if (playingp) {
-      image(pauseIcon, (width-iconSize-iconPadding), ((iconSize*2)+(iconPadding*5)), iconSize, iconSize);
-    } else {
-      image(playIcon, (width-iconSize-iconPadding), ((iconSize*2)+(iconPadding*5)), iconSize, iconSize);
+    if (!clientp) {
+      noStroke();
+  fill(buttonBGcolor);
+  ellipse((width-iconSize-iconPadding+(iconSize*0.5)), ((iconSize*2)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
+      if (playingp) {
+        image(pauseIcon, (width-iconSize-iconPadding), ((iconSize*2)+(iconPadding*5)), iconSize, iconSize);
+      } else {
+        image(playIcon, (width-iconSize-iconPadding), ((iconSize*2)+(iconPadding*5)), iconSize, iconSize);
+      }
     }
   }
 
-  //PREV ICON
-  noStroke();
-  fill(buttonBGcolor);
-  ellipse((width-iconSize-iconPadding+(iconSize*0.5)), ((iconSize*3)+(iconPadding*7)+(iconSize*0.5)), iconSize, iconSize);
-  image(prevIcon, (width-iconSize-iconPadding), ((iconSize*3)+(iconPadding*7)), iconSize, iconSize);
-
-
-  //NEXT ICON
-  noStroke();
-  fill(buttonBGcolor);
-  ellipse((width-iconSize-iconPadding+(iconSize*0.5)), ((iconSize*4)+(iconPadding*9)+(iconSize*0.5)), iconSize, iconSize);
-  image(nextIcon, (width-iconSize-iconPadding), ((iconSize*4)+(iconPadding*9)), iconSize, iconSize);
-
+  if (!clientp) {
+    //PREV ICON
+    noStroke();
+    fill(buttonBGcolor);
+    ellipse((width-iconSize-iconPadding+(iconSize*0.5)), ((iconSize*3)+(iconPadding*7)+(iconSize*0.5)), iconSize, iconSize);
+    image(prevIcon, (width-iconSize-iconPadding), ((iconSize*3)+(iconPadding*7)), iconSize, iconSize);
+    //NEXT ICON
+    noStroke();
+    fill(buttonBGcolor);
+    ellipse((width-iconSize-iconPadding+(iconSize*0.5)), ((iconSize*4)+(iconPadding*9)+(iconSize*0.5)), iconSize, iconSize);
+    image(nextIcon, (width-iconSize-iconPadding), ((iconSize*4)+(iconPadding*9)), iconSize, iconSize);
+  }
 
   //EXIT ICON
   if (!editMode) {
@@ -239,16 +294,6 @@ void draw() {
         exitTimeout = 0;
       }
     }
-  }
-
-  if (!editMode) {
-    cursor(CROSS);
-  } else {
-    //if (mouseX < width-iconSize-(iconPadding*2)) {
-    //noCursor();
-    //} else {
-    cursor(CROSS);
-    //}
   }
 
   // Redraw
@@ -309,23 +354,23 @@ void mousePressed() {
     }
   }
 
- 
+
   if ((mouseX > (width-iconSize-iconPadding)) && (mouseX < width-iconPadding)) {
-     //EDIT MODE
-     if(!playingp) {
-    if (mouseY < (iconSize+(iconPadding*1)) && mouseY > iconPadding) {
-      if (!editMode) {
-        editMode = true;
-      } else {
-        pencilMode = true;
-        penSize = 2;
-        eraserMode = false;
-        editMode = false;
-        editOffset = 0;
-        annotationsCanvas.save("../../files/annotations.png");
+    //EDIT MODE
+    if (!playingp) {
+      if (mouseY < (iconSize+(iconPadding*1)) && mouseY > iconPadding) {
+        if (!editMode) {
+          editMode = true;
+        } else {
+          pencilMode = true;
+          penSize = 2;
+          eraserMode = false;
+          editMode = false;
+          editOffset = 0;
+          annotationsCanvas.save("../../files/annotations.png");
+        }
       }
     }
-     }
 
     //PENCIL/RESET
     if (mouseY > (iconSize+(iconPadding*3)) && mouseY < ((iconSize*2)+(iconPadding*3))) {
@@ -336,10 +381,12 @@ void mousePressed() {
           penSize = 2;
         }
       } else {
-        loop(); //in case noLoop() is active
-        incrValue = 0;
-        playingp = false;
-        frameCounter = 0;
+        if (!clientp) {
+          loop(); //in case noLoop() is active
+          incrValue = 0;
+          playingp = false;
+          frameCounter = 0;
+        }
       }
     }
 
@@ -353,31 +400,34 @@ void mousePressed() {
           penSize = 20;
         }
       } else {
-        if (playingp == false) {
-          incrValue = 1;
-          playingp = true;
-        } else {
-          incrValue = 0;
-          playingp = false;
+        if (!clientp) {
+          if (playingp == false) {
+            incrValue = 1;
+            playingp = true;
+          } else {
+            incrValue = 0;
+            playingp = false;
+          }
         }
       }
     }
 
-    //PREV
-    if (mouseY > ((iconSize*3)+(iconPadding*7)) && mouseY < ((iconSize*4)+(iconPadding*7))) {
-      if (editMode) {
-        editOffset = editOffset - (width/5*3);
-      } else {
-        frameCounter = frameCounter - (width/5*3);
+    if (!clientp) {
+      //PREV
+      if (mouseY > ((iconSize*3)+(iconPadding*7)) && mouseY < ((iconSize*4)+(iconPadding*7))) {
+        if (editMode) {
+          editOffset = editOffset - (width/5*3);
+        } else {
+          frameCounter = frameCounter - (width/5*3);
+        }
       }
-    }
-
-    //NEXT
-    if (mouseY > ((iconSize*4)+(iconPadding*9)) && mouseY < ((iconSize*5)+(iconPadding*9))) {
-      if (editMode) {
-        editOffset = editOffset + (width/5*3);
-      } else {
-        frameCounter = frameCounter + (width/5*3);
+      //NEXT
+      if (mouseY > ((iconSize*4)+(iconPadding*9)) && mouseY < ((iconSize*5)+(iconPadding*9))) {
+        if (editMode) {
+          editOffset = editOffset + (width/5*3);
+        } else {
+          frameCounter = frameCounter + (width/5*3);
+        }
       }
     }
 
@@ -392,16 +442,16 @@ void mousePressed() {
   }
 
 
-if (mouseX < (width-iconSize-(iconPadding*2))) {
-  if (editMode) {
-    if (pencilMode) {
-      drawFunctionBegin(black);
-    }
-    if (eraserMode) {
-      drawFunctionBegin(red);
+  if (mouseX < (width-iconSize-(iconPadding*2))) {
+    if (editMode) {
+      if (pencilMode) {
+        drawFunctionBegin(black);
+      }
+      if (eraserMode) {
+        drawFunctionBegin(red);
+      }
     }
   }
-}
 }
 
 
@@ -419,12 +469,12 @@ void mouseDragged() {
 }
 
 void mouseReleased() {
-    if (editMode) {
-      if (eraserMode) {
-        eraseFunction(red);
-      }
+  if (editMode) {
+    if (eraserMode) {
+      eraseFunction(red);
     }
   }
+}
 
 
 void drawFunctionBegin(color c) {
