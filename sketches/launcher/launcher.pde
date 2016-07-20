@@ -2,8 +2,11 @@
 //This sketch runs shell commands with hard coded paths.
 //Use with caution.
 
-String[] launchServer = {"/usr/local/bin/processing-java", "--sketch=/home/pi/PiScore/sketches/sketch_Server/", "--run"};
-String[] launchClient = {"/usr/local/bin/processing-java", "--sketch=/home/pi/PiScore/sketches/sketch_Client/", "--run"};
+//PiScore root dir:
+String rootPath;
+
+String[] launchServer = { null, null, null };
+String[] launchClient = { null, null, null };
 String[] reboot = {"sudo", "reboot"};
 String[] shutdown = {"sudo", "shutdown", "now"};
 String[] deleteAnnotations = { "mv", "/home/pi/PiScore/files/annotations.png", null };
@@ -34,6 +37,20 @@ void setup () {
   size(800, 480);
   smooth();
   cursor(HAND);
+  
+  rootPath = sketchPath("../../");
+  
+  launchServer[0] = "/usr/local/bin/processing-java";
+  launchServer[1] = "--sketch=" + rootPath + "sketches/sketch_Server/";
+  launchServer[2] = "--run";
+  
+  launchClient[0] = "/usr/local/bin/processing-java";
+  launchClient[1] = "--sketch=" + rootPath + "sketches/sketch_Client/";
+  launchClient[2] = "--run";
+
+  println(launchServer[1]);
+  println(launchClient[1]);
+  
 
   bLaunchServer = loadImage("./gui/add-circular-button-thin-symbol.png");
   bLaunchClient = loadImage("./gui/flash-outlined-thin-circular-button.png");
