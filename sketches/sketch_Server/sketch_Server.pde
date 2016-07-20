@@ -22,6 +22,7 @@ final float preRoll = 8;  // Preroll in seconds (adds to total durata)
 final int preRollFrames = ceil(preRoll * fps);
 final float totalFrames = ceil(dur * fps); // float for use as divisor
 
+
 boolean exitDialog = false;
 int exitTimeout = 0;
 
