@@ -13,6 +13,7 @@ PImage editIcon, resetIcon, pencilIcon, eraserIcon, exitIcon, exitYes, exitNo, p
 String annotationsPath;
 File annotationsFile;
 PGraphics annotationsCanvas;
+boolean annotationsChangedp = false; // Only save when annotationsChangedp
 
 //To run as client set to true
 final boolean clientp = false;
@@ -168,7 +169,7 @@ void draw() {
     fill(0, 102, 153);
     if (i != 0) {
       if (!clientp) {
-      text(j, (i+localScoreXadj-editOffset), 32);
+        text(j, (i+localScoreXadj-editOffset), 32);
       } else {
         text(j, (i+receiveInt), 32);
       }
@@ -368,7 +369,11 @@ void mousePressed() {
           eraserMode = false;
           editMode = false;
           editOffset = 0;
-          annotationsCanvas.save("../../files/annotations.png");
+          println(annotationsChangedp);
+          if (annotationsChangedp) {
+            annotationsChangedp = false; // reset
+            annotationsCanvas.save("../../files/annotations.png");
+          }
         }
       }
     }
@@ -445,6 +450,10 @@ void mousePressed() {
 
   if (mouseX < (width-iconSize-(iconPadding*2))) {
     if (editMode) {
+      if (!annotationsChangedp) {
+        // Notify when annotations are made
+        annotationsChangedp = true;
+      }
       if (pencilMode) {
         drawFunctionBegin(black);
       }
@@ -459,6 +468,10 @@ void mousePressed() {
 void mouseDragged() {
   if (mouseX < (width-iconSize-(iconPadding*2))) {
     if (editMode) {
+      if (!annotationsChangedp) {
+        // Notify when annotations are made
+        annotationsChangedp = true;
+      }
       if (pencilMode) {
         drawFunctionContinue(black);
       }
