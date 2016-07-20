@@ -56,7 +56,7 @@ Setup suggestions for Raspberry Pi 3
 - Install git:
   sudo apt-get install git
   cd ~
-  git clone https://github.com/PiScore/PiScore
+  git clone https://github.com/PiScore/PiScore PiScore
 
 - Test Processing in X11, and set preferences
   xinit
