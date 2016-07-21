@@ -1,15 +1,14 @@
-//WARNING!
-//This sketch runs shell commands with hard coded paths.
-//Use with caution.
+import java.net.InetAddress;
 
-//PiScore root dir:
+InetAddress inet;
+String myIP = "unknown";
+
 String rootPath;
 
 String[] launch = { null, null, null };
 String[] reboot = {"sudo", "reboot"};
 String[] shutdown = {"sudo", "shutdown", "now"};
 String[] deleteAnnotations = { null, null, null };
-String[] getServerIP = { "/sbin/ifconfig|", "grep", "\'inet addr:\'|", "grep", "-o", "\'^[^\\s]*\'|", "grep", "-o", "\'[0-9]\\{1,3\\}\\.[0-9]\\{1,3\\}\\.[0-9]\\{1,3\\}\\.[0-9]\\{1,3\\}\'" };
 
 String annotationsPath;
 File annotationsFile;
@@ -44,7 +43,14 @@ void setup () {
   smooth();
   cursor(HAND);
   
-  exec(getServerIP);
+  try {
+    inet = InetAddress.getLocalHost();
+    myIP = inet.getHostAddress();
+  }
+  catch (Exception e) {
+    e.printStackTrace();
+    myIP = "unknown"; 
+  }
   
   rootPath = sketchPath("../../");
   
@@ -84,6 +90,23 @@ void setup () {
 
 void draw() {
   background(color(0, 90, 158));
+  
+  if (myIP == "unknown") {
+  try {
+    inet = InetAddress.getLocalHost();
+    myIP = inet.getHostAddress();
+  }
+  catch (Exception e) {
+    e.printStackTrace();
+    myIP = "unknown"; 
+  }
+  }
+  
+  fill(255);
+    textAlign(LEFT, BOTTOM);
+    textSize(14);
+  text(("IP addr.: " + myIP), textPadding, (height-textPadding)); 
+  
 
   if (!loadingp) {
     fill(255);
