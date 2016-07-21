@@ -5,8 +5,7 @@
 //PiScore root dir:
 String rootPath;
 
-String[] launchServer = { null, null, null };
-String[] launchClient = { null, null, null };
+String[] launch = { null, null, null };
 String[] reboot = {"sudo", "reboot"};
 String[] shutdown = {"sudo", "shutdown", "now"};
 String[] deleteAnnotations = { null, null, null };
@@ -18,6 +17,11 @@ String backupFile;
 
 PImage bLaunch, bReboot, bShutdown, bTerminal, bDelete, bCheck, bCross, bEmpty;
 PImage tReboot, tShutdown, tTerminal, tDelete;
+
+String[] clientpArray = { null };
+String clientpPath;
+File clientpFile;
+boolean clientp;
 
 boolean loadingp = false;
 boolean deletep = false;
@@ -41,13 +45,19 @@ void setup () {
   
   rootPath = sketchPath("../../");
   
-  launchServer[0] = "/usr/local/bin/processing-java";
-  launchServer[1] = "--sketch=" + rootPath + "sketches/sketch_Server/";
-  launchServer[2] = "--run";
+  clientpPath = sketchPath("../../etc/clientp.txt");
+  clientpFile = new File(clientpPath);
+  if (clientpFile.exists()) {
+    clientpArray = loadStrings(clientpPath);
+  } else {
+    clientpArray[0] = "false"; // Defaults to server
+    saveStrings(clientpPath, clientpArray);
+  }
+  clientp = boolean(clientpArray[0]);
   
-  launchClient[0] = "/usr/local/bin/processing-java";
-  launchClient[1] = "--sketch=" + rootPath + "sketches/sketch_Client/";
-  launchClient[2] = "--run";  
+  launch[0] = "/usr/local/bin/processing-java";
+  launch[1] = "--sketch=" + rootPath + "sketches/sketch_Server/";
+  launch[2] = "--run";
   
   deleteAnnotations[0] = "mv";
   deleteAnnotations[1] = rootPath + "files/annotations.png";
@@ -86,13 +96,16 @@ void draw() {
     textAlign(CENTER, CENTER);
     textSize(14);
     text("Launch", (width/2), ((height/2)+(iconSizeLarge*0.5)+iconPadding));
-
-    //image(bLaunchClient, ((width/2)-(iconSize*0.5)-iconSize-(iconPadding*2)), ((height/2)+iconPadding));
-    //fill(255);
-    //textAlign(LEFT, CENTER);
-    //textSize(14);
-    //text("Launch Client", ((width/2)-(iconSize*0.5)-iconPadding), ((height/2)+iconPadding+(iconSize/2)));
-
+    
+    if (clientp) {
+      image(bEmpty, iconPadding, iconPadding);
+    } else {
+      image(bCheck, iconPadding, iconPadding);
+    }
+    fill(255);
+    textAlign(LEFT, CENTER);
+    textSize(14);
+    text("Launch as Server", ((iconPadding*2)+iconSize), (iconPadding+(iconSize*0.5))); 
 
     image(bTerminal, ((width/2)-(iconSize*0.5)-iconSize-(iconPadding*2)), (height-iconSize-(tTerminal.height)-(textPadding*2)));
     image(tTerminal, ((width/2)-(iconSize*0.5)-iconSize-(iconPadding*2)), (height-textPadding-tTerminal.height));
@@ -136,7 +149,7 @@ void draw() {
 
 void mousePressed() {
   if (!loadingp) {
-    //Launch Server
+    //Launch
     if (
       (mouseX > ((width/2)-(iconSizeLarge*0.5))) &
       (mouseX < ((width/2)+(iconSizeLarge*0.5))) &
@@ -144,7 +157,23 @@ void mousePressed() {
       (mouseY < ((height/2)+(iconSizeLarge*0.5)))
       ) {
       loadingp = true;
-      exec(launchServer);
+      exec(launch);
+    }
+    //Launch as Server checkbox
+    if (
+      (mouseX > iconPadding) &
+      (mouseX < (iconPadding+iconSize)) &
+      (mouseY > iconPadding) &
+      (mouseY < (iconPadding+iconSize))
+      ) {
+        if (clientp)
+        {
+          clientpArray[0] = "false";
+        } else {
+          clientpArray[0] = "true";
+        }
+        clientp = boolean(clientpArray[0]);
+        saveStrings(clientpPath, clientpArray);
     }
     //Terminal
     if (
