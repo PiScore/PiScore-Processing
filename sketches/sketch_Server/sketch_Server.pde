@@ -177,13 +177,14 @@ void draw() {
 
   // Draw ID markers
   for (int i = 0, j = 0; i < score.width; i+=500, j++) {
+    textAlign(LEFT, TOP);
     textSize(32);
     fill(0, 102, 153);
     if (i != 0) {
       if (!clientp) {
-        text(j, (i+localScoreXadj-editOffset), 32);
+        text(j, (i+localScoreXadj-editOffset), 0);
       } else {
-        text(j, (i+receiveInt), 32);
+        text(j, (i+receiveInt), 0);
       }
     }
   }
