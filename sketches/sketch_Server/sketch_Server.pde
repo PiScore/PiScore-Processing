@@ -195,13 +195,13 @@ void draw() {
     strokeCap(SQUARE);
     line(playheadPos, 0, playheadPos, height);
   } else {
-    fill(255, 0, 0);
+    fill(0, 102, 0);
     textAlign(LEFT, BOTTOM);
-    textSize(16);
+    textSize(12);
     if (!clientp) {
-      text(("IP addr.:" + Server.ip()), 0, height); 
+      text(("Server IP: " + Server.ip()), 0, height); 
     } else {
-      text(("IP addr.:" + scoreClient.ip()), 0, height);
+      text(("Connected to Server at " + scoreClient.ip()), 0, height);
     }
   }
 
