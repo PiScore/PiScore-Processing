@@ -4,7 +4,7 @@ String[] launch = { null, null, null };
 String[] reboot = {"sudo", "reboot"};
 String[] shutdown = {"sudo", "shutdown", "now"};
 String[] deleteAnnotations = { null, null, null };
-String[] cdRoot = { "cd", null };
+String[] cdEtc = { "cd", null };
 String[] getIP = { "bash", null };
 
 String annotationsPath;
@@ -75,9 +75,9 @@ void setup () {
   tTerminal = loadImage("./guiText/terminal.png");
   tDelete = loadImage("./guiText/delete.png");
   
-  cdRoot[1] = rootPath;
+  cdEtc[1] = (rootPath + "etc/");
   getIP[1] = (rootPath + "bin/get-ip");
-  exec(cdRoot);
+  launch(cdEtc);
   exec(getIP);
 }
 
