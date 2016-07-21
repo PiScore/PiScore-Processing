@@ -71,11 +71,8 @@ void setup() {
   clientpPath = sketchPath("../../etc/clientp.txt");
   clientpFile = new File(clientpPath);
   if (clientpFile.exists()) {
-    println("yes");
     clientpArray = loadStrings(clientpPath);
   } else {
-    println("no");
-    println("clientpPath");
     clientpArray[0] = "false"; // Defaults to server
     saveStrings(clientpPath, clientpArray);
   }
@@ -191,12 +188,21 @@ void draw() {
     }
   }
 
-  // Draw playhead
+  // Draw playhead and IP
   if (!editMode) {
     stroke(255, 0, 0);
     strokeWeight(5);
     strokeCap(SQUARE);
     line(playheadPos, 0, playheadPos, height);
+  } else {
+    fill(255, 0, 0);
+    textAlign(LEFT, BOTTOM);
+    textSize(16);
+    if (!clientp) {
+      text(("IP addr.:" + Server.ip()), 0, height); 
+    } else {
+      text(("IP addr.:" + scoreClient.ip()), 0, height);
+    }
   }
 
   // penSize cursor

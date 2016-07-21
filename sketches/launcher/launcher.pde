@@ -4,7 +4,6 @@ String[] launch = { null, null, null };
 String[] reboot = {"sudo", "reboot"};
 String[] shutdown = {"sudo", "shutdown", "now"};
 String[] deleteAnnotations = { null, null, null };
-String[] storeIPaddr = { "/sbin/ifconfig", "|", "grep", "\'inet addr:\'" };
 
 String annotationsPath;
 File annotationsFile;
@@ -41,8 +40,6 @@ void setup () {
   
   rootPath = sketchPath("../../");
   
-  exec(storeIPaddr);
-  
   clientpPath = sketchPath("../../etc/clientp.txt");
   clientpFile = new File(clientpPath);
   if (clientpFile.exists()) {
@@ -78,13 +75,7 @@ void setup () {
 }
 
 void draw() {
-  background(color(0, 90, 158));
-  
-  fill(255);
-    textAlign(LEFT, BOTTOM);
-    textSize(14);
-  text(("IP addr.: "), textPadding, (height-textPadding)); 
-  
+  background(color(0, 90, 158)); 
 
   if (!loadingp) {
     fill(255);
