@@ -2,8 +2,12 @@ import processing.net.*;
 Server scoreServer;
 Client scoreClient;
 
-//Client variables
-String serverIP = "192.168.0.14";
+
+
+String[] serverIpAddrArray = { null };
+String serverIpAddrPath;
+File serverIpAddrFile;
+String serverIpAddr;
 int    serverPort = 5208;
 String receiveData;
 int receiveInt = 0;
@@ -67,6 +71,16 @@ void setup() {
   frameRate(fps);
   size(800, 480);
   noSmooth();
+  
+  serverIpAddrPath = sketchPath("../../etc/server-ip-addr.txt");
+  serverIpAddrFile = new File(serverIpAddrPath);
+  if (serverIpAddrFile.exists()) {
+    serverIpAddrArray = loadStrings(serverIpAddrPath);
+  } else {
+    serverIpAddrArray[0] = "192.168.0.14"; // Arbitrary default
+    saveStrings(serverIpAddrPath, serverIpAddrArray);
+  }
+   serverIpAddr = serverIpAddrArray[0];
 
   clientpPath = sketchPath("../../etc/clientp.txt");
   clientpFile = new File(clientpPath);
@@ -81,7 +95,7 @@ void setup() {
   if (!clientp) {
     scoreServer = new Server(this, serverPort);
   } else {
-    scoreClient = new Client(this, serverIP, serverPort);
+    scoreClient = new Client(this, serverIpAddr, serverPort);
   }
 
   score = loadImage("../../files/SCORE480p.PNG");
