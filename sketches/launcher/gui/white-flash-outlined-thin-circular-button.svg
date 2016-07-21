@@ -19,7 +19,10 @@
    style="enable-background:new 0 0 64 64;"
    xml:space="preserve"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="flash-outlined-thin-circular-button.svg"><metadata
+   sodipodi:docname="white-flash-outlined-thin-circular-button.svg"
+   inkscape:export-filename="C:\Users\david\Dropbox\00_ComputerSync\Documents\git-repositories\PiScore\sketches\launcher\gui\white-100px-flash-outlined-thin-circular-button.png"
+   inkscape:export-xdpi="140.625"
+   inkscape:export-ydpi="140.625"><metadata
      id="metadata51"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
@@ -37,7 +40,7 @@
      id="namedview47"
      showgrid="false"
      inkscape:zoom="3.6875"
-     inkscape:cx="32"
+     inkscape:cx="-8.5423729"
      inkscape:cy="32"
      inkscape:window-x="-8"
      inkscape:window-y="-8"

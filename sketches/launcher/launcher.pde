@@ -9,14 +9,14 @@ String[] launchServer = { null, null, null };
 String[] launchClient = { null, null, null };
 String[] reboot = {"sudo", "reboot"};
 String[] shutdown = {"sudo", "shutdown", "now"};
-String[] deleteAnnotations = { "mv", "/home/pi/PiScore/files/annotations.png", null };
+String[] deleteAnnotations = { null, null, null };
 
 String annotationsPath;
 File annotationsFile;
-String backupPath = "/home/pi/PiScore/files/annotationBackup/";
+String backupPath;
 String backupFile;
 
-PImage bLaunchServer, bLaunchClient, bReboot, bShutdown, bTerminal, bDelete, bCheck, bCross;
+PImage bLaunch, bReboot, bShutdown, bTerminal, bDelete, bCheck, bCross, bEmpty;
 PImage tReboot, tShutdown, tTerminal, tDelete;
 
 boolean loadingp = false;
@@ -29,6 +29,7 @@ final int fps = 10;
 int loadingCounter = 0;
 
 final int iconSize = 50;
+final int iconSizeLarge = 100;
 final int iconPadding = 10;
 final int textPadding = 5;
 
@@ -46,20 +47,21 @@ void setup () {
   
   launchClient[0] = "/usr/local/bin/processing-java";
   launchClient[1] = "--sketch=" + rootPath + "sketches/sketch_Client/";
-  launchClient[2] = "--run";
-
-  println(launchServer[1]);
-  println(launchClient[1]);
+  launchClient[2] = "--run";  
   
+  deleteAnnotations[0] = "mv";
+  deleteAnnotations[1] = rootPath + "files/annotations.png";
+  
+  backupPath = rootPath + "files/annotationBackup/";
 
-  bLaunchServer = loadImage("./gui/add-circular-button-thin-symbol.png");
-  bLaunchClient = loadImage("./gui/flash-outlined-thin-circular-button.png");
+  bLaunch = loadImage("./gui/white-100px-flash-outlined-thin-circular-button.png");
   bReboot = loadImage("./gui/circular-arrow-in-rounded-button.png");
   bShutdown = loadImage("./gui/power-outlined-circular-button.png");
   bTerminal = loadImage("./gui/monitor-circular-thin-button.png");
   bDelete = loadImage("./gui/trash-can-circular-outlined-button.png");
-  bCheck = loadImage("./gui/checkmark-outlined-circular-button.png");
+  bCheck = loadImage("./gui/white-50px-checkmark-outlined-circular-button.png");
   bCross = loadImage("./gui/close-cross-thin-circular-button.png");
+  bEmpty = loadImage("./gui/white-50px-empty-circular-button.png");
 
   tReboot = loadImage("./guiText/reboot.png");
   tShutdown = loadImage("./guiText/shutdown.png");
@@ -79,17 +81,17 @@ void draw() {
     text("by David Stephen Grant", (width/2), (iconSize+iconPadding+42));
     //image(tTitle, ((width*0.5)-(tTitle.width*0.5)), (iconSize+iconPadding));
     
-    image(bLaunchServer, ((width/2)-(iconSize*0.5)-iconSize-(iconPadding*2)), ((height/2)-(iconSize)-iconPadding));
+    image(bLaunch, ((width/2)-(iconSizeLarge*0.5)), ((height/2)-(iconSizeLarge*0.5)));
     fill(255);
-    textAlign(LEFT, CENTER);
+    textAlign(CENTER, CENTER);
     textSize(14);
-    text("Launch Server", ((width/2)-(iconSize*0.5)-iconPadding), ((height/2)-(iconSize/2)-iconPadding));
+    text("Launch", (width/2), ((height/2)+(iconSizeLarge*0.5)+iconPadding));
 
-    image(bLaunchClient, ((width/2)-(iconSize*0.5)-iconSize-(iconPadding*2)), ((height/2)+iconPadding));
-   fill(255);
-textAlign(LEFT, CENTER);
-    textSize(14);
-    text("Launch Client", ((width/2)-(iconSize*0.5)-iconPadding), ((height/2)+iconPadding+(iconSize/2)));
+    //image(bLaunchClient, ((width/2)-(iconSize*0.5)-iconSize-(iconPadding*2)), ((height/2)+iconPadding));
+    //fill(255);
+    //textAlign(LEFT, CENTER);
+    //textSize(14);
+    //text("Launch Client", ((width/2)-(iconSize*0.5)-iconPadding), ((height/2)+iconPadding+(iconSize/2)));
 
 
     image(bTerminal, ((width/2)-(iconSize*0.5)-iconSize-(iconPadding*2)), (height-iconSize-(tTerminal.height)-(textPadding*2)));
@@ -136,23 +138,13 @@ void mousePressed() {
   if (!loadingp) {
     //Launch Server
     if (
-      (mouseX > ((width/2)-(iconSize*0.5)-iconSize-(iconPadding*2))) &
-      (mouseX < ((width/2)-(iconSize*0.5)-iconSize-(iconPadding*2)+iconSize)) &
-      (mouseY > ((height/2)-(iconSize/2)-(iconSize/2)-iconPadding)) &
-      (mouseY < ((height/2)-(iconSize/2)-(iconSize/2)-iconPadding)+iconSize)
+      (mouseX > ((width/2)-(iconSizeLarge*0.5))) &
+      (mouseX < ((width/2)+(iconSizeLarge*0.5))) &
+      (mouseY > ((height/2)-(iconSizeLarge*0.5))) &
+      (mouseY < ((height/2)+(iconSizeLarge*0.5)))
       ) {
       loadingp = true;
       exec(launchServer);
-    }
-    //Launch Client
-    if (
-      (mouseX > ((width/2)-(iconSize*0.5)-iconSize-(iconPadding*2))) &
-      (mouseX < ((width/2)-(iconSize*0.5)-iconSize-(iconPadding*2)+iconSize)) &
-      (mouseY > ((height/2)+(iconSize/2)-(iconSize/2)+iconPadding)) &
-      (mouseY < ((height/2)+(iconSize/2)-(iconSize/2)+iconPadding)+iconSize)
-      ) {
-      loadingp = true;
-      exec(launchClient);
     }
     //Terminal
     if (
