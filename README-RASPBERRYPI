@@ -77,4 +77,10 @@ Setup suggestions for Raspberry Pi 3
 
 - nano ~/.profile
   Add to end of file:
+  clear
+  ifconfig | grep 'inet addr:'
+  sleep 2
+  echo ""
+  echo "Launching in 5 seconds..."
+  sleep 5
   exec startx

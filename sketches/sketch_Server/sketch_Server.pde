@@ -199,9 +199,7 @@ void draw() {
     fill(0, 102, 0);
     textAlign(LEFT, BOTTOM);
     textSize(12);
-    if (!clientp) {
-      text(("Server IP: " + Server.ip()), 0, height); 
-    } else {
+    if (clientp) {
       text(("Connected to Server at " + scoreClient.ip()), 0, height);
     }
   }
