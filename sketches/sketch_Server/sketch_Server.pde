@@ -2,8 +2,6 @@ import processing.net.*;
 Server scoreServer;
 Client scoreClient;
 
-
-
 String[] serverIpAddrArray = { null };
 String serverIpAddrPath;
 File serverIpAddrFile;
@@ -481,7 +479,7 @@ void mousePressed() {
   }
 
 
-  if (mouseX < (width-iconSize-(iconPadding*2))) {
+  if (mouseX > clefs.width && mouseX < (width-iconSize-(iconPadding*2))) {
     if (editMode) {
       if (!annotationsChangedp) {
         // Notify when annotations are made
@@ -499,7 +497,7 @@ void mousePressed() {
 
 
 void mouseDragged() {
-  if (mouseX < (width-iconSize-(iconPadding*2))) {
+  if (mouseX > clefs.width && mouseX < (width-iconSize-(iconPadding*2))) {
     if (editMode) {
       if (!annotationsChangedp) {
         // Notify when annotations are made
