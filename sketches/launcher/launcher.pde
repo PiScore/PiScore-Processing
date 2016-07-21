@@ -1,14 +1,10 @@
-import java.net.InetAddress;
-
-InetAddress inet;
-String myIP = "unknown";
-
 String rootPath;
 
 String[] launch = { null, null, null };
 String[] reboot = {"sudo", "reboot"};
 String[] shutdown = {"sudo", "shutdown", "now"};
 String[] deleteAnnotations = { null, null, null };
+String[] storeIPaddr = { "/sbin/ifconfig", "|", "grep", "\'inet addr:\'" };
 
 String annotationsPath;
 File annotationsFile;
@@ -43,16 +39,9 @@ void setup () {
   smooth();
   cursor(HAND);
   
-  try {
-    inet = InetAddress.getLocalHost();
-    myIP = inet.getHostAddress();
-  }
-  catch (Exception e) {
-    e.printStackTrace();
-    myIP = "unknown"; 
-  }
-  
   rootPath = sketchPath("../../");
+  
+  exec(storeIPaddr);
   
   clientpPath = sketchPath("../../etc/clientp.txt");
   clientpFile = new File(clientpPath);
@@ -91,21 +80,10 @@ void setup () {
 void draw() {
   background(color(0, 90, 158));
   
-  if (frameCount % (fps*5) == 0) {
-  try {
-    inet = InetAddress.getLocalHost();
-    myIP = inet.getHostAddress();
-  }
-  catch (Exception e) {
-    e.printStackTrace();
-    myIP = "unknown"; 
-  }
-  }
-  
   fill(255);
     textAlign(LEFT, BOTTOM);
     textSize(14);
-  text(("IP addr.: " + myIP), textPadding, (height-textPadding)); 
+  text(("IP addr.: "), textPadding, (height-textPadding)); 
   
 
   if (!loadingp) {
