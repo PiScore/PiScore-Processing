@@ -4,6 +4,7 @@ String[] launch = { null, null, null };
 String[] reboot = {"sudo", "reboot"};
 String[] shutdown = {"sudo", "shutdown", "now"};
 String[] deleteAnnotations = { null, null, null };
+String[] getIP = { "bash", null };
 
 String annotationsPath;
 File annotationsFile;
@@ -72,6 +73,9 @@ void setup () {
   tShutdown = loadImage("./guiText/shutdown.png");
   tTerminal = loadImage("./guiText/terminal.png");
   tDelete = loadImage("./guiText/delete.png");
+  
+  getIP[1] = (rootPath + "bin/get-ip");
+  exec(getIP);
 }
 
 void draw() {
