@@ -9,6 +9,7 @@ String[] launch = { null, null, null };
 String[] reboot = {"sudo", "reboot"};
 String[] shutdown = {"sudo", "shutdown", "now"};
 String[] deleteAnnotations = { null, null, null };
+String[] getServerIP = { "/sbin/ifconfig|", "grep", "\'inet addr:\'|", "grep", "-o", "\'^[^\\s]*\'|", "grep", "-o", "\'[0-9]\\{1,3\\}\\.[0-9]\\{1,3\\}\\.[0-9]\\{1,3\\}\\.[0-9]\\{1,3\\}\'" };
 
 String annotationsPath;
 File annotationsFile;
@@ -42,6 +43,8 @@ void setup () {
   size(800, 480);
   smooth();
   cursor(HAND);
+  
+  exec(getServerIP);
   
   rootPath = sketchPath("../../");
   
