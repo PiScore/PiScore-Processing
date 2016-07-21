@@ -91,7 +91,7 @@ void setup () {
 void draw() {
   background(color(0, 90, 158));
   
-  if (myIP == "unknown") {
+  if (frameCount % (fps*5) == 0) {
   try {
     inet = InetAddress.getLocalHost();
     myIP = inet.getHostAddress();
