@@ -96,8 +96,8 @@ void setup() {
     scoreClient = new Client(this, serverIpAddr, serverPort);
   }
 
-  score = loadImage("../../files/SCORE480p.PNG");
-  clefs = loadImage("../../files/SCORE480p_clefs.PNG");
+  score = loadImage("../../files/SCORE.PNG");
+  clefs = loadImage("../../files/SCORE_CLEFS.PNG");
   annotationsCanvas = createGraphics(score.width, score.height);
   annotationsPath = sketchPath("../../files/annotations.png");
   annotationsFile = new File(annotationsPath);

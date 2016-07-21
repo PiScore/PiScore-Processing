@@ -14,7 +14,7 @@ PImage bLaunch, bReboot, bShutdown, bTerminal, bDelete, bCheck, bCross, bEmpty, 
 PImage tReboot, tShutdown, tTerminal, tDelete;
 
 String[] numpadArray = { "7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ".", "\u2190" };
-String[] numpadDecisionArray = { "Cancel", "Accept" };
+String[] numpadDecisionArray = { "Cancel", "Confirm" };
 
 String[] clientpArray = { null };
 String clientpPath;
