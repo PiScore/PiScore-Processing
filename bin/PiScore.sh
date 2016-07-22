@@ -9,10 +9,13 @@ done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 clear
+sleep 1
 echo "$(cat $DIR/../LICENSE-SHORT)"
 sleep 2
 echo ""
+echo "System IP address information:"
 ifconfig | grep 'inet addr:'
 echo ""
 echo "Launching PiScore in 5 seconds..."
+echo "(Ctrl + C to cancel)"
 sleep 5
