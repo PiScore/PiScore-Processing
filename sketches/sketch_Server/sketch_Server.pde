@@ -79,12 +79,15 @@ int scoreXadj;
 int scoreXadjScaled;
 int localScoreX = 0;
 int playheadPos;
+int adjStart;
+int adjStartScaled;
+int adjEnd;
 
 int frameCounter = 0;
 boolean playingp = false; // playingp is only kept updated when !clientp
 int incrValue = 0;
 
-float zoom = 2.0;
+float zoom = 1.0;
 
 void setup() {
   frameRate(fps);
@@ -148,8 +151,11 @@ void setup() {
   prevIcon = loadImage("../../files/gui/rewind-double-arrow-outlined-circular-button.png");
   nextIcon = loadImage("../../files/gui/fast-forward-thin-outlined-symbol-in-circular-button.png");
 
-
   playheadPos = round(width * 0.2);
+  
+  adjStart = (start - playheadPos);
+  adjStartScaled = round((start*zoom) - playheadPos);
+  adjEnd = (end - playheadPos);
 
   if (export) {
     playingp = true;
@@ -190,12 +196,14 @@ void draw() {
     }
   }
     
-    image(score, localScoreX-editOffset, 0, score.width*zoom, score.height*zoom);
-    image(annotationsCanvas, localScoreX-editOffset, 0, annotationsCanvas.width*zoom, annotationsCanvas.height*zoom);
+    image(score,             localScoreX-editOffset+playheadPos-(start*zoom), 0, score.width*zoom, score.height*zoom);
+    image(annotationsCanvas, localScoreX-editOffset+playheadPos-(start*zoom), 0, annotationsCanvas.width*zoom, annotationsCanvas.height*zoom);
 
-    if (localScoreX-editOffset < 0) {
+if (((clefs.width)*zoom) < playheadPos) {
+    if (localScoreX-editOffset < (0 + adjStartScaled)) {
       image(clefs, 0, 0, clefs.width*zoom, clefs.height*zoom);
     }
+}
   
 
   // Draw ID markers
@@ -210,7 +218,7 @@ void draw() {
 
   // Draw playhead and IP
   if (!editMode) {
-    stroke(255, 0, 0);
+    stroke(255, 0, 0, 150);
     strokeWeight(5);
     strokeCap(SQUARE);
     line(playheadPos, 0, playheadPos, height);
@@ -362,7 +370,7 @@ int calcXPos(int frame) {
     px = (frame / totalFrames);
   }
 
-  xPos = (((px * end) + (1 - px) - 1) * -1);
+  xPos = (((px * adjEnd) + (((1 - px) - 1) * adjStart)) * -1);
   return round(xPos);
 }
 
@@ -376,7 +384,7 @@ int calcOffset(int frame) {
     px = (frame / totalFrames);
   }
 
-  xPos = (px * end);
+  xPos = (px * adjEnd);
   return round(xPos);
 }
 
@@ -536,7 +544,7 @@ void drawFunctionBegin(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.noStroke();
   annotationsCanvas.fill(c);
-    annotationsCanvas.ellipse((mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled), (mouseY/zoom), penSize, penSize);
+    annotationsCanvas.ellipse((mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), (mouseY/zoom), penSize, penSize);
   annotationsCanvas.endDraw();
 }
 
@@ -544,7 +552,7 @@ void drawFunctionContinue(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.stroke(c);
   annotationsCanvas.strokeWeight(penSize);
-    annotationsCanvas.line((pmouseX/zoom)-((localScoreX/zoom)-editOffsetScaled), (pmouseY/zoom), (mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled), (mouseY/zoom));
+    annotationsCanvas.line((pmouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), (pmouseY/zoom), (mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), (mouseY/zoom));
   annotationsCanvas.endDraw();
 }
 
@@ -552,7 +560,7 @@ void drawFunctionEnd(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.stroke(c);
   annotationsCanvas.strokeWeight(penSize);
-  annotationsCanvas.line((pmouseX/zoom)-((localScoreX/zoom)-editOffsetScaled), (pmouseY/zoom), (mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled), (mouseY/zoom));
+  annotationsCanvas.line((pmouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), (pmouseY/zoom), (mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), (mouseY/zoom));
   annotationsCanvas.endDraw();
 }
 
