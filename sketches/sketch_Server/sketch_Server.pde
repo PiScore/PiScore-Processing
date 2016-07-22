@@ -424,6 +424,7 @@ void mousePressed() {
           eraserMode = false;
           editMode = false;
           editOffset = 0;
+          editOffsetScaled = 0;
           if (annotationsChangedp) {
             annotationsChangedp = false; // reset
             annotationsCanvas.save("../../files/annotations.png");
@@ -476,19 +477,19 @@ void mousePressed() {
       //PREV
       if (mouseY > ((iconSize*3)+(iconPadding*7)) && mouseY < ((iconSize*4)+(iconPadding*7))) {
         if (editMode) {
-          editOffset = editOffset - (width/5*3);
+          editOffset = editOffset - round((width/5*3)*zoom);
           editOffsetScaled = round(editOffset/zoom);
         } else {
-          frameCounter = frameCounter - (width/5*3);
+          frameCounter = frameCounter - round((width/5*3)*zoom);
         }
       }
       //NEXT
       if (mouseY > ((iconSize*4)+(iconPadding*9)) && mouseY < ((iconSize*5)+(iconPadding*9))) {
         if (editMode) {
-          editOffset = editOffset + (width/5*3);
+          editOffset = editOffset + round((width/5*3)*zoom);
           editOffsetScaled = round(editOffset/zoom);
         } else {
-          frameCounter = frameCounter + (width/5*3);
+          frameCounter = frameCounter + round((width/5*3)*zoom);
         }
       }
     }
@@ -559,7 +560,7 @@ void drawFunctionContinue(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.stroke(c);
   annotationsCanvas.strokeWeight(penSize);
-    annotationsCanvas.line((pmouseX/zoom)-((localScoreXadj/zoom)+(editOffsetScaled/zoom)), (pmouseY/zoom), (mouseX/zoom)-((localScoreXadj/zoom)+editOffsetScaled), (mouseY/zoom));
+    annotationsCanvas.line((pmouseX/zoom)-((localScoreXadj/zoom)+(editOffsetScaled/zoom)), (pmouseY/zoom), (mouseX/zoom)-((localScoreXadj/zoom)+(editOffsetScaled/zoom)), (mouseY/zoom));
   annotationsCanvas.endDraw();
 }
 
@@ -567,7 +568,7 @@ void drawFunctionEnd(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.stroke(c);
   annotationsCanvas.strokeWeight(penSize);
-    annotationsCanvas.line((pmouseX/zoom)-((localScoreXadj/zoom)+(editOffsetScaled/zoom)), (pmouseY/zoom), (mouseX/zoom)-((localScoreXadj/zoom)+editOffsetScaled), (mouseY/zoom));
+  annotationsCanvas.line((pmouseX/zoom)-((localScoreXadj/zoom)+(editOffsetScaled/zoom)), (pmouseY/zoom), (mouseX/zoom)-((localScoreXadj/zoom)+(editOffsetScaled/zoom)), (mouseY/zoom));
   annotationsCanvas.endDraw();
 }
 
