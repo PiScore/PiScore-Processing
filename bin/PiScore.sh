@@ -18,9 +18,9 @@ ifconfig | grep 'inet addr:'
 echo ""
 echo -n "Launching PiScore in 5 seconds... (Ctrl + C to cancel)"
 sleep 1
-echo -ne \\r "Launching PiScore in 4 seconds... (Ctrl + C to cancel)"
+echo -ne \\r"Launching PiScore in 4 seconds... (Ctrl + C to cancel)"
 sleep 1
-echo -ne \\r "Launching PiScore in 3 seconds... (Ctrl + C to cancel)"
+echo -ne \\r"Launching PiScore in 3 seconds... (Ctrl + C to cancel)"
 sleep 1
 echo -ne \\r"Launching PiScore in 2 seconds... (Ctrl + C to cancel)"\\r
 sleep 1
