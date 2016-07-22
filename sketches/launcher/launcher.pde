@@ -432,7 +432,6 @@ void mousePressed() {
       (mouseY > (height-iconSize-(tTerminal.height)-(textPadding*2))) &
       (mouseY < (height-iconSize-(tTerminal.height)-(textPadding*2))+iconSize)
       ) {
-        launch("exit");
       exit();
     }
     //Shutdown
