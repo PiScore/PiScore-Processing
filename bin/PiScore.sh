@@ -22,7 +22,7 @@ echo -ne \\r"Launching PiScore in 4 seconds... (Ctrl + C to cancel)"
 sleep 1
 echo -ne \\r"Launching PiScore in 3 seconds... (Ctrl + C to cancel)"
 sleep 1
-echo -ne \\r"Launching PiScore in 2 seconds... (Ctrl + C to cancel)"\\r
+echo -ne \\r"Launching PiScore in 2 seconds... (Ctrl + C to cancel)"
 sleep 1
 echo -ne \\r"Launching PiScore in 1 seconds... (Ctrl + C to cancel)"
 sleep 1
