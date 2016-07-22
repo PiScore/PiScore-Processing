@@ -52,9 +52,7 @@ final int fps = 25; // Frame rate
 final int start = 122;  // Enter px for first event here
 final int end = 19921;  // Enter px for "final barline" here
 final float dur = 540;    // Enter durata in seconds here
-final float preRoll = 8;  // Preroll in seconds (adds to total durata)
 
-final int preRollFrames = ceil(preRoll * fps);
 final float totalFrames = ceil(dur * fps); // float for use as divisor
 
 boolean exitDialog = false;
@@ -79,13 +77,8 @@ int editOffset = 0;
 int editOffsetScaled = 0;
 int scoreXadj;
 int scoreXadjScaled;
-int localScoreXadj = 0;
-int preRollOffset;
-int preRollOffsetScaled;
+int localScoreX = 0;
 int playheadPos;
-
-int adjStart;
-int adjEnd;
 
 int frameCounter = 0;
 boolean playingp = false; // playingp is only kept updated when !clientp
@@ -158,9 +151,6 @@ void setup() {
 
   playheadPos = round(width * 0.2);
 
-  adjStart = (start - playheadPos);
-  adjEnd = (end - playheadPos);
-
   if (export) {
     playingp = true;
     incrValue  = 1;
@@ -170,20 +160,14 @@ void setup() {
 void draw() {
   background(255);
   cursor(CROSS);
-
   if (!clientp) {
     // Replace "frameCounter" with frame number to inspect specific frame
     scoreX = calcXPos(frameCounter);
     scoreXScaled = round(scoreX*zoom);
-    preRollOffset = calcOffset(preRollFrames);
-    preRollOffsetScaled = round(preRollOffset*zoom);
-    scoreXadj = (scoreX+preRollOffset);
-    scoreXadjScaled = (scoreXScaled+preRollOffsetScaled);
-
-    scoreServer.write(nfp(scoreXadj, 6));
+    scoreServer.write(nfp(scoreX, 6));
 
     if (!editMode) {
-      localScoreXadj = scoreXScaled+preRollOffsetScaled;
+      localScoreX = scoreXScaled;
     }
   } else {
     if (!editMode) {
@@ -193,12 +177,12 @@ void draw() {
         receiveData = scoreClient.readString();
         if (receiveData.charAt(0) == '+' | receiveData.charAt(0) == '-') {
           if (receiveData.length() == 7) {
-            localScoreXadj = int(receiveData);
-            localScoreXadj = round(localScoreXadj * zoom);
+            localScoreX = int(receiveData);
+            localScoreX = round(localScoreX * zoom);
           } else {
             if (receiveData.length() > 7) {
-              localScoreXadj = int(receiveData.substring(0, 7));
-              localScoreXadj = round(localScoreXadj * zoom);
+              localScoreX = int(receiveData.substring(0, 7));
+              localScoreX = round(localScoreX * zoom);
             }
           }
         }
@@ -206,10 +190,10 @@ void draw() {
     }
   }
     
-    image(score, localScoreXadj-editOffset, 0, score.width*zoom, score.height*zoom);
-    image(annotationsCanvas, localScoreXadj-editOffset, 0, annotationsCanvas.width*zoom, annotationsCanvas.height*zoom);
+    image(score, localScoreX-editOffset, 0, score.width*zoom, score.height*zoom);
+    image(annotationsCanvas, localScoreX-editOffset, 0, annotationsCanvas.width*zoom, annotationsCanvas.height*zoom);
 
-    if (localScoreXadj-editOffset < 0) {
+    if (localScoreX-editOffset < 0) {
       image(clefs, 0, 0, clefs.width*zoom, clefs.height*zoom);
     }
   
@@ -220,7 +204,7 @@ void draw() {
     textSize(32);
     fill(0, 102, 153);
     if (i != 0) {
-        text(j, (round(i*zoom)+localScoreXadj-editOffset), 0);
+        text(j, (round(i*zoom)+localScoreX-editOffset), 0);
     }
   }
 
@@ -353,7 +337,7 @@ void draw() {
   }
 
   // Redraw
-  if (frameCounter < (totalFrames + preRollFrames)) {
+  if (frameCounter < totalFrames) {
     if (export) {
       saveFrame("../../export/frames/score#######.png");
     }
@@ -378,7 +362,7 @@ int calcXPos(int frame) {
     px = (frame / totalFrames);
   }
 
-  xPos = (((px * adjEnd) + ((1 - px) * adjStart)) * -1);
+  xPos = (((px * end) + (1 - px) - 1) * -1);
   return round(xPos);
 }
 
@@ -392,7 +376,7 @@ int calcOffset(int frame) {
     px = (frame / totalFrames);
   }
 
-  xPos = (px * adjEnd);
+  xPos = (px * end);
   return round(xPos);
 }
 
@@ -477,19 +461,19 @@ void mousePressed() {
       //PREV
       if (mouseY > ((iconSize*3)+(iconPadding*7)) && mouseY < ((iconSize*4)+(iconPadding*7))) {
         if (editMode) {
-          editOffset = editOffset - round((width/5*3)*zoom);
+          editOffset = editOffset - round(((width)/5*3));
           editOffsetScaled = round(editOffset/zoom);
         } else {
-          frameCounter = frameCounter - round((width/5*3)*zoom);
+          frameCounter = frameCounter - round(((width)/5*3));
         }
       }
       //NEXT
       if (mouseY > ((iconSize*4)+(iconPadding*9)) && mouseY < ((iconSize*5)+(iconPadding*9))) {
         if (editMode) {
-          editOffset = editOffset + round((width/5*3)*zoom);
+          editOffset = editOffset + round(((width)/5*3));
           editOffsetScaled = round(editOffset/zoom);
         } else {
-          frameCounter = frameCounter + round((width/5*3)*zoom);
+          frameCounter = frameCounter + round(((width)/5*3));
         }
       }
     }
@@ -552,7 +536,7 @@ void drawFunctionBegin(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.noStroke();
   annotationsCanvas.fill(c);
-    annotationsCanvas.ellipse((mouseX/zoom)-((localScoreXadj/zoom)+editOffsetScaled), (mouseY/zoom), penSize, penSize);
+    annotationsCanvas.ellipse((mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled), (mouseY/zoom), penSize, penSize);
   annotationsCanvas.endDraw();
 }
 
@@ -560,7 +544,7 @@ void drawFunctionContinue(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.stroke(c);
   annotationsCanvas.strokeWeight(penSize);
-    annotationsCanvas.line((pmouseX/zoom)-((localScoreXadj/zoom)+(editOffsetScaled/zoom)), (pmouseY/zoom), (mouseX/zoom)-((localScoreXadj/zoom)+(editOffsetScaled/zoom)), (mouseY/zoom));
+    annotationsCanvas.line((pmouseX/zoom)-((localScoreX/zoom)-editOffsetScaled), (pmouseY/zoom), (mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled), (mouseY/zoom));
   annotationsCanvas.endDraw();
 }
 
@@ -568,7 +552,7 @@ void drawFunctionEnd(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.stroke(c);
   annotationsCanvas.strokeWeight(penSize);
-  annotationsCanvas.line((pmouseX/zoom)-((localScoreXadj/zoom)+(editOffsetScaled/zoom)), (pmouseY/zoom), (mouseX/zoom)-((localScoreXadj/zoom)+(editOffsetScaled/zoom)), (mouseY/zoom));
+  annotationsCanvas.line((pmouseX/zoom)-((localScoreX/zoom)-editOffsetScaled), (pmouseY/zoom), (mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled), (mouseY/zoom));
   annotationsCanvas.endDraw();
 }
 
