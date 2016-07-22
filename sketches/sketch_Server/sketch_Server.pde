@@ -200,9 +200,9 @@ void draw() {
       }
     }
 
-    image(score, receiveInt, 0);
+    image(score, receiveInt-editOffset, 0);
 
-    image(annotationsCanvas, receiveInt, 0);
+    image(annotationsCanvas, receiveInt-editOffset, 0);
 
     if (receiveInt < 0) {
       image(clefs, 0, 0);
@@ -316,7 +316,7 @@ void draw() {
     }
   }
 
-  if (!clientp) {
+  if (!clientp || editMode) {
     //PREV ICON
     noStroke();
     fill(buttonBGcolor);
@@ -471,7 +471,7 @@ void mousePressed() {
       }
     }
 
-    if (!clientp) {
+    if (!clientp || editMode) {
       //PREV
       if (mouseY > ((iconSize*3)+(iconPadding*7)) && mouseY < ((iconSize*4)+(iconPadding*7))) {
         if (editMode) {
@@ -551,7 +551,7 @@ void drawFunctionBegin(color c) {
   if (!clientp) {
     annotationsCanvas.ellipse(mouseX-localScoreXadj+editOffset, mouseY, penSize, penSize);
   } else {
-    annotationsCanvas.ellipse(mouseX-receiveInt, mouseY, penSize, penSize);
+    annotationsCanvas.ellipse(mouseX-receiveInt+editOffset, mouseY, penSize, penSize);
   }
   annotationsCanvas.endDraw();
 }
@@ -563,7 +563,7 @@ void drawFunctionContinue(color c) {
   if (!clientp) {
     annotationsCanvas.line(pmouseX-localScoreXadj+editOffset, pmouseY, mouseX-localScoreXadj+editOffset, mouseY);
   } else {
-    annotationsCanvas.line(pmouseX-receiveInt, pmouseY, mouseX-receiveInt, mouseY);
+    annotationsCanvas.line(pmouseX-receiveInt+editOffset, pmouseY, mouseX-receiveInt+editOffset, mouseY);
   }
   annotationsCanvas.endDraw();
 }
@@ -575,7 +575,7 @@ void drawFunctionEnd(color c) {
   if (!clientp) {
     annotationsCanvas.line(pmouseX-localScoreXadj+editOffset, pmouseY, mouseX-localScoreXadj+editOffset, mouseY);
   } else {
-    annotationsCanvas.line(pmouseX-receiveInt, pmouseY, mouseX-receiveInt, mouseY);
+    annotationsCanvas.line(pmouseX-receiveInt+editOffset, pmouseY, mouseX-receiveInt+editOffset, mouseY);
   }
 
   annotationsCanvas.endDraw();
