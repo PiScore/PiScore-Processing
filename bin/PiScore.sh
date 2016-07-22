@@ -16,6 +16,16 @@ echo ""
 echo "System IP address information:"
 ifconfig | grep 'inet addr:'
 echo ""
-echo "Launching PiScore in 5 seconds..."
-echo "(Ctrl + C to cancel)"
-sleep 5
+echo -ne "Launching PiScore in 5 seconds... (Ctrl + C to cancel)"\\r
+sleep 1
+echo -ne "Launching PiScore in 4 seconds... (Ctrl + C to cancel)"\\r
+sleep 1
+echo -ne "Launching PiScore in 3 seconds... (Ctrl + C to cancel)"\\r
+sleep 1
+echo -ne "Launching PiScore in 2 seconds... (Ctrl + C to cancel)"\\r
+sleep 1
+echo -ne "Launching PiScore in 1 seconds... (Ctrl + C to cancel)"\\r
+sleep 1
+echo "Launching PiScore..."
+sleep 0.2
+exec startx
