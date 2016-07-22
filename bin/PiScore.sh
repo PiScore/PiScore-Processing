@@ -12,7 +12,6 @@ clear
 echo "$(cat $DIR/../LICENSE-SHORT)"
 sleep 2
 echo ""
-echo ""
 ifconfig | grep 'inet addr:'
 echo ""
 echo "Launching PiScore in 5 seconds..."
