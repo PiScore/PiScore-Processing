@@ -93,7 +93,7 @@ void setup() {
   frameRate(fps);
   size(800, 480);
   noSmooth();
-  
+
   serverIpAddrPath = sketchPath("../../etc/server-ip-addr.txt");
   serverIpAddrFile = new File(serverIpAddrPath);
   if (serverIpAddrFile.exists()) {
@@ -102,7 +102,7 @@ void setup() {
     serverIpAddrArray[0] = "192.168.0.14"; // Arbitrary default
     saveStrings(serverIpAddrPath, serverIpAddrArray);
   }
-   serverIpAddr = serverIpAddrArray[0];
+  serverIpAddr = serverIpAddrArray[0];
 
   clientpPath = sketchPath("../../etc/clientp.txt");
   clientpFile = new File(clientpPath);
@@ -152,7 +152,7 @@ void setup() {
   nextIcon = loadImage("../../files/gui/fast-forward-thin-outlined-symbol-in-circular-button.png");
 
   playheadPos = round(width * 0.2);
-  
+
   adjStart = (start - playheadPos);
   adjStartScaled = round((start*zoom) - playheadPos);
   adjEnd = (end - playheadPos);
@@ -195,25 +195,23 @@ void draw() {
       }
     }
   }
-    
-    image(score,             localScoreX-editOffset+playheadPos-(start*zoom), 0, score.width*zoom, score.height*zoom);
-    image(annotationsCanvas, localScoreX-editOffset+playheadPos-(start*zoom), 0, annotationsCanvas.width*zoom, annotationsCanvas.height*zoom);
 
-if (((clefs.width)*zoom) < playheadPos) {
+  image(score, localScoreX-editOffset+playheadPos-(start*zoom), 0, score.width*zoom, score.height*zoom);
+  image(annotationsCanvas, localScoreX-editOffset+playheadPos-(start*zoom), 0, annotationsCanvas.width*zoom, annotationsCanvas.height*zoom);
+
+  if (((clefs.width)*zoom) < playheadPos) {
     if (localScoreX-editOffset < (0 + adjStartScaled)) {
       image(clefs, 0, 0, clefs.width*zoom, clefs.height*zoom);
     }
-}
-  
+  }
+
 
   // Draw ID markers
   for (int i = 0, j = 0; i < score.width; i+=500, j++) {
     textAlign(LEFT, TOP);
     textSize(32);
     fill(0, 102, 153);
-    if (i != 0) {
-        text(j, (round(i*zoom)+localScoreX-editOffset), 0);
-    }
+    text(j, (round(i*zoom)+localScoreX-editOffset+playheadPos), 0);
   }
 
   // Draw playhead and IP
@@ -544,7 +542,7 @@ void drawFunctionBegin(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.noStroke();
   annotationsCanvas.fill(c);
-    annotationsCanvas.ellipse((mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), (mouseY/zoom), penSize, penSize);
+  annotationsCanvas.ellipse((mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), (mouseY/zoom), penSize, penSize);
   annotationsCanvas.endDraw();
 }
 
@@ -552,7 +550,7 @@ void drawFunctionContinue(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.stroke(c);
   annotationsCanvas.strokeWeight(penSize);
-    annotationsCanvas.line((pmouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), (pmouseY/zoom), (mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), (mouseY/zoom));
+  annotationsCanvas.line((pmouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), (pmouseY/zoom), (mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), (mouseY/zoom));
   annotationsCanvas.endDraw();
 }
 
