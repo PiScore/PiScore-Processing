@@ -13,7 +13,7 @@ Setup suggestions for Raspberry Pi 3
     psk="YOUR_PASSWORD"
   }
 
-- sudo reboot, login and check connection with ping -c3 http://www.google.com
+- sudo reboot, login and check connection with ping -c3 http://<WEBSITE>
   NOTE: may require a couple of minutes to find connection after reboot
 
 - To flip screen 180 degrees:
@@ -78,6 +78,7 @@ Setup suggestions for Raspberry Pi 3
 - nano ~/.profile
   Add to end of file:
   clear
+
   ifconfig | grep 'inet addr:'
   sleep 2
   echo ""
