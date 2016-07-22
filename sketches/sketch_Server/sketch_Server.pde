@@ -185,12 +185,6 @@ void draw() {
     if (!editMode) {
       localScoreXadj = scoreXScaled+preRollOffsetScaled;
     }
-    image(score, localScoreXadj-editOffset, 0, score.width*zoom, score.height*zoom);
-    image(annotationsCanvas, localScoreXadj-editOffset, 0, annotationsCanvas.width*zoom, annotationsCanvas.height*zoom);
-
-    if (localScoreXadj-editOffset < 0) {
-      image(clefs, 0, 0, clefs.width*zoom, clefs.height*zoom);
-    }
   } else {
     if (!editMode) {
       // Packages can get lost, concatenated or scrambled in transit.
@@ -199,24 +193,26 @@ void draw() {
         receiveData = scoreClient.readString();
         if (receiveData.charAt(0) == '+' | receiveData.charAt(0) == '-') {
           if (receiveData.length() == 7) {
-            receiveInt = int(receiveData);
+            localScoreXadj = int(receiveData);
+            localScoreXadj = round(localScoreXadj * zoom);
           } else {
             if (receiveData.length() > 7) {
-              receiveInt = int(receiveData.substring(0, 7));
+              localScoreXadj = int(receiveData.substring(0, 7));
+              localScoreXadj = round(localScoreXadj * zoom);
             }
           }
         }
       }
     }
-
-    image(score, receiveInt, 0);
-
-    image(annotationsCanvas, receiveInt, 0);
-
-    if (receiveInt < 0) {
-      image(clefs, 0, 0);
-    }
   }
+    
+    image(score, localScoreXadj-editOffset, 0, score.width*zoom, score.height*zoom);
+    image(annotationsCanvas, localScoreXadj-editOffset, 0, annotationsCanvas.width*zoom, annotationsCanvas.height*zoom);
+
+    if (localScoreXadj-editOffset < 0) {
+      image(clefs, 0, 0, clefs.width*zoom, clefs.height*zoom);
+    }
+  
 
   // Draw ID markers
   for (int i = 0, j = 0; i < score.width; i+=500, j++) {
@@ -224,11 +220,7 @@ void draw() {
     textSize(32);
     fill(0, 102, 153);
     if (i != 0) {
-      if (!clientp) {
         text(j, (round(i*zoom)+localScoreXadj-editOffset), 0);
-      } else {
-        text(j, (round(i*zoom)+receiveInt), 0);
-      }
     }
   }
 
@@ -253,7 +245,7 @@ void draw() {
       noFill();
       stroke(255, 0, 0);
       strokeWeight(1);
-      ellipse(mouseX, mouseY, penSize, penSize);
+      ellipse(mouseX, mouseY, penSize*zoom, penSize*zoom);
     }
   }
 
@@ -325,7 +317,7 @@ void draw() {
     }
   }
 
-  if (!clientp) {
+  if (!clientp || editMode) {
     //PREV ICON
     noStroke();
     fill(buttonBGcolor);
@@ -480,7 +472,7 @@ void mousePressed() {
       }
     }
 
-    if (!clientp) {
+    if (!clientp || editMode) {
       //PREV
       if (mouseY > ((iconSize*3)+(iconPadding*7)) && mouseY < ((iconSize*4)+(iconPadding*7))) {
         if (editMode) {
@@ -512,7 +504,7 @@ void mousePressed() {
   }
 
 
-  if (mouseX > clefs.width && mouseX < (width-iconSize-(iconPadding*2))) {
+  if (mouseX > ((clefs.width)*zoom) && mouseX < (width-iconSize-(iconPadding*2))) {
     if (editMode) {
       if (!annotationsChangedp) {
         // Notify when annotations are made
@@ -559,11 +551,7 @@ void drawFunctionBegin(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.noStroke();
   annotationsCanvas.fill(c);
-  if (!clientp) {
-    annotationsCanvas.ellipse(mouseX-localScoreXadj+editOffset, mouseY, penSize, penSize);
-  } else {
-    annotationsCanvas.ellipse(mouseX-receiveInt, mouseY, penSize, penSize);
-  }
+    annotationsCanvas.ellipse((mouseX/zoom)-((localScoreXadj/zoom)+editOffsetScaled), (mouseY/zoom), penSize, penSize);
   annotationsCanvas.endDraw();
 }
 
@@ -571,11 +559,7 @@ void drawFunctionContinue(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.stroke(c);
   annotationsCanvas.strokeWeight(penSize);
-  if (!clientp) {
-    annotationsCanvas.line((pmouseX/zoom)-((localScoreXadj/zoom)+(editOffsetScaled*zoom)), (pmouseY/zoom), (mouseX/zoom)-((localScoreXadj/zoom)+editOffsetScaled), (mouseY/zoom));
-  } else {
-    annotationsCanvas.line(pmouseX-receiveInt, pmouseY, mouseX-receiveInt, mouseY);
-  }
+    annotationsCanvas.line((pmouseX/zoom)-((localScoreXadj/zoom)+(editOffsetScaled/zoom)), (pmouseY/zoom), (mouseX/zoom)-((localScoreXadj/zoom)+editOffsetScaled), (mouseY/zoom));
   annotationsCanvas.endDraw();
 }
 
@@ -583,12 +567,7 @@ void drawFunctionEnd(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.stroke(c);
   annotationsCanvas.strokeWeight(penSize);
-  if (!clientp) {
-    annotationsCanvas.line(pmouseX-localScoreXadj+editOffset, pmouseY, mouseX-localScoreXadj+editOffset, mouseY);
-  } else {
-    annotationsCanvas.line(pmouseX-receiveInt, pmouseY, mouseX-receiveInt, mouseY);
-  }
-
+    annotationsCanvas.line((pmouseX/zoom)-((localScoreXadj/zoom)+(editOffsetScaled/zoom)), (pmouseY/zoom), (mouseX/zoom)-((localScoreXadj/zoom)+editOffsetScaled), (mouseY/zoom));
   annotationsCanvas.endDraw();
 }
 
