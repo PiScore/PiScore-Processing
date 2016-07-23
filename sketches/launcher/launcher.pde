@@ -17,8 +17,8 @@
 //You should have received a copy of the GNU General Public License
 //along with PiScore.  If not, see <http://www.gnu.org/licenses/>.
 //
-//Included musical scores are not licensed under GPLv3 and may be
-//protected by Copyright.
+//Included musical scores are not issued with any license and may
+//be protected by Copyright.
 
 String rootPath;
 

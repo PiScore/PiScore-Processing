@@ -67,7 +67,7 @@ Setup suggestions for Raspberry Pi 3
   processing
   - Uncheck welcome message on startup
   - File -> Preferences
-    - Check "Increase maximum available memory to:" 512MB -> Enter to save
+    - Check "Increase maximum available memory to:" 768MB -> Enter to save
   - Quit Processing
 
 - cp /etc/X11/xinit/xinitrc ~/.xinitrc
