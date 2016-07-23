@@ -116,7 +116,7 @@ void setup() {
   
   rootPath = sketchPath("../../");
 
-  serverIpAddrPath = sketchPath("../../etc/server-ip-addr.txt");
+  serverIpAddrPath = sketchPath(rootPath + "etc/server-ip-addr.txt");
   serverIpAddrFile = new File(serverIpAddrPath);
   if (serverIpAddrFile.exists()) {
     serverIpAddrArray = loadStrings(serverIpAddrPath);
@@ -126,7 +126,7 @@ void setup() {
   }
   serverIpAddr = serverIpAddrArray[0];
 
-  vOffsetPath = sketchPath("../../etc/voffset.txt");
+  vOffsetPath = sketchPath(rootPath + "etc/voffset.txt");
   vOffsetFile = new File(vOffsetPath);
   if (vOffsetFile.exists()) {
     vOffsetArray = loadStrings(vOffsetPath);
@@ -136,7 +136,7 @@ void setup() {
   }
   vOffset = int(vOffsetArray[0]);
 
-  clientpPath = sketchPath("../../etc/clientp.txt");
+  clientpPath = sketchPath(rootPath + "etc/clientp.txt");
   clientpFile = new File(clientpPath);
   if (clientpFile.exists()) {
     clientpArray = loadStrings(clientpPath);
@@ -191,7 +191,7 @@ void setup() {
 
   screenScale = (height/float(score.height));
 
-  zoomPath = sketchPath("../../etc/zoom.txt");
+  zoomPath = sketchPath(rootPath + "etc/zoom.txt");
   zoomFile = new File(zoomPath);
   if (zoomFile.exists()) {
     zoomArray = loadStrings(zoomPath);
@@ -448,7 +448,7 @@ void draw() {
   // Redraw
   if (frameCounter < totalFrames) {
     if (export) {
-      saveFrame("../../export/frames/score#######.png");
+      saveFrame(rootPath + "etc/export/frames/score#######.png");
     }
   } else {
     if (export) {

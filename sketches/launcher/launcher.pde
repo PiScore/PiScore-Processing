@@ -72,7 +72,7 @@ void setup () {
 
   rootPath = sketchPath("../../");
 
-  serverIpAddrPath = sketchPath("../../etc/server-ip-addr.txt");
+  serverIpAddrPath = sketchPath(rootPath + "etc/server-ip-addr.txt");
   serverIpAddrFile = new File(serverIpAddrPath);
   if (serverIpAddrFile.exists()) {
     serverIpAddrArray = loadStrings(serverIpAddrPath);
@@ -83,7 +83,7 @@ void setup () {
   serverIpAddr = serverIpAddrArray[0];
   serverIpAddrTemp = serverIpAddr + "_";
 
-  clientpPath = sketchPath("../../etc/clientp.txt");
+  clientpPath = sketchPath(rootPath + "etc/clientp.txt");
   clientpFile = new File(clientpPath);
   if (clientpFile.exists()) {
     clientpArray = loadStrings(clientpPath);
@@ -94,7 +94,7 @@ void setup () {
   clientp = boolean(clientpArray[0]);
 
   launch[0] = "/usr/local/bin/processing-java";
-  launch[1] = "--sketch=" + rootPath + "sketches/sketch_Server/";
+  launch[1] = "--sketch=" + rootPath + "sketches/PiScore/";
   launch[2] = "--run";
 
   deleteAnnotations[0] = "mv";
