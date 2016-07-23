@@ -18,8 +18,9 @@ You should have received a copy of the GNU General Public License
 along with PiScore.  If not, see <http://www.gnu.org/licenses/>.
 
 GUI icons are licensed from Sebastien Gabriel under the terms of
-Creative Commons Attribution 3.0 Unported License. See "LICENSE"
-for more details and list of modifications.
+Creative Commons Attribution 3.0 Unported License. Changes to the
+original files include modifying colour, adding backgrounds and
+separation of individual graphical elements.
 
 Included musical scores are not issued with any license and may
 be protected by Copyright.
