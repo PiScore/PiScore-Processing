@@ -73,6 +73,7 @@ final int iconPadding = 10;
 
 int scoreX;
 int scoreXScaled;
+int editOffsetValue;
 int editOffset = 0;
 int editOffsetScaled = 0;
 int scoreXadj;
@@ -82,6 +83,8 @@ int playheadPos;
 int adjStart;
 int adjStartScaled;
 int adjEnd;
+
+int smoothScroller = 0;
 
 int frameCounter = 0;
 boolean playingp = false; // playingp is only kept updated when !clientp
@@ -157,6 +160,8 @@ void setup() {
   adjStartScaled = round((start*zoom) - playheadPos);
   adjEnd = (end - playheadPos);
 
+  editOffsetValue = round(((width)/5*3));
+
   if (export) {
     playingp = true;
     incrValue  = 1;
@@ -196,8 +201,22 @@ void draw() {
     }
   }
 
-  image(score, localScoreX-editOffset+playheadPos-(start*zoom), 0, score.width*zoom, score.height*zoom);
-  image(annotationsCanvas, localScoreX-editOffset+playheadPos-(start*zoom), 0, annotationsCanvas.width*zoom, annotationsCanvas.height*zoom);
+  if (smoothScroller != 0) {
+    int pxPerFrame = round((editOffsetValue/(fps*0.1)));
+    if (abs(smoothScroller) < pxPerFrame) {
+      smoothScroller = 0;
+    } else {
+      if (smoothScroller > 0) {
+        smoothScroller = smoothScroller - pxPerFrame;
+      }
+      if (smoothScroller < 0) {
+        smoothScroller = smoothScroller + pxPerFrame;
+      }
+    }
+  }
+
+  image(score, localScoreX-(editOffset-smoothScroller)+playheadPos-(start*zoom), 0, score.width*zoom, score.height*zoom);
+  image(annotationsCanvas, localScoreX-(editOffset-smoothScroller)+playheadPos-(start*zoom), 0, annotationsCanvas.width*zoom, annotationsCanvas.height*zoom);
 
   if (((clefs.width)*zoom) < playheadPos) {
     if (localScoreX-editOffset < (0 + adjStartScaled)) {
@@ -208,10 +227,10 @@ void draw() {
 
   // Draw ID markers
   for (int i = 0, j = 0; i < score.width; i+=500, j++) {
-    textAlign(LEFT, TOP);
+    textAlign(CENTER, TOP);
     textSize(32);
     fill(0, 102, 153);
-    text(j, (round(i*zoom)+localScoreX-editOffset+playheadPos), 0);
+    text(j, (round(i*zoom)+localScoreX-(editOffset-smoothScroller)+playheadPos), 0);
   }
 
   // Draw playhead and IP
@@ -387,6 +406,7 @@ int calcOffset(int frame) {
 }
 
 void mousePressed() {
+  if (smoothScroller == 0) {
   //EXIT DIALOG
   if (exitDialog) {
     if ((mouseY > height-iconSize-iconPadding) && (mouseY < (height-iconPadding))) {
@@ -415,6 +435,7 @@ void mousePressed() {
           editMode = false;
           editOffset = 0;
           editOffsetScaled = 0;
+          smoothScroller = 0;
           if (annotationsChangedp) {
             annotationsChangedp = false; // reset
             annotationsCanvas.save("../../files/annotations.png");
@@ -467,19 +488,21 @@ void mousePressed() {
       //PREV
       if (mouseY > ((iconSize*3)+(iconPadding*7)) && mouseY < ((iconSize*4)+(iconPadding*7))) {
         if (editMode) {
-          editOffset = editOffset - round(((width)/5*3));
+          editOffset = editOffset - editOffsetValue;
+          smoothScroller = smoothScroller - editOffsetValue;
           editOffsetScaled = round(editOffset/zoom);
         } else {
-          frameCounter = frameCounter - round(((width)/5*3));
+          frameCounter = frameCounter - editOffsetValue;
         }
       }
       //NEXT
       if (mouseY > ((iconSize*4)+(iconPadding*9)) && mouseY < ((iconSize*5)+(iconPadding*9))) {
         if (editMode) {
-          editOffset = editOffset + round(((width)/5*3));
+          editOffset = editOffset + editOffsetValue;
+          smoothScroller = smoothScroller + editOffsetValue;
           editOffsetScaled = round(editOffset/zoom);
         } else {
-          frameCounter = frameCounter + round(((width)/5*3));
+          frameCounter = frameCounter + editOffsetValue;
         }
       }
     }
@@ -509,6 +532,7 @@ void mousePressed() {
       }
     }
   }
+}
 }
 
 
