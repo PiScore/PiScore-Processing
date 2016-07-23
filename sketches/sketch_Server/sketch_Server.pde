@@ -85,12 +85,11 @@ int adjStartScaled;
 int adjEnd;
 
 int smoothScroller = 0;
-
 int frameCounter = 0;
 boolean playingp = false; // playingp is only kept updated when !clientp
 int incrValue = 0;
 
-float zoom = 1.0;
+float zoom = 2.0;
 
 void setup() {
   frameRate(fps);
@@ -492,7 +491,7 @@ void mousePressed() {
           smoothScroller = smoothScroller - editOffsetValue;
           editOffsetScaled = round(editOffset/zoom);
         } else {
-          frameCounter = frameCounter - editOffsetValue;
+          frameCounter = frameCounter - (fps*10);
         }
       }
       //NEXT
@@ -502,7 +501,7 @@ void mousePressed() {
           smoothScroller = smoothScroller + editOffsetValue;
           editOffsetScaled = round(editOffset/zoom);
         } else {
-          frameCounter = frameCounter + editOffsetValue;
+          frameCounter = frameCounter + (fps*10);
         }
       }
     }
