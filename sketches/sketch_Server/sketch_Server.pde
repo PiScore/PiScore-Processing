@@ -49,6 +49,11 @@ String vOffsetPath;
 File vOffsetFile;
 int vOffset;
 
+String[] zoomArray = { null };
+String zoomPath;
+File zoomFile;
+float zoom;
+
 // To export frames set export to true
 final boolean export = false;
 
@@ -75,6 +80,7 @@ final color buttonBGcolor = color(255, 255, 255);
 final color buttonActiveColor = color(255, 0, 0);
 final int iconSize = 50;
 final int iconPadding = 10;
+int iconPanelWidth;
 
 int scoreX;
 int scoreXScaled;
@@ -93,8 +99,6 @@ int smoothScroller = 0;
 int frameCounter = 0;
 boolean playingp = false; // playingp is only kept updated when !clientp
 int incrValue = 0;
-
-float zoom = 2.0;
 
 void setup() {
   frameRate(fps);
@@ -120,6 +124,16 @@ void setup() {
     saveStrings(vOffsetPath, vOffsetArray);
   }
   vOffset = int(vOffsetArray[0]);
+  
+  zoomPath = sketchPath("../../etc/zoom.txt");
+  zoomFile = new File(zoomPath);
+  if (zoomFile.exists()) {
+    zoomArray = loadStrings(zoomPath);
+  } else {
+    zoomArray[0] = "1.0";
+    saveStrings(zoomPath, zoomArray);
+  }
+  zoom = float(zoomArray[0]);
 
   clientpPath = sketchPath("../../etc/clientp.txt");
   clientpFile = new File(clientpPath);
@@ -168,6 +182,8 @@ void setup() {
   prevIcon = loadImage("../../files/gui/rewind-double-arrow-outlined-circular-button.png");
   nextIcon = loadImage("../../files/gui/fast-forward-thin-outlined-symbol-in-circular-button.png");
 
+  iconPanelWidth = (iconSize+(iconPadding*2));
+
   playheadPos = round(width * 0.2);
 
   adjStart = (start - playheadPos);
@@ -184,6 +200,11 @@ void setup() {
 
 void draw() {
   background(255);
+  if (editMode) {
+    fill(0, 0, 0, 50);
+    rect(0, 0, (width-iconPanelWidth), height);
+  }
+  
   cursor(CROSS);
   if (!clientp) {
     // Replace "frameCounter" with frame number to inspect specific frame
@@ -264,7 +285,7 @@ void draw() {
 
   // penSize cursor
   if (editMode) {
-    if (mouseX < (width-iconSize-(iconPadding*2))) {
+    if (mouseX < (width-(iconSize+(iconPadding*2)))) {
       noFill();
       stroke(255, 0, 0);
       strokeWeight(1);
@@ -275,8 +296,8 @@ void draw() {
   //ICON PANEL
   if (editMode) {
     noStroke();
-    fill(0, 0, 0, 31);
-    rect((width-iconSize-(iconPadding*2)), 0, (iconSize+(iconPadding*2)), height);
+    fill(0, 0, 0, 50);
+    rect((width-iconPanelWidth), 0, iconPanelWidth, height);
   }
 
   //EDIT ICON
