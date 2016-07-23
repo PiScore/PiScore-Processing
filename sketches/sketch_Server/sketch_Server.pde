@@ -38,7 +38,6 @@ String annotationsPath;
 File annotationsFile;
 PGraphics annotationsCanvas;
 boolean annotationsChangedp = false; // Only save when annotationsChangedp
-boolean navigationChangedp = false;
 
 String[] clientpArray = { null };
 String clientpPath;
@@ -504,6 +503,8 @@ void mousePressed() {
             editOffset = 0;
             editOffsetScaled = 0;
             smoothScroller = 0;
+            saveStrings(zoomPath, zoomArray);
+            saveStrings(vOffsetPath, vOffsetArray);
             if (annotationsChangedp) {
               annotationsChangedp = false; // reset
               annotationsCanvas.save("../../files/annotations.png");
@@ -582,6 +583,8 @@ void mousePressed() {
             zoomDialog = true;
           } else {
             zoomDialog = false;
+            saveStrings(zoomPath, zoomArray);
+            saveStrings(vOffsetPath, vOffsetArray);
           }
         }
       }
@@ -590,7 +593,6 @@ void mousePressed() {
       if ((mouseY > (height-iconSize-iconPadding)) && mouseY < (height-iconPadding)) {
         if (!editMode) {
           exitDialog = true;
-          //exit();
         }
       }
     }
@@ -601,18 +603,15 @@ void mousePressed() {
         if (mouseY > ((iconSize*4)+(iconPadding*5)) && mouseY < ((iconSize*5)+(iconPadding*5))) {
           zoom = zoom + 0.5;
           zoomArray[0] = str(zoom);
-          saveStrings(zoomPath, zoomArray);
         }
         if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
           zoom = screenScale;
           zoomArray[0] = str(zoom);
-          saveStrings(zoomPath, zoomArray);
         }
         if (mouseY > ((iconSize*6)+(iconPadding*7)) && mouseY < ((iconSize*7)+(iconPadding*7))) {
           if (zoom > screenScale) {
             zoom = zoom - 0.5;
             zoomArray[0] = str(zoom);
-            saveStrings(zoomPath, zoomArray);
           }
         }
       }
@@ -620,17 +619,14 @@ void mousePressed() {
         if (mouseY > ((iconSize*4)+(iconPadding*5)) && mouseY < ((iconSize*5)+(iconPadding*5))) {
           vOffset = vOffset + round(50*zoom);
           vOffsetArray[0] = str(vOffset);
-          saveStrings(vOffsetPath, vOffsetArray);
         }
         if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
           vOffset = 0;
           vOffsetArray[0] = str(vOffset);
-          saveStrings(vOffsetPath, vOffsetArray);
         }
         if (mouseY > ((iconSize*6)+(iconPadding*7)) && mouseY < ((iconSize*7)+(iconPadding*7))) {
           vOffset = vOffset - round(50*zoom);
           vOffsetArray[0] = str(vOffset);
-          saveStrings(vOffsetPath, vOffsetArray);
         }
       }
     }
@@ -643,6 +639,8 @@ void mousePressed() {
           exitTimeout = 0;
         }
         if ((mouseX > (width-(iconSize*3)-(iconPadding*3))) && mouseX < (width-(iconSize*2)-(iconPadding*3))) {
+          saveStrings(zoomPath, zoomArray);
+          saveStrings(vOffsetPath, vOffsetArray);
           exit();
         }
       }
