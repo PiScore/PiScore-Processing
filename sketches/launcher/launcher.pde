@@ -23,7 +23,6 @@
 String rootPath;
 
 String[] launch = { null, null, null };
-String[] chooseProjectFolder = { null, null, null };
 String[] reboot = {"sudo", "reboot"};
 String[] shutdown = {"sudo", "shutdown", "now"};
 String[] deleteAnnotations = { null, null, null };
@@ -115,10 +114,6 @@ void setup () {
   launch[0] = "/usr/local/bin/processing-java";
   launch[1] = "--sketch=" + rootPath + "sketches/PiScore/";
   launch[2] = "--run";
-
-  chooseProjectFolder[0] = "/usr/local/bin/processing-java";
-  chooseProjectFolder[1] = "--sketch=" + rootPath + "sketches/folderSelector/";
-  chooseProjectFolder[2] = "--run";
 
   deleteAnnotations[0] = "mv";
   deleteAnnotations[1] = rootPath + "etc/annotations.png";
@@ -305,7 +300,7 @@ void mousePressed() {
           (mouseY > iconPadding) &
           (mouseY < (iconPadding+iconSize))
           ) {
-          exec(chooseProjectFolder);
+          selectFolder("Set project folder...", "folderSelected", new File(projectArray[0]));
         }
       }
       //Launch as Server checkbox
@@ -561,5 +556,12 @@ void mousePressed() {
         }
       }
     }
+  }
+}
+
+void folderSelected(File selection) {
+  if (selection != null) {
+    projectArray[0] = selection.getAbsolutePath();
+    saveStrings(projectPath, projectArray);
   }
 }
