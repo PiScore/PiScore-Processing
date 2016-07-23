@@ -60,11 +60,11 @@ final boolean export = false;
 
 final int fps = 25; // Frame rate
 
-final int start = 273;     // Enter px for first event here
-final int end = 44823;     // Enter px for "final barline" here
+final int start = 182;     // Enter px for first event here
+final int end = 29881;     // Enter px for "final barline" here
 final float dur = 540;     // Enter durata in seconds here
 final float preRoll = 8;   // Enter preroll in seconds here
-final int clefsStart = 129; // Enter px for start of clefs
+final int clefsStart = 86; // Enter px for start of clefs
 
 final float totalFrames = ceil(dur * fps); // float for use as divisor
 
@@ -185,11 +185,9 @@ void setup() {
   downIcon = loadImage("../../files/gui/down-rounded-button-outline.png");
   zeroIcon = loadImage("../../files/gui/zero-circular-graphics-button-outlined-symbol.png");
 
-println(height);
-println(score.height);
-screenScale = (height/float(score.height));
-println(screenScale);
-zoomPath = sketchPath("../../etc/zoom.txt");
+  screenScale = (height/float(score.height));
+
+  zoomPath = sketchPath("../../etc/zoom.txt");
   zoomFile = new File(zoomPath);
   if (zoomFile.exists()) {
     zoomArray = loadStrings(zoomPath);
@@ -408,19 +406,18 @@ void draw() {
     ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*4)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
     ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
     ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*6)+(iconPadding*7)+(iconSize*0.5)), iconSize, iconSize);
-    image(plusIcon,  (width-(iconSize*2)-(iconPadding*2)), ((iconSize*4)+(iconPadding*5)), iconSize, iconSize);
-    image(zeroIcon,  (width-(iconSize*2)-(iconPadding*2)), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
+    image(plusIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*4)+(iconPadding*5)), iconSize, iconSize);
+    image(zeroIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
     image(minusIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*6)+(iconPadding*7)), iconSize, iconSize);
     noStroke();
     fill(255);
     ellipse((width-(iconSize*3)-(iconPadding*3)+(iconSize*0.5)), ((iconSize*4)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
     ellipse((width-(iconSize*3)-(iconPadding*3)+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
     ellipse((width-(iconSize*3)-(iconPadding*3)+(iconSize*0.5)), ((iconSize*6)+(iconPadding*7)+(iconSize*0.5)), iconSize, iconSize);
-    image(upIcon,   (width-(iconSize*3)-(iconPadding*3)), ((iconSize*4)+(iconPadding*5)), iconSize, iconSize);
+    image(upIcon, (width-(iconSize*3)-(iconPadding*3)), ((iconSize*4)+(iconPadding*5)), iconSize, iconSize);
     image(zeroIcon, (width-(iconSize*3)-(iconPadding*3)), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
     image(downIcon, (width-(iconSize*3)-(iconPadding*3)), ((iconSize*6)+(iconPadding*7)), iconSize, iconSize);
-   
-}
+  }
 
   //EXIT ICON
   if (!editMode) {
