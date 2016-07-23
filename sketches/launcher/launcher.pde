@@ -27,13 +27,15 @@ String[] reboot = {"sudo", "reboot"};
 String[] shutdown = {"sudo", "shutdown", "now"};
 String[] deleteAnnotations = { null, null, null };
 
+String[] licenseText;
+
 String annotationsPath;
 File annotationsFile;
 String backupPath;
 String backupFile;
 
-PImage bLaunch, bReboot, bShutdown, bTerminal, bDelete, bCheck, bCross, bEmpty, bEdit, bEditSelected;
-PImage tReboot, tShutdown, tTerminal, tDelete;
+PImage bLaunch, bReboot, bShutdown, bTerminal, bDelete, bCheck, bCross, bEmpty, bEdit, bEditSelected, bAbout;
+PImage tReboot, tShutdown, tTerminal, tDelete, tAbout;
 
 String[] numpadArray = { "7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ".", "\u2190" };
 String[] numpadDecisionArray = { "Cancel", "Confirm" };
@@ -56,6 +58,7 @@ String serverIpAddrTemp;
 boolean loadingp = false;
 boolean deletep = false;
 boolean ipEditp = false;
+boolean aboutp = false;
 int deleteTimeout = 0;
 
 String currentTime;
@@ -75,6 +78,8 @@ void setup () {
   cursor(HAND);
 
   rootPath = sketchPath("../../");
+  
+  licenseText = loadStrings(rootPath + "LICENSE-SHORT");
   
   projectPath = rootPath + "etc/project-path.txt";
   projectFile = new File(projectPath);
@@ -125,11 +130,13 @@ void setup () {
   bEmpty = loadImage(rootPath + "gui/white-50px-empty-circular-button.png");
   bEdit = loadImage(rootPath + "gui/white-50px-edit-pencil-outline-in-circular-button.png");
   bEditSelected = loadImage(rootPath + "gui/white-selected-50px-edit-pencil-outline-in-circular-button.png");
-
+  bAbout = loadImage(rootPath + "gui/white-50px-arroba-outlined-circular-button.png");
+  
   tReboot = loadImage(rootPath + "gui/white-reboot.png");
   tShutdown = loadImage(rootPath + "gui/white-shutdown.png");
   tTerminal = loadImage(rootPath + "gui/white-terminal.png");
   tDelete = loadImage(rootPath + "gui/white-delete.png");
+  tAbout = loadImage(rootPath + "gui/white-about.png");
 }
 
 void draw() {
@@ -137,12 +144,7 @@ void draw() {
 
   if (!loadingp) {
     fill(255);
-    textAlign(CENTER, TOP);
-    textSize(20);
-    text("Welcome to", (width/2), (iconSize+(iconPadding*2)));
-    textSize(32);
-    text("PiScore", (width/2), (iconSize+(iconPadding*2)+24));
-
+    
     if (!ipEditp) {
       image(bLaunch, ((width/2)-(iconSizeLarge*0.5)), ((height/2)-(iconSizeLarge*0.5)));
       fill(255);
@@ -212,7 +214,11 @@ void draw() {
         text(numpadArray[i], iconPadding+((iconPadding+iconSize)*(i % 3))+(iconSize*0.5), ((iconPadding*5)+(iconSize*3)+18+22+((iconSize+iconPadding)*(i/3))+(iconSize*0.5)));
       }
     }
-
+    
+    if (!ipEditp) {
+    image(bAbout, iconPadding, (height-iconSize-(tAbout.height)-(textPadding*2)));
+    image(tAbout, iconPadding, (height-textPadding-tAbout.height));
+    }
 
     image(bTerminal, ((width/2)-(iconSize*0.5)-iconSize-(iconPadding*2)), (height-iconSize-(tTerminal.height)-(textPadding*2)));
     image(tTerminal, ((width/2)-(iconSize*0.5)-iconSize-(iconPadding*2)), (height-textPadding-tTerminal.height));
@@ -237,6 +243,21 @@ void draw() {
       }
     }
   }
+  
+  if (aboutp) {
+    noStroke();
+    fill(color(0, 90, 158)); 
+    rect(0, 0, width, height);
+    fill(255);
+    textAlign(CENTER, CENTER);
+        textSize(20);
+        for ( int i = 0; i < licenseText.length; i++) {
+        text(licenseText[i], 0, ((i-((licenseText.length)*0.5))*(textPadding+20)), width, height);
+        }
+        textAlign(CENTER, BOTTOM);
+        text("Press anywhere to return...", width/2, height-textPadding);
+    
+  }
 
   if (loadingp) {
     if (loadingCounter < (fps * 15)) { //Timeout
@@ -256,6 +277,9 @@ void draw() {
 
 void mousePressed() {
   if (!loadingp) {
+    if (aboutp) {
+      aboutp = false;
+    } else {
     //Launch
     if (!ipEditp) {
       if (
@@ -439,13 +463,20 @@ void mousePressed() {
         serverIpAddrTemp = serverIpAddrTemp.substring(0, serverIpAddrTemp.length()-2);
         serverIpAddrTemp = serverIpAddrTemp + "_";
       }
-      
-      
-      
     }
 
 
-
+//About
+    if (!ipEditp) {
+      if (
+      (mouseX > iconPadding) &
+      (mouseX < (iconPadding+iconSize)) &
+      (mouseY > (height-iconSize-(tAbout.height)-(textPadding*2))) &
+      (mouseY < (height-iconSize-(tAbout.height)-(textPadding*2))+iconSize)
+      ) {
+      aboutp = true;
+    }
+    }
     //Terminal
     if (
       (mouseX > ((width/2)-(iconSize*0.5)-iconSize-(iconPadding*2))) &
@@ -514,4 +545,5 @@ void mousePressed() {
       }
     }
   }
+}
 }

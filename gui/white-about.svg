@@ -15,8 +15,8 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="white-reboot.svg"
-   inkscape:export-filename="C:\Users\david\Desktop\white-reboot.png"
+   sodipodi:docname="white-about.svg"
+   inkscape:export-filename="C:\Users\david\Desktop\white-about.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -29,7 +29,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="4.7714286"
-     inkscape:cx="43.43416"
+     inkscape:cx="12.101825"
      inkscape:cy="18.571429"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -60,13 +60,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:7.50000048px;line-height:100%;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;letter-spacing:-0.17000002px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
-       x="24.732666"
+       x="25.036621"
        y="1046.1472"
        id="text3340"
        sodipodi:linespacing="100%"><tspan
          sodipodi:role="line"
-         x="24.647667"
+         x="24.951622"
          y="1046.1472"
-         id="tspan3344">Reboot</tspan></text>
+         id="tspan3344">About</tspan></text>
   </g>
 </svg>
