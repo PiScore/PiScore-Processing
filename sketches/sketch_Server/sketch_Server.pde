@@ -491,7 +491,7 @@ void mousePressed() {
           smoothScroller = smoothScroller - editOffsetValue;
           editOffsetScaled = round(editOffset/zoom);
         } else {
-          frameCounter = frameCounter - (fps*10);
+          frameCounter = frameCounter - (fps*5);
         }
       }
       //NEXT
@@ -501,7 +501,7 @@ void mousePressed() {
           smoothScroller = smoothScroller + editOffsetValue;
           editOffsetScaled = round(editOffset/zoom);
         } else {
-          frameCounter = frameCounter + (fps*10);
+          frameCounter = frameCounter + (fps*5);
         }
       }
     }
