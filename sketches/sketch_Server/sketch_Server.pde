@@ -402,10 +402,19 @@ void draw() {
     ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*4)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
     ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
     ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*6)+(iconPadding*7)+(iconSize*0.5)), iconSize, iconSize);
-    image(plusIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*4)+(iconPadding*5)), iconSize, iconSize);
-    image(zeroIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
+    image(plusIcon,  (width-(iconSize*2)-(iconPadding*2)), ((iconSize*4)+(iconPadding*5)), iconSize, iconSize);
+    image(zeroIcon,  (width-(iconSize*2)-(iconPadding*2)), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
     image(minusIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*6)+(iconPadding*7)), iconSize, iconSize);
-  }
+    noStroke();
+    fill(255);
+    ellipse((width-(iconSize*3)-(iconPadding*3)+(iconSize*0.5)), ((iconSize*4)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
+    ellipse((width-(iconSize*3)-(iconPadding*3)+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
+    ellipse((width-(iconSize*3)-(iconPadding*3)+(iconSize*0.5)), ((iconSize*6)+(iconPadding*7)+(iconSize*0.5)), iconSize, iconSize);
+    image(upIcon,   (width-(iconSize*3)-(iconPadding*3)), ((iconSize*4)+(iconPadding*5)), iconSize, iconSize);
+    image(zeroIcon, (width-(iconSize*3)-(iconPadding*3)), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
+    image(downIcon, (width-(iconSize*3)-(iconPadding*3)), ((iconSize*6)+(iconPadding*7)), iconSize, iconSize);
+   
+}
 
   //EXIT ICON
   if (!editMode) {
@@ -602,6 +611,23 @@ void mousePressed() {
             zoomArray[0] = str(zoom);
             saveStrings(zoomPath, zoomArray);
           }
+        }
+      }
+      if ((mouseX > (width-(iconSize*3)-(iconPadding*3))) && mouseX < (width-(iconSize*2)-(iconPadding*3))) {
+        if (mouseY > ((iconSize*4)+(iconPadding*5)) && mouseY < ((iconSize*5)+(iconPadding*5))) {
+          vOffset = vOffset + 50;
+          vOffsetArray[0] = str(vOffset);
+          saveStrings(vOffsetPath, vOffsetArray);
+        }
+        if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
+          vOffset = 0;
+          vOffsetArray[0] = str(vOffset);
+          saveStrings(vOffsetPath, vOffsetArray);
+        }
+        if (mouseY > ((iconSize*6)+(iconPadding*7)) && mouseY < ((iconSize*7)+(iconPadding*7))) {
+          vOffset = vOffset - 50;
+          vOffsetArray[0] = str(vOffset);
+          saveStrings(vOffsetPath, vOffsetArray);
         }
       }
     }
