@@ -59,9 +59,11 @@ final boolean export = false;
 
 final int fps = 25; // Frame rate
 
-final int start = 122;  // Enter px for first event here
-final int end = 19921;  // Enter px for "final barline" here
-final float dur = 540;    // Enter durata in seconds here
+final int start = 122;     // Enter px for first event here
+final int end = 19921;     // Enter px for "final barline" here
+final float dur = 540;     // Enter durata in seconds here
+final float preRoll = 8;   // Enter preroll in seconds here
+final int clefsStart = 56; // Enter px for start of clefs
 
 final float totalFrames = ceil(dur * fps); // float for use as divisor
 
@@ -96,7 +98,7 @@ int adjStartScaled;
 int adjEnd;
 
 int smoothScroller = 0;
-int frameCounter = 0;
+int frameCounter = round(-(preRoll*fps));
 boolean playingp = false; // playingp is only kept updated when !clientp
 int incrValue = 0;
 
@@ -250,12 +252,12 @@ void draw() {
     }
   }
 
-  image(score, localScoreX-(editOffset-smoothScroller)+playheadPos-(start*zoom), vOffset, (score.width)*zoom, (score.height)*zoom);
+  image(score, localScoreX-(editOffset-smoothScroller)+playheadPos-(start*zoom), vOffset, round((score.width)*zoom), (score.height)*zoom);
   image(annotationsCanvas, localScoreX-(editOffset-smoothScroller)+playheadPos-(start*zoom), vOffset, (annotationsCanvas.width)*zoom, (annotationsCanvas.height)*zoom);
 
-  if (((clefs.width)*zoom) < playheadPos) {
-    if (localScoreX-editOffset < (0 + adjStartScaled)) {
-      image(clefs, 0, vOffset, (clefs.width)*zoom, (clefs.height)*zoom);
+  if ((((clefs.width)*zoom)-(clefsStart*zoom)) < playheadPos) {
+    if (localScoreX-editOffset < (0 + adjStartScaled - (clefsStart*zoom))) {
+      image(clefs, (clefsStart*(-1)*zoom), vOffset, (clefs.width)*zoom, (clefs.height)*zoom);
     }
   }
 
