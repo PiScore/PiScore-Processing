@@ -102,21 +102,21 @@ void setup () {
 
   backupPath = rootPath + "files/annotationBackup/";
 
-  bLaunch = loadImage("./gui/white-100px-flash-outlined-thin-circular-button.png");
-  bReboot = loadImage("./gui/circular-arrow-in-rounded-button.png");
-  bShutdown = loadImage("./gui/power-outlined-circular-button.png");
-  bTerminal = loadImage("./gui/monitor-circular-thin-button.png");
-  bDelete = loadImage("./gui/trash-can-circular-outlined-button.png");
-  bCheck = loadImage("./gui/white-50px-checkmark-outlined-circular-button.png");
-  bCross = loadImage("./gui/close-cross-thin-circular-button.png");
-  bEmpty = loadImage("./gui/white-50px-empty-circular-button.png");
-  bEdit = loadImage("./gui/white-50px-edit-pencil-outline-in-circular-button.png");
-  bEditSelected = loadImage("./gui/selected-white-50px-edit-pencil-outline-in-circular-button.png");
+  bLaunch = loadImage(rootPath + "gui/white-100px-flash-outlined-thin-circular-button.png");
+  bReboot = loadImage(rootPath + "gui/white-circular-arrow-in-rounded-button.png");
+  bShutdown = loadImage(rootPath + "gui/white-power-outlined-circular-button.png");
+  bTerminal = loadImage(rootPath + "gui/white-monitor-circular-thin-button.png");
+  bDelete = loadImage(rootPath + "gui/white-trash-can-circular-outlined-button.png");
+  bCheck = loadImage(rootPath + "gui/white-50px-checkmark-outlined-circular-button.png");
+  bCross = loadImage(rootPath + "gui/white-close-cross-thin-circular-button.png");
+  bEmpty = loadImage(rootPath + "gui/white-50px-empty-circular-button.png");
+  bEdit = loadImage(rootPath + "gui/white-50px-edit-pencil-outline-in-circular-button.png");
+  bEditSelected = loadImage(rootPath + "gui/white-selected-50px-edit-pencil-outline-in-circular-button.png");
 
-  tReboot = loadImage("./guiText/reboot.png");
-  tShutdown = loadImage("./guiText/shutdown.png");
-  tTerminal = loadImage("./guiText/terminal.png");
-  tDelete = loadImage("./guiText/delete.png");
+  tReboot = loadImage(rootPath + "gui/white-reboot.png");
+  tShutdown = loadImage(rootPath + "gui/white-shutdown.png");
+  tTerminal = loadImage(rootPath + "gui/white-terminal.png");
+  tDelete = loadImage(rootPath + "gui/white-delete.png");
 }
 
 void draw() {

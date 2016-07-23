@@ -24,6 +24,8 @@ import processing.net.*;
 Server scoreServer;
 Client scoreClient;
 
+String rootPath;
+
 String[] serverIpAddrArray = { null };
 String serverIpAddrPath;
 File serverIpAddrFile;
@@ -111,6 +113,8 @@ void setup() {
   frameRate(fps);
   size(800, 480);
   noSmooth();
+  
+  rootPath = sketchPath("../../");
 
   serverIpAddrPath = sketchPath("../../etc/server-ip-addr.txt");
   serverIpAddrFile = new File(serverIpAddrPath);
@@ -167,23 +171,23 @@ void setup() {
     annotationsCanvas.beginDraw();
     annotationsCanvas.endDraw();
   }
-  editIcon = loadImage("../../files/gui/edit-pencil-outline-in-circular-button.png");
-  resetIcon = loadImage("../../files/gui/two-arrows-in-circular-outlined-interface-button.png");
-  pencilIcon = loadImage("../../files/gui/pencil-outline-in-circular-button.png");
-  eraserIcon = loadImage("../../files/gui/edit-eraser-outline-in-circular-button.png");
-  exitIcon = loadImage("../../files/gui/upload-up-arrow-outline-in-circular-button.png");
-  exitYes = loadImage("../../files/gui/checkmark-outlined-circular-button.png");
-  exitNo = loadImage("../../files/gui/close-cross-thin-circular-button.png");
-  playIcon = loadImage("../../files/gui/play-rounded-button-outline.png");
-  pauseIcon = loadImage("../../files/gui/pause-thin-rounded-button.png");
-  prevIcon = loadImage("../../files/gui/rewind-double-arrow-outlined-circular-button.png");
-  nextIcon = loadImage("../../files/gui/fast-forward-thin-outlined-symbol-in-circular-button.png");
-  plusIcon = loadImage("../../files/gui/add-circular-button-thin-symbol.png");
-  minusIcon = loadImage("../../files/gui/minus-sign-in-a-circle.png");
-  zoomIcon = loadImage("../../files/gui/magnifier-search-interface-circular-button.png");
-  upIcon = loadImage("../../files/gui/up-rounded-button-outline.png");
-  downIcon = loadImage("../../files/gui/down-rounded-button-outline.png");
-  zeroIcon = loadImage("../../files/gui/zero-circular-graphics-button-outlined-symbol.png");
+  editIcon = loadImage(rootPath + "gui/black-edit-pencil-outline-in-circular-button.png");
+  resetIcon = loadImage(rootPath + "gui/black-two-arrows-in-circular-outlined-interface-button.png");
+  pencilIcon = loadImage(rootPath + "gui/black-pencil-outline-in-circular-button.png");
+  eraserIcon = loadImage(rootPath + "gui/black-edit-eraser-outline-in-circular-button.png");
+  exitIcon = loadImage(rootPath + "gui/black-upload-up-arrow-outline-in-circular-button.png");
+  exitYes = loadImage(rootPath + "gui/black-checkmark-outlined-circular-button.png");
+  exitNo = loadImage(rootPath + "gui/black-close-cross-thin-circular-button.png");
+  playIcon = loadImage(rootPath + "gui/black-play-rounded-button-outline.png");
+  pauseIcon = loadImage(rootPath + "gui/black-pause-thin-rounded-button.png");
+  prevIcon = loadImage(rootPath + "gui/black-rewind-double-arrow-outlined-circular-button.png");
+  nextIcon = loadImage(rootPath + "gui/black-fast-forward-thin-outlined-symbol-in-circular-button.png");
+  plusIcon = loadImage(rootPath + "gui/black-add-circular-button-thin-symbol.png");
+  minusIcon = loadImage(rootPath + "gui/black-minus-sign-in-a-circle.png");
+  zoomIcon = loadImage(rootPath + "gui/black-magnifier-search-interface-circular-button.png");
+  upIcon = loadImage(rootPath + "gui/black-up-rounded-button-outline.png");
+  downIcon = loadImage(rootPath + "gui/black-down-rounded-button-outline.png");
+  zeroIcon = loadImage(rootPath + "gui/black-zero-circular-graphics-button-outlined-symbol.png");
 
   screenScale = (height/float(score.height));
 
