@@ -21,5 +21,5 @@ GUI icons are licensed from Sebastien Gabriel under the terms of
 Creative Commons Attribution 3.0 Unported License. See "LICENSE"
 for more details and list of modifications.
 
-Included musical scores are not licensed under GPLv3 and may be
-protected by Copyright.
+Included musical scores are not issued with any license and may
+be protected by Copyright.
