@@ -152,14 +152,14 @@ void setup() {
     scoreClient = new Client(this, serverIpAddr, serverPort);
   }
 
-  score = loadImage("../../files/SCORE.PNG");
-  clefs = loadImage("../../files/SCORE_CLEFS.PNG");
+  score = loadImage(rootPath + "score/SCORE.PNG");
+  clefs = loadImage(rootPath + "score/SCORE_CLEFS.PNG");
   annotationsCanvas = createGraphics(score.width, score.height);
-  annotationsPath = sketchPath("../../files/annotations.png");
+  annotationsPath = sketchPath(rootPath + "etc/annotations.png");
   annotationsFile = new File(annotationsPath);
   if (annotationsFile.exists())
   {
-    annotations = loadImage("../../files/annotations.png");
+    annotations = loadImage(rootPath + "etc/annotations.png");
     annotationsCanvas.beginDraw();
     annotations.loadPixels();
     annotationsCanvas.loadPixels();
@@ -515,7 +515,7 @@ void mousePressed() {
             }
             if (annotationsChangedp) {
               annotationsChangedp = false; // reset
-              annotationsCanvas.save("../../files/annotations.png");
+              annotationsCanvas.save(rootPath + "etc/annotations.png");
             }
           }
         }

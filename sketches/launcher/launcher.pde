@@ -98,9 +98,9 @@ void setup () {
   launch[2] = "--run";
 
   deleteAnnotations[0] = "mv";
-  deleteAnnotations[1] = rootPath + "files/annotations.png";
+  deleteAnnotations[1] = rootPath + "etc/annotations.png";
 
-  backupPath = rootPath + "files/annotationBackup/";
+  backupPath = rootPath + "etc/backup/";
 
   bLaunch = loadImage(rootPath + "gui/white-100px-flash-outlined-thin-circular-button.png");
   bReboot = loadImage(rootPath + "gui/white-circular-arrow-in-rounded-button.png");
@@ -462,7 +462,7 @@ void mousePressed() {
       currentTime = (year() + "-" + month() + "-" + day() + "-" + hour() + "-" + minute() + "-" + second() + "-" + millis());
       backupFile = (backupPath + currentTime + "-annotations" + ".png");
       deleteAnnotations[2] = backupFile;
-      annotationsPath = sketchPath("../../files/annotations.png");
+      annotationsPath = sketchPath(rootPath + "etc/annotations.png");
       annotationsFile = new File(annotationsPath);
 
       deletep = true;
