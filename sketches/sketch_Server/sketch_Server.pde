@@ -59,11 +59,11 @@ final boolean export = false;
 
 final int fps = 25; // Frame rate
 
-final int start = 182;     // Enter px for first event here
-final int end = 29881;     // Enter px for "final barline" here
+final int start = 121;     // Enter px for first event here
+final int end = 19920;     // Enter px for "final barline" here
+final int clefsStart = 56; // Enter px for start of clefs
 final float dur = 540;     // Enter durata in seconds here
 final float preRoll = 8;   // Enter preroll in seconds here
-final int clefsStart = 86; // Enter px for start of clefs
 
 final float totalFrames = ceil(dur * fps); // float for use as divisor
 
