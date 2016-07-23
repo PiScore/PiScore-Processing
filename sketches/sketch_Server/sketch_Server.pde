@@ -60,13 +60,15 @@ final boolean export = false;
 
 final int fps = 25; // Frame rate
 
-final int start = 122;     // Enter px for first event here
-final int end = 19921;     // Enter px for "final barline" here
+final int start = 273;     // Enter px for first event here
+final int end = 44823;     // Enter px for "final barline" here
 final float dur = 540;     // Enter durata in seconds here
 final float preRoll = 8;   // Enter preroll in seconds here
-final int clefsStart = 56; // Enter px for start of clefs
+final int clefsStart = 129; // Enter px for start of clefs
 
 final float totalFrames = ceil(dur * fps); // float for use as divisor
+
+float screenScale = 1.0;
 
 boolean exitDialog = false;
 int exitTimeout = 0;
@@ -130,16 +132,6 @@ void setup() {
   }
   vOffset = int(vOffsetArray[0]);
 
-  zoomPath = sketchPath("../../etc/zoom.txt");
-  zoomFile = new File(zoomPath);
-  if (zoomFile.exists()) {
-    zoomArray = loadStrings(zoomPath);
-  } else {
-    zoomArray[0] = "1.0";
-    saveStrings(zoomPath, zoomArray);
-  }
-  zoom = float(zoomArray[0]);
-
   clientpPath = sketchPath("../../etc/clientp.txt");
   clientpFile = new File(clientpPath);
   if (clientpFile.exists()) {
@@ -192,6 +184,20 @@ void setup() {
   upIcon = loadImage("../../files/gui/up-rounded-button-outline.png");
   downIcon = loadImage("../../files/gui/down-rounded-button-outline.png");
   zeroIcon = loadImage("../../files/gui/zero-circular-graphics-button-outlined-symbol.png");
+
+println(height);
+println(score.height);
+screenScale = (height/float(score.height));
+println(screenScale);
+zoomPath = sketchPath("../../etc/zoom.txt");
+  zoomFile = new File(zoomPath);
+  if (zoomFile.exists()) {
+    zoomArray = loadStrings(zoomPath);
+  } else {
+    zoomArray[0] = str(screenScale);
+    saveStrings(zoomPath, zoomArray);
+  }
+  zoom = float(zoomArray[0]);
 
   iconPanelWidth = (iconSize+(iconPadding*2));
 
@@ -601,12 +607,12 @@ void mousePressed() {
           saveStrings(zoomPath, zoomArray);
         }
         if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
-          zoom = 1.0;
+          zoom = screenScale;
           zoomArray[0] = str(zoom);
           saveStrings(zoomPath, zoomArray);
         }
         if (mouseY > ((iconSize*6)+(iconPadding*7)) && mouseY < ((iconSize*7)+(iconPadding*7))) {
-          if (zoom > 0.5) {
+          if (zoom > screenScale) {
             zoom = zoom - 0.5;
             zoomArray[0] = str(zoom);
             saveStrings(zoomPath, zoomArray);
@@ -615,7 +621,7 @@ void mousePressed() {
       }
       if ((mouseX > (width-(iconSize*3)-(iconPadding*3))) && mouseX < (width-(iconSize*2)-(iconPadding*3))) {
         if (mouseY > ((iconSize*4)+(iconPadding*5)) && mouseY < ((iconSize*5)+(iconPadding*5))) {
-          vOffset = vOffset + 50;
+          vOffset = vOffset + round(50*zoom);
           vOffsetArray[0] = str(vOffset);
           saveStrings(vOffsetPath, vOffsetArray);
         }
@@ -625,7 +631,7 @@ void mousePressed() {
           saveStrings(vOffsetPath, vOffsetArray);
         }
         if (mouseY > ((iconSize*6)+(iconPadding*7)) && mouseY < ((iconSize*7)+(iconPadding*7))) {
-          vOffset = vOffset - 50;
+          vOffset = vOffset - round(50*zoom);
           vOffsetArray[0] = str(vOffset);
           saveStrings(vOffsetPath, vOffsetArray);
         }
@@ -644,7 +650,6 @@ void mousePressed() {
         }
       }
     }
-
 
     if (mouseX > ((clefs.width)*zoom) && mouseX < (width-iconSize-(iconPadding*2))) {
       if (editMode) {
