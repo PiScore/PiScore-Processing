@@ -44,6 +44,11 @@ String clientpPath;
 File clientpFile;
 boolean clientp;
 
+String[] vOffsetArray = { null };
+String vOffsetPath;
+File vOffsetFile;
+int vOffset;
+
 // To export frames set export to true
 final boolean export = false;
 
@@ -105,6 +110,16 @@ void setup() {
     saveStrings(serverIpAddrPath, serverIpAddrArray);
   }
   serverIpAddr = serverIpAddrArray[0];
+  
+  vOffsetPath = sketchPath("../../etc/voffset.txt");
+  vOffsetFile = new File(vOffsetPath);
+  if (vOffsetFile.exists()) {
+    vOffsetArray = loadStrings(vOffsetPath);
+  } else {
+    vOffsetArray[0] = "0";
+    saveStrings(vOffsetPath, vOffsetArray);
+  }
+  vOffset = int(vOffsetArray[0]);
 
   clientpPath = sketchPath("../../etc/clientp.txt");
   clientpFile = new File(clientpPath);
@@ -214,12 +229,12 @@ void draw() {
     }
   }
 
-  image(score, localScoreX-(editOffset-smoothScroller)+playheadPos-(start*zoom), 0, score.width*zoom, score.height*zoom);
-  image(annotationsCanvas, localScoreX-(editOffset-smoothScroller)+playheadPos-(start*zoom), 0, annotationsCanvas.width*zoom, annotationsCanvas.height*zoom);
+  image(score, localScoreX-(editOffset-smoothScroller)+playheadPos-(start*zoom), vOffset, (score.width)*zoom, (score.height)*zoom);
+  image(annotationsCanvas, localScoreX-(editOffset-smoothScroller)+playheadPos-(start*zoom), vOffset, (annotationsCanvas.width)*zoom, (annotationsCanvas.height)*zoom);
 
   if (((clefs.width)*zoom) < playheadPos) {
     if (localScoreX-editOffset < (0 + adjStartScaled)) {
-      image(clefs, 0, 0, clefs.width*zoom, clefs.height*zoom);
+      image(clefs, 0, vOffset, (clefs.width)*zoom, (clefs.height)*zoom);
     }
   }
 
@@ -565,7 +580,7 @@ void drawFunctionBegin(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.noStroke();
   annotationsCanvas.fill(c);
-  annotationsCanvas.ellipse((mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), (mouseY/zoom), penSize, penSize);
+  annotationsCanvas.ellipse((mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), ((mouseY/zoom)-(vOffset/zoom)), penSize, penSize);
   annotationsCanvas.endDraw();
 }
 
@@ -573,7 +588,7 @@ void drawFunctionContinue(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.stroke(c);
   annotationsCanvas.strokeWeight(penSize);
-  annotationsCanvas.line((pmouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), (pmouseY/zoom), (mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), (mouseY/zoom));
+  annotationsCanvas.line((pmouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), ((pmouseY/zoom)-(vOffset/zoom)), (mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), ((mouseY/zoom)-(vOffset/zoom)));
   annotationsCanvas.endDraw();
 }
 
@@ -581,7 +596,7 @@ void drawFunctionEnd(color c) {
   annotationsCanvas.beginDraw();
   annotationsCanvas.stroke(c);
   annotationsCanvas.strokeWeight(penSize);
-  annotationsCanvas.line((pmouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), (pmouseY/zoom), (mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), (mouseY/zoom));
+  annotationsCanvas.line((pmouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), ((pmouseY/zoom)-(vOffset/zoom)), (mouseX/zoom)-((localScoreX/zoom)-editOffsetScaled)+(adjStartScaled/zoom), ((mouseY/zoom)-(vOffset/zoom)));
   annotationsCanvas.endDraw();
 }
 
