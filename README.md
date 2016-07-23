@@ -1,14 +1,26 @@
 # PiScore
-The PiScore Project
 
-A system for playing back video scores and keeping in sync across multiple devices.
+PiScore - a system for playing back video scores and keeping in sync
+across multiple devices.
+Copyright (C) 2016  David Stephen Grant
 
-Raspberry Pi 3 and Processing.
+PiScore is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Currently an ugly prototype with hard coded paths etc. USE WITH CAUTION!!!
+PiScore is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-Launcher currently broken.
-To launch client: sketch_Server must be modified: clientp = true;
-then launch as server... Must fix.
+You should have received a copy of the GNU General Public License
+along with PiScore.  If not, see <http://www.gnu.org/licenses/>.
 
-David Stephen Grant, July 19 2016
+GUI icons are licensed from Sebastien Gabriel under the terms of
+Creative Commons Attribution 3.0 Unported License. Changes to the
+original files include modifying colour, adding backgrounds and
+separation of individual graphical elements.
+
+Included musical scores are not issued with any license and may
+be protected by Copyright.
