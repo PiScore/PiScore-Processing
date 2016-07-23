@@ -33,7 +33,7 @@ String receiveData;
 int receiveInt = 0;
 
 PImage score, clefs, annotations;
-PImage editIcon, resetIcon, pencilIcon, eraserIcon, exitIcon, exitYes, exitNo, playIcon, pauseIcon, prevIcon, nextIcon, plusIcon, minusIcon, zoomIcon, upIcon, downIcon;
+PImage editIcon, resetIcon, pencilIcon, eraserIcon, exitIcon, exitYes, exitNo, playIcon, pauseIcon, prevIcon, nextIcon, plusIcon, minusIcon, zoomIcon, upIcon, downIcon, zeroIcon;
 String annotationsPath;
 File annotationsFile;
 PGraphics annotationsCanvas;
@@ -191,6 +191,7 @@ void setup() {
   zoomIcon = loadImage("../../files/gui/magnifier-search-interface-circular-button.png");
   upIcon = loadImage("../../files/gui/up-rounded-button-outline.png");
   downIcon = loadImage("../../files/gui/down-rounded-button-outline.png");
+  zeroIcon = loadImage("../../files/gui/zero-circular-graphics-button-outlined-symbol.png");
 
   iconPanelWidth = (iconSize+(iconPadding*2));
 
@@ -399,8 +400,10 @@ void draw() {
     noStroke();
     fill(255);
     ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*4)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
+    ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
     ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*6)+(iconPadding*7)+(iconSize*0.5)), iconSize, iconSize);
     image(plusIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*4)+(iconPadding*5)), iconSize, iconSize);
+    image(zeroIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
     image(minusIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*6)+(iconPadding*7)), iconSize, iconSize);
   }
 
@@ -585,6 +588,11 @@ void mousePressed() {
       if ((mouseX > (width-(iconSize*2)-(iconPadding*2))) && mouseX < (width-iconSize-(iconPadding*2))) {
         if (mouseY > ((iconSize*4)+(iconPadding*5)) && mouseY < ((iconSize*5)+(iconPadding*5))) {
           zoom = zoom + 0.5;
+          zoomArray[0] = str(zoom);
+          saveStrings(zoomPath, zoomArray);
+        }
+        if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
+          zoom = 1.0;
           zoomArray[0] = str(zoom);
           saveStrings(zoomPath, zoomArray);
         }
