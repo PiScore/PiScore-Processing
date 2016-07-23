@@ -1,31 +1,29 @@
 String   rootPath;
 
-String[] folderArray = { null };
-String   folderPath;
-File     folderFile;
+String[] projectArray = { null };
+String   projectPath;
+File     projectFile;
 
 void setup() {
   rootPath = sketchPath("../../");
   
-  folderPath = rootPath + "etc/prev-folder-path.txt";
-  folderFile = new File(folderPath);
-  if (folderFile.exists()) {
-    folderArray = loadStrings(folderPath);
+  projectPath = rootPath + "etc/project-path.txt";
+  projectFile = new File(projectPath);
+  if (projectFile.exists()) {
+    projectArray = loadStrings(projectPath);
   } else {
-    folderArray[0] = rootPath;
-    saveStrings(folderPath, folderArray);
+    projectArray[0] = rootPath;
+    saveStrings(projectPath, projectArray);
   }
-  
-  selectFolder("Please select a folder", "folderSelected", new File(folderArray[0]));
+  selectFolder("Set project folder...", "folderSelected", new File(projectArray[0]));
 }
 
 void folderSelected(File selection) {
   if (selection == null) {
     exit();
   } else {
-    println("User selected " + selection.getAbsolutePath());
-    folderArray[0] = selection.getAbsolutePath();
-    saveStrings(folderPath, folderArray);
+    projectArray[0] = selection.getAbsolutePath();
+    saveStrings(projectPath, projectArray);
     exit();
   }
 }

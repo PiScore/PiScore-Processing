@@ -38,6 +38,10 @@ PImage tReboot, tShutdown, tTerminal, tDelete;
 String[] numpadArray = { "7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ".", "\u2190" };
 String[] numpadDecisionArray = { "Cancel", "Confirm" };
 
+String[] projectArray = { null };
+String   projectPath;
+File     projectFile;
+
 String[] clientpArray = { null };
 String clientpPath;
 File clientpFile;
@@ -71,6 +75,15 @@ void setup () {
   cursor(HAND);
 
   rootPath = sketchPath("../../");
+  
+  projectPath = rootPath + "etc/project-path.txt";
+  projectFile = new File(projectPath);
+  if (projectFile.exists()) {
+    projectArray = loadStrings(projectPath);
+  } else {
+    projectArray[0] = rootPath;
+    saveStrings(projectPath, projectArray);
+  }
 
   serverIpAddrPath = sketchPath(rootPath + "etc/server-ip-addr.txt");
   serverIpAddrFile = new File(serverIpAddrPath);
@@ -125,10 +138,10 @@ void draw() {
   if (!loadingp) {
     fill(255);
     textAlign(CENTER, TOP);
-    textSize(32);
-    text("Example Score", (width/2), (iconSize+iconPadding));
     textSize(20);
-    text("by David Stephen Grant", (width/2), (iconSize+iconPadding+42));
+    text("Welcome to", (width/2), (iconSize+(iconPadding*2)));
+    textSize(32);
+    text("PiScore", (width/2), (iconSize+(iconPadding*2)+24));
 
     if (!ipEditp) {
       image(bLaunch, ((width/2)-(iconSizeLarge*0.5)), ((height/2)-(iconSizeLarge*0.5)));
@@ -136,6 +149,14 @@ void draw() {
       textAlign(CENTER, CENTER);
       textSize(14);
       text("Launch", (width/2), ((height/2)+(iconSizeLarge*0.5)+iconPadding));
+    }
+    
+    if (!ipEditp) {
+      image(bEdit, width-iconPadding-iconSize, iconPadding);
+      fill(255);
+      textAlign(RIGHT, TOP);
+      textSize(12);
+      text("Current project folder:\n" + projectArray[0], width/3, iconPadding, ((width/3*2)-((iconPadding*2)+iconSize)), height-iconPadding); //Text spills down the screen for long path names
     }
 
     if (!ipEditp) {
