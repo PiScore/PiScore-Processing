@@ -76,6 +76,7 @@ final int fps = 25; // Frame rate
 int start;
 int end;
 int clefsStart;
+int clefsEnd;
 float dur;
 float preRoll;
 
@@ -173,9 +174,6 @@ void setup() {
   } else {
     scoreClient = new Client(this, serverIpAddr, serverPort);
   }
-
-  score = loadImage(projectArray[0]);
-  clefs = loadImage(projectParent + "/" + projectName + "-clefs.png");
   
   xpositionsPath = projectParent + "/" + projectName + "-xpositions.piscore";
   xpositionsFile = new File(xpositionsPath);
@@ -201,9 +199,12 @@ void setup() {
   start =      int(-xpositions[0]);
   end =        int(-xpositions[1]);
   clefsStart = int(-xpositions[2]);
-  //clefsEnd =   int(-xpositions[3]);
+  clefsEnd =   int(-xpositions[3]);
   dur =        xpositions[4];
   preRoll =    xpositions[5];
+  
+  score = loadImage(projectArray[0]);
+  clefs = score.get(clefsStart, 0, clefsEnd-clefsStart, score.height);
   
   totalFrames = ceil(dur * fps);
   
@@ -325,9 +326,9 @@ void draw() {
   image(score, localScoreX-(editOffset-smoothScroller)+playheadPos-(start*zoom), vOffset, round((score.width)*zoom), (score.height)*zoom);
   image(annotationsCanvas, localScoreX-(editOffset-smoothScroller)+playheadPos-(start*zoom), vOffset, (annotationsCanvas.width)*zoom, (annotationsCanvas.height)*zoom);
 
-  if ((((clefs.width)*zoom)-(clefsStart*zoom)) < playheadPos) {
-    if (localScoreX-editOffset < (0 + adjStartScaled - (clefsStart*zoom))) {
-      image(clefs, (clefsStart*(-1)*zoom), vOffset, (clefs.width)*zoom, (clefs.height)*zoom);
+  if ((((clefs.width)*zoom)) < playheadPos) {
+    if (localScoreX-editOffset+clefsStart < (0 + adjStartScaled)) {
+      image(clefs, 0, vOffset, (clefs.width)*zoom, (clefs.height)*zoom);
     }
   }
 
