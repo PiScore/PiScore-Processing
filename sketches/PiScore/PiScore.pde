@@ -47,6 +47,11 @@ File     projectFile;
 String   projectParent;
 String   projectName;
 
+String[] xpositionsArray = { null, null, null, null, null, null };
+String xpositionsPath;
+File xpositionsFile;
+float[] xpositions = { 0, 0, 0, 0, 10, 0 };
+
 String[] clientpArray = { null };
 String clientpPath;
 File clientpFile;
@@ -68,13 +73,13 @@ final boolean export = false;
 
 final int fps = 25; // Frame rate
 
-final int start = 121;     // Enter px for first event here
-final int end = 19920;     // Enter px for "final barline" here
-final int clefsStart = 56; // Enter px for start of clefs
-final float dur = 540;     // Enter durata in seconds here
-final float preRoll = 8;   // Enter preroll in seconds here
+int start;
+int end;
+int clefsStart;
+float dur;
+float preRoll;
 
-final float totalFrames = ceil(dur * fps); // float for use as divisor
+float totalFrames; // float for use as divisor
 
 float screenScale = 1.0;
 
@@ -171,6 +176,36 @@ void setup() {
 
   score = loadImage(projectArray[0]);
   clefs = loadImage(projectParent + "/" + projectName + "-clefs.png");
+  
+  xpositionsPath = projectParent + "/" + projectName + "-xpositions.piscore";
+  xpositionsFile = new File(xpositionsPath);
+  if (xpositionsFile.exists()) {
+    xpositionsArray = loadStrings(xpositionsPath);
+    for (int i = 0; i < (xpositionsArray.length); i++) {
+      xpositions[i] = float(xpositionsArray[i]);
+    }
+  } else {
+    // Defaults adjusted for example score
+    xpositions[0] = -120.0;
+    xpositions[1] = -19921.0;
+    xpositions[2] = -57.0;
+    xpositions[3] = -99.0;
+    xpositions[4] = 540.0;
+    xpositions[5] = 0.0;
+    for (int i = 0; i < (xpositions.length); i++) {
+        xpositionsArray[i] = str((xpositions[i]));
+      }
+    saveStrings(xpositionsPath, xpositionsArray);
+  }
+  
+  start =      int(-xpositions[0]);
+  end =        int(-xpositions[1]);
+  clefsStart = int(-xpositions[2]);
+  //clefsEnd =   int(-xpositions[3]);
+  dur =        xpositions[4];
+  preRoll =    xpositions[5];
+  
+  totalFrames = ceil(dur * fps);
   
   annotationsCanvas = createGraphics(score.width, score.height);
   annotationsPath = projectParent + "/" + projectName + "-annotations.png";
