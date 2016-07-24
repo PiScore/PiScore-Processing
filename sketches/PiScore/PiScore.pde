@@ -202,6 +202,9 @@ void setup() {
   clefsEnd =   int(-xpositions[3]);
   dur =        xpositions[4];
   preRoll =    xpositions[5];
+  if (clefsEnd < clefsStart) {
+    clefsEnd = clefsStart;
+  }
   
   score = loadImage(projectArray[0]);
   clefs = score.get(clefsStart, 0, clefsEnd-clefsStart, score.height);

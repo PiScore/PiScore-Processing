@@ -297,7 +297,9 @@ void mousePressed() {
       (mouseY > ((height/3)+((iconSize+iconPadding)*(3)))) &
       (mouseY < ((height/3)+((iconSize+iconPadding)*(3))+iconSize))
       ) {
+        if (!(numInput.contains("."))) {
       numInput = numInput + ".";
+        }
     }
     if (
       (mouseX > ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(2))) &
