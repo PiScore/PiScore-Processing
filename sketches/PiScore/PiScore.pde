@@ -307,7 +307,7 @@ void draw() {
   image(annotationsCanvas, localScoreX-(editOffset-smoothScroller)+playheadPos-(start*zoom), vOffset, (annotationsCanvas.width)*zoom, (annotationsCanvas.height)*zoom);
 
   if ((((clefs.width)*zoom)) < playheadPos) {
-    if (localScoreX-editOffset+clefsStart < (0 + adjStartScaled)) {
+    if (localScoreX-editOffset+(clefsStart*zoom) < (0 + adjStartScaled)) {
       image(clefs, 0, vOffset, (clefs.width)*zoom, (clefs.height)*zoom);
     }
   }
@@ -716,7 +716,7 @@ void mousePressed() {
 
 
 void mouseDragged() {
-  if (mouseX > clefs.width && mouseX < (width-iconSize-(iconPadding*2))) {
+  if (mouseX > ((clefs.width)*zoom) && mouseX < (width-iconSize-(iconPadding*2))) {
     if (editMode) {
       if (!annotationsChangedp) {
         // Notify when annotations are made
