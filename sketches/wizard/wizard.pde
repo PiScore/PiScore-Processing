@@ -33,28 +33,31 @@ String   projectName;
 String[] xpositionsArray = { null, null, null, null, null, null };
 String xpositionsPath;
 File xpositionsFile;
-int[] xpositions = { 0, 0, 0, 0, 0, 0 };
+float[] xpositions = { 0, 0, 0, 0, 10, 0 };
 
 final int fps = 10; // Frame rate
 
 float screenScale = 1.0;
 
-int setPosition;
+float setPosition;
+
+String numInput;
 
 int wizardStep = 0;
-String[] wizardText = { null, null, null, null };
+String[] wizardText = { null, null, null, null, null, null };
 
 final int iconSize = 50;
 final int iconPadding = 10;
 
 PImage bFastBack, bBack, bMinus, bPlus, bPlay, bFastForward, bCheck;
+String[] numpadArray = { "7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ".", "\u2190" };
 
 int playheadPos;
 
 void setup() {
   frameRate(fps);
   size(800, 480);
-  noSmooth();
+  smooth();
 
   rootPath = ((new File((new File (sketchPath(""))).getParent())).getParent());
 
@@ -81,7 +84,7 @@ void setup() {
   if (xpositionsFile.exists()) {
     xpositionsArray = loadStrings(xpositionsPath);
     for (int i = 0; i < (xpositionsArray.length); i++) {
-      xpositions[i] = int(xpositionsArray[i]);
+      xpositions[i] = float(xpositionsArray[i]);
     }
   } else {
     xpositions[1] = -score.width;
@@ -101,6 +104,8 @@ void setup() {
   wizardText[1] = "Set music end position";
   wizardText[2] = "Set clef start position";
   wizardText[3] = "Set clef end position";
+  wizardText[4] = "Enter duration (seconds)";
+  wizardText[5] = "Enter preroll (seconds)";
 } 
 
 void draw() {
@@ -117,11 +122,6 @@ void draw() {
     line(playheadPos, 0, playheadPos, height);
 
     fill(255, 0, 0);
-    textAlign(CENTER, TOP);
-    textSize(20);
-
-    text(wizardText[wizardStep], (width/2), iconPadding);
-
     noStroke();
     fill(255);
     ellipse(((width+iconPadding)/2)+(iconSize/2)-((iconSize+iconPadding)*3), (height-iconPadding-iconSize)+(iconSize/2), iconSize, iconSize);
@@ -137,8 +137,35 @@ void draw() {
     ellipse(((width+iconPadding)/2)+(iconSize/2)+((iconSize+iconPadding)*2), (height-iconPadding-iconSize)+(iconSize/2), iconSize, iconSize);
     image(bFastForward, ((width+iconPadding)/2)+((iconSize+iconPadding)*2), (height-iconPadding-iconSize), iconSize, iconSize);
   }
+
+  fill(255);
   ellipse((width-iconPadding-iconSize+(iconSize/2)), (height-iconPadding-iconSize)+(iconSize/2), iconSize, iconSize);
   image(bCheck, (width-iconPadding-iconSize), (height-iconPadding-iconSize), iconSize, iconSize);
+
+  fill(255, 0, 0);
+  textAlign(CENTER, TOP);
+  textSize(20);
+  text(wizardText[wizardStep], (width/2), iconPadding);
+
+  if (!(wizardStep < 4)) {
+
+    fill(0);
+    textAlign(LEFT, BOTTOM);
+    textSize(32);
+    text(numInput + "_", ((width/2)-(iconSize*0.5)-(iconPadding+iconSize)), (height/3)-iconPadding);
+
+    for (int i = 0; i < 12; i++) {
+      stroke(0);
+      strokeWeight(2);
+      fill(255);
+      rect(((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(i % 3)), (height/3)+((iconSize+iconPadding)*(i/3)), iconSize, iconSize, 10);
+      fill(0);
+      textAlign(CENTER, CENTER);
+      textSize(42);
+      text(numpadArray[i], ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(i % 3))+(iconSize*0.5), (height/3)+((iconSize+iconPadding)*(i/3))+(iconSize*0.5));
+      noStroke();
+    }
+  }
 }
 
 void mousePressed() {
@@ -171,14 +198,125 @@ void mousePressed() {
     }
   }
 
+  //NUMPAD
+  if (!(wizardStep < 4)) {
+    if (
+      (mouseX > ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(0))) &
+      (mouseX < ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(0))+iconSize) &
+      (mouseY > ((height/3)+((iconSize+iconPadding)*(0)))) &
+      (mouseY < ((height/3)+((iconSize+iconPadding)*(0))+iconSize))
+      ) {
+      numInput = numInput + "7";
+    }
+    if (
+      (mouseX > ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(1))) &
+      (mouseX < ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(1))+iconSize) &
+      (mouseY > ((height/3)+((iconSize+iconPadding)*(0)))) &
+      (mouseY < ((height/3)+((iconSize+iconPadding)*(0))+iconSize))
+      ) {
+      numInput = numInput + "8";
+    }
+    if (
+      (mouseX > ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(2))) &
+      (mouseX < ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(2))+iconSize) &
+      (mouseY > ((height/3)+((iconSize+iconPadding)*(0)))) &
+      (mouseY < ((height/3)+((iconSize+iconPadding)*(0))+iconSize))
+      ) {
+      numInput = numInput + "9";
+    }
+    if (
+      (mouseX > ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(0))) &
+      (mouseX < ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(0))+iconSize) &
+      (mouseY > ((height/3)+((iconSize+iconPadding)*(1)))) &
+      (mouseY < ((height/3)+((iconSize+iconPadding)*(1))+iconSize))
+      ) {
+      numInput = numInput + "4";
+    }
+    if (
+      (mouseX > ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(1))) &
+      (mouseX < ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(1))+iconSize) &
+      (mouseY > ((height/3)+((iconSize+iconPadding)*(1)))) &
+      (mouseY < ((height/3)+((iconSize+iconPadding)*(1))+iconSize))
+      ) {
+      numInput = numInput + "5";
+    }
+    if (
+      (mouseX > ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(2))) &
+      (mouseX < ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(2))+iconSize) &
+      (mouseY > ((height/3)+((iconSize+iconPadding)*(1)))) &
+      (mouseY < ((height/3)+((iconSize+iconPadding)*(1))+iconSize))
+      ) {
+      numInput = numInput + "6";
+    }
+    if (
+      (mouseX > ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(0))) &
+      (mouseX < ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(0))+iconSize) &
+      (mouseY > ((height/3)+((iconSize+iconPadding)*(2)))) &
+      (mouseY < ((height/3)+((iconSize+iconPadding)*(2))+iconSize))
+      ) {
+      numInput = numInput + "1";
+    }
+    if (
+      (mouseX > ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(1))) &
+      (mouseX < ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(1))+iconSize) &
+      (mouseY > ((height/3)+((iconSize+iconPadding)*(2)))) &
+      (mouseY < ((height/3)+((iconSize+iconPadding)*(2))+iconSize))
+      ) {
+      numInput = numInput + "2";
+    }
+    if (
+      (mouseX > ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(2))) &
+      (mouseX < ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(2))+iconSize) &
+      (mouseY > ((height/3)+((iconSize+iconPadding)*(2)))) &
+      (mouseY < ((height/3)+((iconSize+iconPadding)*(2))+iconSize))
+      ) {
+      numInput = numInput + "3";
+    }
+    if (
+      (mouseX > ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(0))) &
+      (mouseX < ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(0))+iconSize) &
+      (mouseY > ((height/3)+((iconSize+iconPadding)*(3)))) &
+      (mouseY < ((height/3)+((iconSize+iconPadding)*(3))+iconSize))
+      ) {
+      numInput = numInput + "0";
+    }
+    if (
+      (mouseX > ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(1))) &
+      (mouseX < ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(1))+iconSize) &
+      (mouseY > ((height/3)+((iconSize+iconPadding)*(3)))) &
+      (mouseY < ((height/3)+((iconSize+iconPadding)*(3))+iconSize))
+      ) {
+      numInput = numInput + ".";
+    }
+    if (
+      (mouseX > ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(2))) &
+      (mouseX < ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(2))+iconSize) &
+      (mouseY > ((height/3)+((iconSize+iconPadding)*(3)))) &
+      (mouseY < ((height/3)+((iconSize+iconPadding)*(3))+iconSize))
+      ) {
+      if ( numInput.length() > 0) {
+        numInput = numInput.substring(0, numInput.length()-1);
+      }
+    }
+  }
+
   if ( mouseX > (width-iconPadding-iconSize)
     && mouseX < (width-iconPadding)
     && mouseY > height-(iconSize+iconPadding)
     && mouseY < height-iconPadding) {
-    xpositions[wizardStep] = setPosition;
-    wizardStep++;
+    if (wizardStep < 4) {
+      xpositions[wizardStep] = setPosition;
+      wizardStep++;
+    } else { 
+      if ( (numInput.length()) > 0) {
+        xpositions[wizardStep] = float(numInput);
+        wizardStep++;
+      }
+    }
+
     if (wizardStep < (xpositions.length)) {
       setPosition = xpositions[wizardStep];
+      numInput = str(xpositions[wizardStep]);
     } else {
       for (int i = 0; i < (xpositions.length); i++) {
         xpositionsArray[i] = str((xpositions[i]));

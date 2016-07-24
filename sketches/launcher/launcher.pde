@@ -487,8 +487,10 @@ void mousePressed() {
           (mouseY > ((iconPadding*5)+(iconSize*3)+18+22+((iconSize+iconPadding)*(3)))) &
           (mouseY < ((iconPadding*5)+(iconSize*3)+18+22+((iconSize+iconPadding)*(3))+iconSize))
           ) {
+            if ( (serverIpAddrTemp.length()) > 1) {
           serverIpAddrTemp = serverIpAddrTemp.substring(0, serverIpAddrTemp.length()-2);
           serverIpAddrTemp = serverIpAddrTemp + "_";
+            }
         }
       }
 
