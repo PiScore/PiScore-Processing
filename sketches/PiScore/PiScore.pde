@@ -114,9 +114,9 @@ void setup() {
   size(800, 480);
   noSmooth();
   
-  rootPath = sketchPath("../../");
+  rootPath = ((new File((new File (sketchPath(""))).getParent())).getParent());
 
-  serverIpAddrPath = sketchPath(rootPath + "etc/server-ip-addr.txt");
+  serverIpAddrPath = rootPath + "/etc/server-ip-addr.txt";
   serverIpAddrFile = new File(serverIpAddrPath);
   if (serverIpAddrFile.exists()) {
     serverIpAddrArray = loadStrings(serverIpAddrPath);
@@ -126,7 +126,7 @@ void setup() {
   }
   serverIpAddr = serverIpAddrArray[0];
 
-  vOffsetPath = sketchPath(rootPath + "etc/voffset.txt");
+  vOffsetPath = rootPath + "/etc/voffset.txt";
   vOffsetFile = new File(vOffsetPath);
   if (vOffsetFile.exists()) {
     vOffsetArray = loadStrings(vOffsetPath);
@@ -136,7 +136,7 @@ void setup() {
   }
   vOffset = int(vOffsetArray[0]);
 
-  clientpPath = sketchPath(rootPath + "etc/clientp.txt");
+  clientpPath = rootPath + "/etc/clientp.txt";
   clientpFile = new File(clientpPath);
   if (clientpFile.exists()) {
     clientpArray = loadStrings(clientpPath);
@@ -152,14 +152,14 @@ void setup() {
     scoreClient = new Client(this, serverIpAddr, serverPort);
   }
 
-  score = loadImage(rootPath + "score/SCORE.PNG");
-  clefs = loadImage(rootPath + "score/SCORE_CLEFS.PNG");
+  score = loadImage(rootPath + "/score/SCORE.PNG");
+  clefs = loadImage(rootPath + "/score/SCORE_CLEFS.PNG");
   annotationsCanvas = createGraphics(score.width, score.height);
-  annotationsPath = sketchPath(rootPath + "etc/annotations.png");
+  annotationsPath = rootPath + "/etc/annotations.png";
   annotationsFile = new File(annotationsPath);
   if (annotationsFile.exists())
   {
-    annotations = loadImage(rootPath + "etc/annotations.png");
+    annotations = loadImage(rootPath + "/etc/annotations.png");
     annotationsCanvas.beginDraw();
     annotations.loadPixels();
     annotationsCanvas.loadPixels();
@@ -171,27 +171,27 @@ void setup() {
     annotationsCanvas.beginDraw();
     annotationsCanvas.endDraw();
   }
-  editIcon = loadImage(rootPath + "gui/black-edit-pencil-outline-in-circular-button.png");
-  resetIcon = loadImage(rootPath + "gui/black-two-arrows-in-circular-outlined-interface-button.png");
-  pencilIcon = loadImage(rootPath + "gui/black-pencil-outline-in-circular-button.png");
-  eraserIcon = loadImage(rootPath + "gui/black-edit-eraser-outline-in-circular-button.png");
-  exitIcon = loadImage(rootPath + "gui/black-upload-up-arrow-outline-in-circular-button.png");
-  exitYes = loadImage(rootPath + "gui/black-checkmark-outlined-circular-button.png");
-  exitNo = loadImage(rootPath + "gui/black-close-cross-thin-circular-button.png");
-  playIcon = loadImage(rootPath + "gui/black-play-rounded-button-outline.png");
-  pauseIcon = loadImage(rootPath + "gui/black-pause-thin-rounded-button.png");
-  prevIcon = loadImage(rootPath + "gui/black-rewind-double-arrow-outlined-circular-button.png");
-  nextIcon = loadImage(rootPath + "gui/black-fast-forward-thin-outlined-symbol-in-circular-button.png");
-  plusIcon = loadImage(rootPath + "gui/black-add-circular-button-thin-symbol.png");
-  minusIcon = loadImage(rootPath + "gui/black-minus-sign-in-a-circle.png");
-  zoomIcon = loadImage(rootPath + "gui/black-magnifier-search-interface-circular-button.png");
-  upIcon = loadImage(rootPath + "gui/black-up-rounded-button-outline.png");
-  downIcon = loadImage(rootPath + "gui/black-down-rounded-button-outline.png");
-  zeroIcon = loadImage(rootPath + "gui/black-zero-circular-graphics-button-outlined-symbol.png");
+  editIcon = loadImage(rootPath + "/gui/black-edit-pencil-outline-in-circular-button.png");
+  resetIcon = loadImage(rootPath + "/gui/black-two-arrows-in-circular-outlined-interface-button.png");
+  pencilIcon = loadImage(rootPath + "/gui/black-pencil-outline-in-circular-button.png");
+  eraserIcon = loadImage(rootPath + "/gui/black-edit-eraser-outline-in-circular-button.png");
+  exitIcon = loadImage(rootPath + "/gui/black-upload-up-arrow-outline-in-circular-button.png");
+  exitYes = loadImage(rootPath + "/gui/black-checkmark-outlined-circular-button.png");
+  exitNo = loadImage(rootPath + "/gui/black-close-cross-thin-circular-button.png");
+  playIcon = loadImage(rootPath + "/gui/black-play-rounded-button-outline.png");
+  pauseIcon = loadImage(rootPath + "/gui/black-pause-thin-rounded-button.png");
+  prevIcon = loadImage(rootPath + "/gui/black-rewind-double-arrow-outlined-circular-button.png");
+  nextIcon = loadImage(rootPath + "/gui/black-fast-forward-thin-outlined-symbol-in-circular-button.png");
+  plusIcon = loadImage(rootPath + "/gui/black-add-circular-button-thin-symbol.png");
+  minusIcon = loadImage(rootPath + "/gui/black-minus-sign-in-a-circle.png");
+  zoomIcon = loadImage(rootPath + "/gui/black-magnifier-search-interface-circular-button.png");
+  upIcon = loadImage(rootPath + "/gui/black-up-rounded-button-outline.png");
+  downIcon = loadImage(rootPath + "/gui/black-down-rounded-button-outline.png");
+  zeroIcon = loadImage(rootPath + "/gui/black-zero-circular-graphics-button-outlined-symbol.png");
 
   screenScale = (height/float(score.height));
 
-  zoomPath = sketchPath(rootPath + "etc/zoom.txt");
+  zoomPath = rootPath + "/etc/zoom.txt";
   zoomFile = new File(zoomPath);
   if (zoomFile.exists()) {
     zoomArray = loadStrings(zoomPath);
@@ -448,7 +448,7 @@ void draw() {
   // Redraw
   if (frameCounter < totalFrames) {
     if (export) {
-      saveFrame(rootPath + "etc/export/frames/score#######.png");
+      saveFrame(rootPath + "/etc/export/frames/score#######.png");
     }
   } else {
     if (export) {
@@ -515,7 +515,7 @@ void mousePressed() {
             }
             if (annotationsChangedp) {
               annotationsChangedp = false; // reset
-              annotationsCanvas.save(rootPath + "etc/annotations.png");
+              annotationsCanvas.save(rootPath + "/etc/annotations.png");
             }
           }
         }

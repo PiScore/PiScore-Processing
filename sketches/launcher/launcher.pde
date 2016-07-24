@@ -77,20 +77,20 @@ void setup () {
   smooth();
   cursor(HAND);
 
-  rootPath = sketchPath("../../");
+  rootPath = ((new File((new File (sketchPath(""))).getParent())).getParent());
 
-  licenseText = loadStrings(rootPath + "LICENSE-SHORT");
+  licenseText = loadStrings(rootPath + "/LICENSE-SHORT");
 
-  projectPath = rootPath + "etc/project-path.txt";
+  projectPath = rootPath + "/etc/project-path.txt";
   projectFile = new File(projectPath);
   if (projectFile.exists()) {
     projectArray = loadStrings(projectPath);
   } else {
-    projectArray[0] = rootPath + "score/SCORE.PNG"; // Default to example score
+    projectArray[0] = rootPath + "/score/SCORE.PNG"; // Default to example score
     saveStrings(projectPath, projectArray);
   }
 
-  serverIpAddrPath = sketchPath(rootPath + "etc/server-ip-addr.txt");
+  serverIpAddrPath = rootPath + "/etc/server-ip-addr.txt";
   serverIpAddrFile = new File(serverIpAddrPath);
   if (serverIpAddrFile.exists()) {
     serverIpAddrArray = loadStrings(serverIpAddrPath);
@@ -101,7 +101,7 @@ void setup () {
   serverIpAddr = serverIpAddrArray[0];
   serverIpAddrTemp = serverIpAddr + "_";
 
-  clientpPath = sketchPath(rootPath + "etc/clientp.txt");
+  clientpPath = rootPath + "/etc/clientp.txt";
   clientpFile = new File(clientpPath);
   if (clientpFile.exists()) {
     clientpArray = loadStrings(clientpPath);
@@ -112,33 +112,33 @@ void setup () {
   clientp = boolean(clientpArray[0]);
 
   launch[0] = "/usr/local/bin/processing-java";
-  launch[1] = "--sketch=" + rootPath + "sketches/PiScore/";
+  launch[1] = "--sketch=" + rootPath + "/sketches/PiScore/";
   launch[2] = "--run";
 
   deleteAnnotations[0] = "mv";
-  deleteAnnotations[1] = rootPath + "etc/annotations.png";
+  deleteAnnotations[1] = rootPath + "/etc/annotations.png";
 
-  backupPath = rootPath + "etc/backup/";
+  backupPath = rootPath + "/etc/backup/";
 
-  bLaunch = loadImage(rootPath + "gui/white-100px-flash-outlined-thin-circular-button.png");
-  bReboot = loadImage(rootPath + "gui/white-circular-arrow-in-rounded-button.png");
-  bShutdown = loadImage(rootPath + "gui/white-power-outlined-circular-button.png");
-  bTerminal = loadImage(rootPath + "gui/white-monitor-circular-thin-button.png");
-  bDelete = loadImage(rootPath + "gui/white-trash-can-circular-outlined-button.png");
-  bCheck = loadImage(rootPath + "gui/white-50px-checkmark-outlined-circular-button.png");
-  bCross = loadImage(rootPath + "gui/white-close-cross-thin-circular-button.png");
-  bEmpty = loadImage(rootPath + "gui/white-50px-empty-circular-button.png");
-  bEdit = loadImage(rootPath + "gui/white-50px-edit-pencil-outline-in-circular-button.png");
-  bEditSelected = loadImage(rootPath + "gui/white-selected-50px-edit-pencil-outline-in-circular-button.png");
-  bAbout = loadImage(rootPath + "gui/white-50px-arroba-outlined-circular-button.png");
-  //bFolder = loadImage(rootPath + "gui/white-50px-folder-outline-in-circular-button.png");
-  bFile = loadImage(rootPath + "gui/white-50px-copy-outlined-circular-button.png");
+  bLaunch = loadImage(rootPath + "/gui/white-100px-flash-outlined-thin-circular-button.png");
+  bReboot = loadImage(rootPath + "/gui/white-circular-arrow-in-rounded-button.png");
+  bShutdown = loadImage(rootPath + "/gui/white-power-outlined-circular-button.png");
+  bTerminal = loadImage(rootPath + "/gui/white-monitor-circular-thin-button.png");
+  bDelete = loadImage(rootPath + "/gui/white-trash-can-circular-outlined-button.png");
+  bCheck = loadImage(rootPath + "/gui/white-50px-checkmark-outlined-circular-button.png");
+  bCross = loadImage(rootPath + "/gui/white-close-cross-thin-circular-button.png");
+  bEmpty = loadImage(rootPath + "/gui/white-50px-empty-circular-button.png");
+  bEdit = loadImage(rootPath + "/gui/white-50px-edit-pencil-outline-in-circular-button.png");
+  bEditSelected = loadImage(rootPath + "/gui/white-selected-50px-edit-pencil-outline-in-circular-button.png");
+  bAbout = loadImage(rootPath + "/gui/white-50px-arroba-outlined-circular-button.png");
+  bFolder = loadImage(rootPath + "/gui/white-50px-folder-outline-in-circular-button.png");
+  //bFile = loadImage(rootPath + "/gui/white-50px-copy-outlined-circular-button.png");
 
-  tReboot = loadImage(rootPath + "gui/white-reboot.png");
-  tShutdown = loadImage(rootPath + "gui/white-shutdown.png");
-  tTerminal = loadImage(rootPath + "gui/white-terminal.png");
-  tDelete = loadImage(rootPath + "gui/white-delete.png");
-  tAbout = loadImage(rootPath + "gui/white-about.png");
+  tReboot = loadImage(rootPath + "/gui/white-reboot.png");
+  tShutdown = loadImage(rootPath + "/gui/white-shutdown.png");
+  tTerminal = loadImage(rootPath + "/gui/white-terminal.png");
+  tDelete = loadImage(rootPath + "/gui/white-delete.png");
+  tAbout = loadImage(rootPath + "/gui/white-about.png");
 }
 
 void draw() {
@@ -156,7 +156,7 @@ void draw() {
     }
 
     if (!ipEditp) {
-      image(bFile, width-iconPadding-iconSize, iconPadding);
+      image(bFolder, width-iconPadding-iconSize, iconPadding);
       fill(255);
       textAlign(RIGHT, TOP);
       textSize(12);
@@ -526,7 +526,7 @@ void mousePressed() {
         currentTime = (year() + "-" + month() + "-" + day() + "-" + hour() + "-" + minute() + "-" + second() + "-" + millis());
         backupFile = (backupPath + currentTime + "-annotations" + ".png");
         deleteAnnotations[2] = backupFile;
-        annotationsPath = sketchPath(rootPath + "etc/annotations.png");
+        annotationsPath = rootPath + "/etc/annotations.png";
         annotationsFile = new File(annotationsPath);
 
         deletep = true;
