@@ -136,6 +136,12 @@ void draw() {
     image(bPlay, ((width+iconPadding)/2)+((iconSize+iconPadding)*1), (height-iconPadding-iconSize), iconSize, iconSize);
     ellipse(((width+iconPadding)/2)+(iconSize/2)+((iconSize+iconPadding)*2), (height-iconPadding-iconSize)+(iconSize/2), iconSize, iconSize);
     image(bFastForward, ((width+iconPadding)/2)+((iconSize+iconPadding)*2), (height-iconPadding-iconSize), iconSize, iconSize);
+    
+    
+    fill(255, 0, 0);
+    textAlign(CENTER, BOTTOM);
+    textSize(20);
+    text(int(setPosition), playheadPos/2, height-iconPadding);
   }
 
   fill(255);

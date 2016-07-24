@@ -118,7 +118,7 @@ void setup () {
   launch[0] = "/usr/local/bin/processing-java";
   launch[1] = "--sketch=" + rootPath + "/sketches/PiScore/";
   launch[2] = "--run";
-  
+
   wizard[0] = "/usr/local/bin/processing-java";
   wizard[1] = "--sketch=" + rootPath + "/sketches/wizard/";
   wizard[2] = "--run";
@@ -167,7 +167,7 @@ void draw() {
       textSize(14);
       text("Current score:\n" + projectArray[0], width/3, iconPadding, ((width/3*2)-((iconPadding*2)+iconSize)), height-iconPadding); //Text spills down the screen for long path names
     }
-    
+
     if (!ipEditp) {
       image(bMusicalNote, width-iconPadding-iconSize, (iconPadding*2)+iconSize);
       fill(255);
@@ -286,18 +286,18 @@ void draw() {
       loadingCounter = 0;
       loadingp = false;
       loadingSleep = true;
-      
+
       noStroke();
-    fill(0); 
-    rect(0, 0, width, height);
-    fill(255);
-    textAlign(CENTER, CENTER);
-    textSize(20);
-    text("Sleeping...", width/2, height/2);
-    textAlign(CENTER, BOTTOM);
-    text("Press anywhere to resume...", width/2, height-textPadding);
-    
-    noLoop();
+      fill(0); 
+      rect(0, 0, width, height);
+      fill(255);
+      textAlign(CENTER, CENTER);
+      textSize(20);
+      text("Sleeping...", width/2, height/2);
+      textAlign(CENTER, BOTTOM);
+      text("Press anywhere to resume...", width/2, height-textPadding);
+
+      noLoop();
     }
   }
 }
@@ -340,6 +340,7 @@ void mousePressed() {
           (mouseY > (iconPadding*2)+iconSize) &
           (mouseY < (iconPadding*2)+iconSize*2)
           ) {
+          loadingp = true;
           exec(wizard);
         }
       }
@@ -511,10 +512,10 @@ void mousePressed() {
           (mouseY > ((iconPadding*5)+(iconSize*3)+18+22+((iconSize+iconPadding)*(3)))) &
           (mouseY < ((iconPadding*5)+(iconSize*3)+18+22+((iconSize+iconPadding)*(3))+iconSize))
           ) {
-            if ( (serverIpAddrTemp.length()) > 1) {
-          serverIpAddrTemp = serverIpAddrTemp.substring(0, serverIpAddrTemp.length()-2);
-          serverIpAddrTemp = serverIpAddrTemp + "_";
-            }
+          if ( (serverIpAddrTemp.length()) > 1) {
+            serverIpAddrTemp = serverIpAddrTemp.substring(0, serverIpAddrTemp.length()-2);
+            serverIpAddrTemp = serverIpAddrTemp + "_";
+          }
         }
       }
 
