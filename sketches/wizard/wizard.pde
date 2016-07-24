@@ -30,10 +30,10 @@ File     projectFile;
 String   projectParent;
 String   projectName;
 
-String[] xpositionsArray = { null, null, null, null };
+String[] xpositionsArray = { null, null, null, null, null, null };
 String xpositionsPath;
 File xpositionsFile;
-int[] xpositions = { 0, 0, 0, 0 };
+int[] xpositions = { 0, 0, 0, 0, 0, 0 };
 
 final int fps = 10; // Frame rate
 
@@ -57,7 +57,7 @@ void setup() {
   noSmooth();
 
   rootPath = ((new File((new File (sketchPath(""))).getParent())).getParent());
-  
+
   playheadPos = round(width * 0.2);
 
   projectPath = rootPath + "/etc/project-path";
@@ -73,7 +73,7 @@ void setup() {
 
   score = loadImage(projectArray[0]);
   clefs = loadImage(projectParent + "/" + projectName + "-clefs.png");
-  
+
   screenScale = (height/float(score.height));
 
   xpositionsPath = projectParent + "/" + projectName + "-xpositions.piscore";
@@ -81,7 +81,7 @@ void setup() {
   if (xpositionsFile.exists()) {
     xpositionsArray = loadStrings(xpositionsPath);
     for (int i = 0; i < (xpositionsArray.length); i++) {
-      xpositions[i] = (-1 * int(xpositionsArray[i]));
+      xpositions[i] = int(xpositionsArray[i]);
     }
   } else {
     xpositions[1] = -score.width;
@@ -96,7 +96,7 @@ void setup() {
   bPlay = loadImage(rootPath + "/gui/black-play-rounded-button-outline.png");
   bFastForward = loadImage(rootPath + "/gui/black-fast-forward-thin-outlined-symbol-in-circular-button.png");
   bCheck = loadImage(rootPath + "/gui/black-checkmark-outlined-circular-button.png");
-  
+
   wizardText[0] = "Set music start position";
   wizardText[1] = "Set music end position";
   wizardText[2] = "Set clef start position";
@@ -104,88 +104,91 @@ void setup() {
 } 
 
 void draw() {
-
-  println(xpositions);
   background(255);
-
   cursor(CROSS);
 
-  image(score, (playheadPos+setPosition), 0, (score.width), (score.height));
+  if (wizardStep < 4) {
+    image(score, (playheadPos+setPosition), 0, (score.width), (score.height));
 
-  // Draw playhead and IP
-  stroke(255, 0, 0, 150);
-  strokeWeight(5);
-  strokeCap(SQUARE);
-  line(playheadPos, 0, playheadPos, height);
+    // Draw playhead and IP
+    stroke(255, 0, 0, 150);
+    strokeWeight(5);
+    strokeCap(SQUARE);
+    line(playheadPos, 0, playheadPos, height);
 
-  fill(255, 0, 0);
-  textAlign(CENTER, TOP);
-  textSize(20);
-  
-  text(wizardText[wizardStep], (width/2), iconPadding);
+    fill(255, 0, 0);
+    textAlign(CENTER, TOP);
+    textSize(20);
 
-  noStroke();
-  fill(255);
-  ellipse(((width+iconPadding)/2)+(iconSize/2)-((iconSize+iconPadding)*3), (height-iconPadding-iconSize)+(iconSize/2), iconSize, iconSize);
-  image(bFastBack, ((width+iconPadding)/2)-((iconSize+iconPadding)*3), (height-iconPadding-iconSize), iconSize, iconSize);
-  ellipse(((width+iconPadding)/2)+(iconSize/2)-((iconSize+iconPadding)*2), (height-iconPadding-iconSize)+(iconSize/2), iconSize, iconSize);
-  image(bBack, ((width+iconPadding)/2)-((iconSize+iconPadding)*2), (height-iconPadding-iconSize), iconSize, iconSize);
-  ellipse(((width+iconPadding)/2)+(iconSize/2)-((iconSize+iconPadding)*1), (height-iconPadding-iconSize)+(iconSize/2), iconSize, iconSize);
-  image(bMinus, ((width+iconPadding)/2)-((iconSize+iconPadding)*1), (height-iconPadding-iconSize), iconSize, iconSize);
-  ellipse(((width+iconPadding)/2)+(iconSize/2), (height-iconPadding-iconSize)+(iconSize/2), iconSize, iconSize);
-  image(bPlus, ((width+iconPadding)/2), (height-iconPadding-iconSize), iconSize, iconSize);
-  ellipse(((width+iconPadding)/2)+(iconSize/2)+((iconSize+iconPadding)*1), (height-iconPadding-iconSize)+(iconSize/2), iconSize, iconSize);
-  image(bPlay, ((width+iconPadding)/2)+((iconSize+iconPadding)*1), (height-iconPadding-iconSize), iconSize, iconSize);
-  ellipse(((width+iconPadding)/2)+(iconSize/2)+((iconSize+iconPadding)*2), (height-iconPadding-iconSize)+(iconSize/2), iconSize, iconSize);
-  image(bFastForward, ((width+iconPadding)/2)+((iconSize+iconPadding)*2), (height-iconPadding-iconSize), iconSize, iconSize);
+    text(wizardText[wizardStep], (width/2), iconPadding);
 
+    noStroke();
+    fill(255);
+    ellipse(((width+iconPadding)/2)+(iconSize/2)-((iconSize+iconPadding)*3), (height-iconPadding-iconSize)+(iconSize/2), iconSize, iconSize);
+    image(bFastBack, ((width+iconPadding)/2)-((iconSize+iconPadding)*3), (height-iconPadding-iconSize), iconSize, iconSize);
+    ellipse(((width+iconPadding)/2)+(iconSize/2)-((iconSize+iconPadding)*2), (height-iconPadding-iconSize)+(iconSize/2), iconSize, iconSize);
+    image(bBack, ((width+iconPadding)/2)-((iconSize+iconPadding)*2), (height-iconPadding-iconSize), iconSize, iconSize);
+    ellipse(((width+iconPadding)/2)+(iconSize/2)-((iconSize+iconPadding)*1), (height-iconPadding-iconSize)+(iconSize/2), iconSize, iconSize);
+    image(bMinus, ((width+iconPadding)/2)-((iconSize+iconPadding)*1), (height-iconPadding-iconSize), iconSize, iconSize);
+    ellipse(((width+iconPadding)/2)+(iconSize/2), (height-iconPadding-iconSize)+(iconSize/2), iconSize, iconSize);
+    image(bPlus, ((width+iconPadding)/2), (height-iconPadding-iconSize), iconSize, iconSize);
+    ellipse(((width+iconPadding)/2)+(iconSize/2)+((iconSize+iconPadding)*1), (height-iconPadding-iconSize)+(iconSize/2), iconSize, iconSize);
+    image(bPlay, ((width+iconPadding)/2)+((iconSize+iconPadding)*1), (height-iconPadding-iconSize), iconSize, iconSize);
+    ellipse(((width+iconPadding)/2)+(iconSize/2)+((iconSize+iconPadding)*2), (height-iconPadding-iconSize)+(iconSize/2), iconSize, iconSize);
+    image(bFastForward, ((width+iconPadding)/2)+((iconSize+iconPadding)*2), (height-iconPadding-iconSize), iconSize, iconSize);
+  }
   ellipse((width-iconPadding-iconSize+(iconSize/2)), (height-iconPadding-iconSize)+(iconSize/2), iconSize, iconSize);
   image(bCheck, (width-iconPadding-iconSize), (height-iconPadding-iconSize), iconSize, iconSize);
 }
 
 void mousePressed() {
-  if (mouseY > height-(iconSize+iconPadding) && mouseY < height-iconPadding) {
-    if ( mouseX > ((width+iconPadding)/2)-((iconSize+iconPadding)*3)
-      && mouseX < ((width+iconPadding)/2)-((iconSize+iconPadding)*3)+iconSize) {
-      setPosition+=150;
-    }
-    if ( mouseX > ((width+iconPadding)/2)-((iconSize+iconPadding)*2)
-      && mouseX < ((width+iconPadding)/2)-((iconSize+iconPadding)*2)+iconSize) {
-      setPosition+=20;
-    }
-    if ( mouseX > ((width+iconPadding)/2)-(iconSize+iconPadding)
-      && mouseX < ((width+iconPadding)/2)-((iconSize+iconPadding))+iconSize) {
-      setPosition+=1;
-    }
-    if ( mouseX > ((width+iconPadding)/2)
-      && mouseX < ((width+iconPadding)/2)+iconSize) {
-      setPosition-=1;
-    }
-    if ( mouseX > ((width+iconPadding)/2)+((iconSize+iconPadding)*1)
-      && mouseX < ((width+iconPadding)/2)+((iconSize+iconPadding)*1)+iconSize) {
-      setPosition-=20;
-    }
-    if ( mouseX > ((width+iconPadding)/2)+((iconSize+iconPadding)*2)
-      && mouseX < ((width+iconPadding)/2)+((iconSize+iconPadding)*2)+iconSize) {
-      setPosition-=150;
-    }
-
-    if ( mouseX > (width-iconPadding-iconSize)
-      && mouseX < (width-iconPadding)) {
-      xpositions[wizardStep] = setPosition;
-      wizardStep++;
-      if (wizardStep < (xpositions.length)) {
-        setPosition = xpositions[wizardStep];
-      } else {
-        for (int i = 0; i < (xpositions.length); i++) {
-          xpositionsArray[i] = str((-1 * xpositions[i]));
-        }
-        saveStrings(xpositionsPath, xpositionsArray);
-        exit();
+  if (wizardStep < 4) {
+    if (mouseY > height-(iconSize+iconPadding) && mouseY < height-iconPadding) {
+      if ( mouseX > ((width+iconPadding)/2)-((iconSize+iconPadding)*3)
+        && mouseX < ((width+iconPadding)/2)-((iconSize+iconPadding)*3)+iconSize) {
+        setPosition+=150;
+      }
+      if ( mouseX > ((width+iconPadding)/2)-((iconSize+iconPadding)*2)
+        && mouseX < ((width+iconPadding)/2)-((iconSize+iconPadding)*2)+iconSize) {
+        setPosition+=20;
+      }
+      if ( mouseX > ((width+iconPadding)/2)-(iconSize+iconPadding)
+        && mouseX < ((width+iconPadding)/2)-((iconSize+iconPadding))+iconSize) {
+        setPosition+=1;
+      }
+      if ( mouseX > ((width+iconPadding)/2)
+        && mouseX < ((width+iconPadding)/2)+iconSize) {
+        setPosition-=1;
+      }
+      if ( mouseX > ((width+iconPadding)/2)+((iconSize+iconPadding)*1)
+        && mouseX < ((width+iconPadding)/2)+((iconSize+iconPadding)*1)+iconSize) {
+        setPosition-=20;
+      }
+      if ( mouseX > ((width+iconPadding)/2)+((iconSize+iconPadding)*2)
+        && mouseX < ((width+iconPadding)/2)+((iconSize+iconPadding)*2)+iconSize) {
+        setPosition-=150;
       }
     }
   }
+
+  if ( mouseX > (width-iconPadding-iconSize)
+    && mouseX < (width-iconPadding)
+    && mouseY > height-(iconSize+iconPadding)
+    && mouseY < height-iconPadding) {
+    xpositions[wizardStep] = setPosition;
+    wizardStep++;
+    if (wizardStep < (xpositions.length)) {
+      setPosition = xpositions[wizardStep];
+    } else {
+      for (int i = 0; i < (xpositions.length); i++) {
+        xpositionsArray[i] = str((xpositions[i]));
+      }
+      saveStrings(xpositionsPath, xpositionsArray);
+      exit();
+    }
+  }
 }
+
 
 String getNameWithoutExt (File infile) {
   String name = infile.getName();
