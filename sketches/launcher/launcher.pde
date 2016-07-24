@@ -61,7 +61,7 @@ boolean ipEditp = false;
 boolean aboutp = false;
 int deleteTimeout = 0;
 
-String currentTime;
+String dateStamp, timeStamp;
 
 final int fps = 10;
 int loadingCounter = 0;
@@ -522,8 +522,9 @@ void mousePressed() {
         (mouseY > (height-iconSize-(tTerminal.height)-(textPadding*2))) &
         (mouseY < (height-iconSize-(tTerminal.height)-(textPadding*2))+iconSize)
         ) {
-        currentTime = (year() + "-" + month() + "-" + day() + "-" + hour() + "-" + minute() + "-" + second() + "-" + millis());
-        backupFile = (backupPath + currentTime + projectName + "-annotations.png");
+        dateStamp = (year() + "-" + month() + "-" + day());
+        timeStamp = (hour() + "-" + minute() + "-" + second());
+        backupFile = (backupPath + projectName + "-annotations" + dateStamp + timeStamp + ".png");
         deleteAnnotations[1] = projectParent + "/" + projectName + "-annotations.png";
         deleteAnnotations[2] = backupFile;
 
