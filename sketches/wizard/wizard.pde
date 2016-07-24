@@ -37,8 +37,6 @@ float[] xpositions = { 0, 0, 0, 0, 10, 0 };
 
 final int fps = 10; // Frame rate
 
-float screenScale = 1.0;
-
 float setPosition;
 
 String numInput;
@@ -49,8 +47,10 @@ String[] wizardText = { null, null, null, null, null, null };
 final int iconSize = 50;
 final int iconPadding = 10;
 
-PImage bFastBack, bBack, bMinus, bPlus, bPlay, bFastForward, bCheck;
+PImage bFastBack, bBack, bMinus, bPlus, bPlay, bFastForward, bCheck, bUp, bDown;
 String[] numpadArray = { "7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ".", "\u2190" };
+
+int vOffset = 0;
 
 int playheadPos;
 
@@ -77,8 +77,6 @@ void setup() {
   score = loadImage(projectArray[0]);
   clefs = loadImage(projectParent + "/" + projectName + "-clefs.png");
 
-  screenScale = (height/float(score.height));
-
   xpositionsPath = projectParent + "/" + projectName + "-xpositions.piscore";
   xpositionsFile = new File(xpositionsPath);
   if (xpositionsFile.exists()) {
@@ -99,6 +97,8 @@ void setup() {
   bPlay = loadImage(rootPath + "/gui/black-play-rounded-button-outline.png");
   bFastForward = loadImage(rootPath + "/gui/black-fast-forward-thin-outlined-symbol-in-circular-button.png");
   bCheck = loadImage(rootPath + "/gui/black-checkmark-outlined-circular-button.png");
+  bUp = loadImage(rootPath + "/gui/black-up-rounded-button-outline.png");
+  bDown = loadImage(rootPath + "/gui/black-down-rounded-button-outline.png");
 
   wizardText[0] = "Set music start position";
   wizardText[1] = "Set music end position";
@@ -113,7 +113,7 @@ void draw() {
   cursor(CROSS);
 
   if (wizardStep < 4) {
-    image(score, (playheadPos+setPosition), 0, (score.width), (score.height));
+    image(score, (playheadPos+setPosition), vOffset, (score.width), (score.height));
 
     // Draw playhead and IP
     stroke(255, 0, 0, 150);
@@ -136,12 +136,17 @@ void draw() {
     image(bPlay, ((width+iconPadding)/2)+((iconSize+iconPadding)*1), (height-iconPadding-iconSize), iconSize, iconSize);
     ellipse(((width+iconPadding)/2)+(iconSize/2)+((iconSize+iconPadding)*2), (height-iconPadding-iconSize)+(iconSize/2), iconSize, iconSize);
     image(bFastForward, ((width+iconPadding)/2)+((iconSize+iconPadding)*2), (height-iconPadding-iconSize), iconSize, iconSize);
-    
-    
+
+    ellipse(width-iconPadding-(iconSize/2), ((height/2)-(iconPadding/2)-(iconSize/2)), iconSize, iconSize);
+    image(bUp, (width-iconPadding-iconSize), ((height/2)-(iconPadding/2)-iconSize), iconSize, iconSize);
+    ellipse(width-iconPadding-(iconSize/2), ((height/2)+(iconPadding/2)+(iconSize/2)), iconSize, iconSize);
+    image(bDown, (width-iconPadding-iconSize), ((height/2)+(iconPadding/2)), iconSize, iconSize);
+
+
     fill(255, 0, 0);
     textAlign(CENTER, BOTTOM);
     textSize(20);
-    text(int(setPosition), playheadPos/2, height-iconPadding);
+    text(-int(setPosition), playheadPos/2, height-iconPadding);
   }
 
   fill(255);
@@ -303,6 +308,17 @@ void mousePressed() {
       if ( numInput.length() > 0) {
         numInput = numInput.substring(0, numInput.length()-1);
       }
+    }
+  }
+
+  if ( (mouseX > (width-iconPadding-iconSize)) && (mouseX < (width-iconPadding))) {  
+    if ( (mouseY > ((height/2)-(iconPadding/2)-iconSize))
+      && (mouseY < ((height/2)-(iconPadding/2)))) {
+        vOffset+=50;
+    }
+    if ( (mouseY > ((height/2)+(iconPadding/2)))
+      && (mouseY < ((height/2)+(iconPadding/2)+iconSize))) {
+        vOffset-=50;
     }
   }
 
