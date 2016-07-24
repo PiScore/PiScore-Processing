@@ -56,6 +56,7 @@ String serverIpAddr;
 String serverIpAddrTemp;
 
 boolean loadingp = false;
+boolean loadingSleep = false;
 boolean deletep = false;
 boolean ipEditp = false;
 boolean aboutp = false;
@@ -141,7 +142,7 @@ void setup () {
 }
 
 void draw() {
-  background(color(0, 90, 158)); 
+  background(color(0, 90, 158));
 
   if (!loadingp) {
     fill(255);
@@ -260,7 +261,7 @@ void draw() {
   }
 
   if (loadingp) {
-    if (loadingCounter < (fps * 15)) { //Timeout
+    if (loadingCounter < (fps * 10)) { //Timeout
       if ((loadingCounter % fps) < (fps*0.5)) {
         fill(255);
         textSize(20);
@@ -271,14 +272,29 @@ void draw() {
     } else {
       loadingCounter = 0;
       loadingp = false;
+      loadingSleep = true;
+      
+      noStroke();
+    fill(0); 
+    rect(0, 0, width, height);
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(20);
+    text("Sleeping...", width/2, height/2);
+    textAlign(CENTER, BOTTOM);
+    text("Press anywhere to resume...", width/2, height-textPadding);
+    
+    noLoop();
     }
   }
 }
 
 void mousePressed() {
   if (!loadingp) {
-    if (aboutp) {
+    if (aboutp || loadingSleep ) {
       aboutp = false;
+      loadingSleep = false;
+      loop();
     } else {
       //Launch
       if (!ipEditp) {
