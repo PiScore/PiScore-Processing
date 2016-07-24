@@ -41,6 +41,12 @@ File annotationsFile;
 PGraphics annotationsCanvas;
 boolean annotationsChangedp = false; // Only save when annotationsChangedp
 
+String[] projectArray = { null };
+String   projectPath;
+File     projectFile;
+String   projectParent;
+String   projectName;
+
 String[] clientpArray = { null };
 String clientpPath;
 File clientpFile;
@@ -113,10 +119,21 @@ void setup() {
   frameRate(fps);
   size(800, 480);
   noSmooth();
-  
+
   rootPath = ((new File((new File (sketchPath(""))).getParent())).getParent());
 
-  serverIpAddrPath = rootPath + "/etc/server-ip-addr.txt";
+  projectPath = rootPath + "/etc/project-path";
+  projectFile = new File(projectPath);
+  if (projectFile.exists()) {
+    projectArray = loadStrings(projectPath);
+  } else {
+    projectArray[0] = rootPath + "/examplescore/examplescore.png"; // Default to example score
+    saveStrings(projectPath, projectArray);
+  }
+  projectParent = (new File (projectArray[0])).getParent();
+  projectName = getNameWithoutExt(new File (projectArray[0]));
+
+  serverIpAddrPath = rootPath + "/etc/server-ip-addr";
   serverIpAddrFile = new File(serverIpAddrPath);
   if (serverIpAddrFile.exists()) {
     serverIpAddrArray = loadStrings(serverIpAddrPath);
@@ -126,7 +143,7 @@ void setup() {
   }
   serverIpAddr = serverIpAddrArray[0];
 
-  vOffsetPath = rootPath + "/etc/voffset.txt";
+  vOffsetPath = projectParent + "/" + projectName + "-voffset.piscore";
   vOffsetFile = new File(vOffsetPath);
   if (vOffsetFile.exists()) {
     vOffsetArray = loadStrings(vOffsetPath);
@@ -136,7 +153,7 @@ void setup() {
   }
   vOffset = int(vOffsetArray[0]);
 
-  clientpPath = rootPath + "/etc/clientp.txt";
+  clientpPath = rootPath + "/etc/clientp";
   clientpFile = new File(clientpPath);
   if (clientpFile.exists()) {
     clientpArray = loadStrings(clientpPath);
@@ -152,14 +169,15 @@ void setup() {
     scoreClient = new Client(this, serverIpAddr, serverPort);
   }
 
-  score = loadImage(rootPath + "/score/SCORE.PNG");
-  clefs = loadImage(rootPath + "/score/SCORE_CLEFS.PNG");
+  score = loadImage(projectArray[0]);
+  clefs = loadImage(projectParent + "/" + projectName + "-clefs.png");
+  
   annotationsCanvas = createGraphics(score.width, score.height);
-  annotationsPath = rootPath + "/etc/annotations.png";
+  annotationsPath = projectParent + "/" + projectName + "-annotations.png";
   annotationsFile = new File(annotationsPath);
   if (annotationsFile.exists())
   {
-    annotations = loadImage(rootPath + "/etc/annotations.png");
+    annotations = loadImage(annotationsPath);
     annotationsCanvas.beginDraw();
     annotations.loadPixels();
     annotationsCanvas.loadPixels();
@@ -191,7 +209,7 @@ void setup() {
 
   screenScale = (height/float(score.height));
 
-  zoomPath = rootPath + "/etc/zoom.txt";
+  zoomPath = projectParent + "/" + projectName + "-zoom.piscore";
   zoomFile = new File(zoomPath);
   if (zoomFile.exists()) {
     zoomArray = loadStrings(zoomPath);
@@ -515,7 +533,7 @@ void mousePressed() {
             }
             if (annotationsChangedp) {
               annotationsChangedp = false; // reset
-              annotationsCanvas.save(rootPath + "/etc/annotations.png");
+              annotationsCanvas.save(annotationsPath);
             }
           }
         }
@@ -742,4 +760,13 @@ void eraseFunction(color c) {
     }
   }
   annotationsCanvas.updatePixels();
+}
+
+String getNameWithoutExt (File infile) {
+  String name = infile.getName();
+  int pos = name.lastIndexOf(".");
+  if (pos > 0) {
+    name = name.substring(0, pos);
+  }
+  return name;
 }

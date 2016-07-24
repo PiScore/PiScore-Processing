@@ -25,12 +25,10 @@ String rootPath;
 String[] launch = { null, null, null };
 String[] reboot = {"sudo", "reboot"};
 String[] shutdown = {"sudo", "shutdown", "now"};
-String[] deleteAnnotations = { null, null, null };
+String[] deleteAnnotations = { "mv", null, null };
 
 String[] licenseText;
 
-String annotationsPath;
-File annotationsFile;
 String backupPath;
 String backupFile;
 
@@ -43,6 +41,8 @@ String[] numpadDecisionArray = { "Cancel", "Confirm" };
 String[] projectArray = { null };
 String   projectPath;
 File     projectFile;
+String   projectParent;
+String   projectName;
 
 String[] clientpArray = { null };
 String clientpPath;
@@ -81,16 +81,18 @@ void setup () {
 
   licenseText = loadStrings(rootPath + "/LICENSE-SHORT");
 
-  projectPath = rootPath + "/etc/project-path.txt";
+  projectPath = rootPath + "/etc/project-path";
   projectFile = new File(projectPath);
   if (projectFile.exists()) {
     projectArray = loadStrings(projectPath);
   } else {
-    projectArray[0] = rootPath + "/score/SCORE.PNG"; // Default to example score
+    projectArray[0] = rootPath + "/examplescore/examplescore.png"; // Default to example score
     saveStrings(projectPath, projectArray);
   }
+  projectParent = (new File (projectArray[0])).getParent();
+  projectName = getNameWithoutExt(new File (projectArray[0]));
 
-  serverIpAddrPath = rootPath + "/etc/server-ip-addr.txt";
+  serverIpAddrPath = rootPath + "/etc/server-ip-addr";
   serverIpAddrFile = new File(serverIpAddrPath);
   if (serverIpAddrFile.exists()) {
     serverIpAddrArray = loadStrings(serverIpAddrPath);
@@ -101,7 +103,7 @@ void setup () {
   serverIpAddr = serverIpAddrArray[0];
   serverIpAddrTemp = serverIpAddr + "_";
 
-  clientpPath = rootPath + "/etc/clientp.txt";
+  clientpPath = rootPath + "/etc/clientp";
   clientpFile = new File(clientpPath);
   if (clientpFile.exists()) {
     clientpArray = loadStrings(clientpPath);
@@ -114,9 +116,6 @@ void setup () {
   launch[0] = "/usr/local/bin/processing-java";
   launch[1] = "--sketch=" + rootPath + "/sketches/PiScore/";
   launch[2] = "--run";
-
-  deleteAnnotations[0] = "mv";
-  deleteAnnotations[1] = rootPath + "/etc/annotations.png";
 
   backupPath = rootPath + "/etc/backup/";
 
@@ -524,10 +523,9 @@ void mousePressed() {
         (mouseY < (height-iconSize-(tTerminal.height)-(textPadding*2))+iconSize)
         ) {
         currentTime = (year() + "-" + month() + "-" + day() + "-" + hour() + "-" + minute() + "-" + second() + "-" + millis());
-        backupFile = (backupPath + currentTime + "-annotations" + ".png");
+        backupFile = (backupPath + currentTime + projectName + "-annotations.png");
+        deleteAnnotations[1] = projectParent + "/" + projectName + "-annotations.png";
         deleteAnnotations[2] = backupFile;
-        annotationsPath = rootPath + "/etc/annotations.png";
-        annotationsFile = new File(annotationsPath);
 
         deletep = true;
       }
@@ -548,7 +546,7 @@ void mousePressed() {
           (mouseY > (height-(iconSize*3)-(iconPadding*2)-(tDelete.height)-(textPadding*2))) &
           (mouseY < (height-(iconSize*3)-(iconPadding*2)-(tDelete.height)-(textPadding*2))+iconSize)
           ) {
-          if (annotationsFile.exists())
+          if ((new File (projectParent + "/" + projectName + "-annotations.png")).exists())
           {
             exec(deleteAnnotations);
           }
@@ -564,5 +562,17 @@ void fileSelected(File selection) {
   if (selection != null) {
     projectArray[0] = selection.getAbsolutePath();
     saveStrings(projectPath, projectArray);
+    //Update paths
+    projectParent = (new File (projectArray[0])).getParent();
+    projectName = getNameWithoutExt(new File (projectArray[0]));
   }
+}
+
+String getNameWithoutExt (File infile) {
+  String name = infile.getName();
+  int pos = name.lastIndexOf(".");
+  if (pos > 0) {
+    name = name.substring(0, pos);
+  }
+  return name;
 }
