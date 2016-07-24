@@ -23,6 +23,7 @@
 String rootPath;
 
 String[] launch = { null, null, null };
+String[] wizard = { null, null, null };
 String[] reboot = {"sudo", "reboot"};
 String[] shutdown = {"sudo", "shutdown", "now"};
 String[] deleteAnnotations = { "mv", null, null };
@@ -32,7 +33,7 @@ String[] licenseText;
 String backupPath;
 String backupFile;
 
-PImage bLaunch, bReboot, bShutdown, bTerminal, bDelete, bCheck, bCross, bEmpty, bEdit, bEditSelected, bAbout, bFolder, bFile;
+PImage bLaunch, bReboot, bShutdown, bTerminal, bDelete, bCheck, bCross, bEmpty, bEdit, bEditSelected, bAbout, bFolder, bFile, bMusicalNote;
 PImage tReboot, tShutdown, tTerminal, tDelete, tAbout;
 
 String[] numpadArray = { "7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ".", "\u2190" };
@@ -117,6 +118,10 @@ void setup () {
   launch[0] = "/usr/local/bin/processing-java";
   launch[1] = "--sketch=" + rootPath + "/sketches/PiScore/";
   launch[2] = "--run";
+  
+  wizard[0] = "/usr/local/bin/processing-java";
+  wizard[1] = "--sketch=" + rootPath + "/sketches/wizard/";
+  wizard[2] = "--run";
 
   backupPath = rootPath + "/etc/backup/";
 
@@ -132,7 +137,7 @@ void setup () {
   bEditSelected = loadImage(rootPath + "/gui/white-selected-50px-edit-pencil-outline-in-circular-button.png");
   bAbout = loadImage(rootPath + "/gui/white-50px-arroba-outlined-circular-button.png");
   bFolder = loadImage(rootPath + "/gui/white-50px-folder-outline-in-circular-button.png");
-  //bFile = loadImage(rootPath + "/gui/white-50px-copy-outlined-circular-button.png");
+  bMusicalNote = loadImage(rootPath + "/gui/white-50px-musical-note-symbol-in-circular-button-outlined-symbol.png");
 
   tReboot = loadImage(rootPath + "/gui/white-reboot.png");
   tShutdown = loadImage(rootPath + "/gui/white-shutdown.png");
@@ -159,8 +164,16 @@ void draw() {
       image(bFolder, width-iconPadding-iconSize, iconPadding);
       fill(255);
       textAlign(RIGHT, TOP);
-      textSize(12);
+      textSize(14);
       text("Current score:\n" + projectArray[0], width/3, iconPadding, ((width/3*2)-((iconPadding*2)+iconSize)), height-iconPadding); //Text spills down the screen for long path names
+    }
+    
+    if (!ipEditp) {
+      image(bMusicalNote, width-iconPadding-iconSize, (iconPadding*2)+iconSize);
+      fill(255);
+      textAlign(RIGHT, CENTER);
+      textSize(14);
+      text("Score setup wizard", (width-(iconPadding*2)-iconSize), (iconPadding*2)+(iconSize*0.5)+iconSize);
     }
 
     if (!ipEditp) {
@@ -317,6 +330,17 @@ void mousePressed() {
           (mouseY < (iconPadding+iconSize))
           ) {
           selectInput("Select score...", "fileSelected", new File(projectArray[0]));
+        }
+      }
+      //Score setup wizard
+      if (!ipEditp) {
+        if (
+          (mouseX > width-(iconPadding+iconSize)) &
+          (mouseX < width-iconPadding) &
+          (mouseY > (iconPadding*2)+iconSize) &
+          (mouseY < (iconPadding*2)+iconSize*2)
+          ) {
+          exec(wizard);
         }
       }
       //Launch as Server checkbox
