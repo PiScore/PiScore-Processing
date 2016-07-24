@@ -34,7 +34,7 @@ File annotationsFile;
 String backupPath;
 String backupFile;
 
-PImage bLaunch, bReboot, bShutdown, bTerminal, bDelete, bCheck, bCross, bEmpty, bEdit, bEditSelected, bAbout, bFolder;
+PImage bLaunch, bReboot, bShutdown, bTerminal, bDelete, bCheck, bCross, bEmpty, bEdit, bEditSelected, bAbout, bFolder, bFile;
 PImage tReboot, tShutdown, tTerminal, tDelete, tAbout;
 
 String[] numpadArray = { "7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ".", "\u2190" };
@@ -86,7 +86,7 @@ void setup () {
   if (projectFile.exists()) {
     projectArray = loadStrings(projectPath);
   } else {
-    projectArray[0] = rootPath;
+    projectArray[0] = rootPath + "score/SCORE.PNG"; // Default to example score
     saveStrings(projectPath, projectArray);
   }
 
@@ -131,7 +131,8 @@ void setup () {
   bEdit = loadImage(rootPath + "gui/white-50px-edit-pencil-outline-in-circular-button.png");
   bEditSelected = loadImage(rootPath + "gui/white-selected-50px-edit-pencil-outline-in-circular-button.png");
   bAbout = loadImage(rootPath + "gui/white-50px-arroba-outlined-circular-button.png");
-  bFolder = loadImage(rootPath + "gui/white-50px-folder-outline-in-circular-button.png");
+  //bFolder = loadImage(rootPath + "gui/white-50px-folder-outline-in-circular-button.png");
+  bFile = loadImage(rootPath + "gui/white-50px-copy-outlined-circular-button.png");
 
   tReboot = loadImage(rootPath + "gui/white-reboot.png");
   tShutdown = loadImage(rootPath + "gui/white-shutdown.png");
@@ -155,11 +156,11 @@ void draw() {
     }
 
     if (!ipEditp) {
-      image(bFolder, width-iconPadding-iconSize, iconPadding);
+      image(bFile, width-iconPadding-iconSize, iconPadding);
       fill(255);
       textAlign(RIGHT, TOP);
       textSize(12);
-      text("Current project folder:\n" + projectArray[0], width/3, iconPadding, ((width/3*2)-((iconPadding*2)+iconSize)), height-iconPadding); //Text spills down the screen for long path names
+      text("Current score:\n" + projectArray[0], width/3, iconPadding, ((width/3*2)-((iconPadding*2)+iconSize)), height-iconPadding); //Text spills down the screen for long path names
     }
 
     if (!ipEditp) {
@@ -300,7 +301,7 @@ void mousePressed() {
           (mouseY > iconPadding) &
           (mouseY < (iconPadding+iconSize))
           ) {
-          selectFolder("Set project folder...", "folderSelected", new File(projectArray[0]));
+          selectInput("Select score...", "fileSelected", new File(projectArray[0]));
         }
       }
       //Launch as Server checkbox
@@ -559,7 +560,7 @@ void mousePressed() {
   }
 }
 
-void folderSelected(File selection) {
+void fileSelected(File selection) {
   if (selection != null) {
     projectArray[0] = selection.getAbsolutePath();
     saveStrings(projectPath, projectArray);
