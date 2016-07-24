@@ -19,7 +19,10 @@
    style="enable-background:new 0 0 64 64;"
    xml:space="preserve"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="white-copy-outlined-circular-button.svg"><metadata
+   sodipodi:docname="white-copy-outlined-circular-button.svg"
+   inkscape:export-filename="C:\Users\david\Dropbox\00_ComputerSync\Documents\git-repositories\PiScore\gui\white-copy-outlined-circular-button.png"
+   inkscape:export-xdpi="70.309998"
+   inkscape:export-ydpi="70.309998"><metadata
      id="metadata56"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
@@ -45,7 +48,9 @@
      inkscape:current-layer="Capa_1" /><path
      d="M 32,0 C 14.327,0 0,14.327 0,32 0,49.673 14.327,64 32,64 49.673,64 64,49.673 64,32 64,14.327 49.673,0 32,0 Z m 0,62 C 15.432,62 2,48.568 2,32 2,15.432 15.432,2 32,2 48.568,2 62,15.432 62,32 62,48.568 48.568,62 32,62 Z"
      id="path10"
-     inkscape:connector-curvature="0" /><path
+     inkscape:connector-curvature="0"
+     style="fill:#ffffff" /><path
      d="m 40.008,27.562 -6.57,-6.569 -0.446,0.445 0,-0.431 -7,0 c -1.104,0 -2,0.896 -2,2 l 0,18 c 0,1.104 0.896,2 2,2 l 12,0 c 1.104,0 2,-0.896 2,-2 l 0,-13 -0.432,0 0.448,-0.445 z m -7.016,-4.095 4.54,4.54 -4.54,0 0,-4.54 z m 5,17.54 -12,0 0,-18 5,0 0,5 c 0,1.104 0.896,2 2,2 l 5,0 0,11 z"
      id="path15"
-     inkscape:connector-curvature="0" /></svg>
+     inkscape:connector-curvature="0"
+     style="fill:#ffffff" /></svg>
