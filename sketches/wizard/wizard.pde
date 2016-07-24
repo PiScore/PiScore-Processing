@@ -22,7 +22,7 @@
 
 String rootPath;
 
-PImage score, clefs;
+PImage score;
 
 String[] projectArray = { null };
 String   projectPath;
@@ -30,10 +30,10 @@ File     projectFile;
 String   projectParent;
 String   projectName;
 
-String[] xpositionsArray = { null, null, null, null, null, null };
-String xpositionsPath;
-File xpositionsFile;
-float[] xpositions = { 0, 0, 0, 0, 10, 0 };
+String[] userSettingsArray = { null, null, null, null, null, null, null, null };
+String userSettingsPath;
+File userSettingsFile;
+float[] userSettings = { 0, 0, 0, 0, 10, 0, 1, 0 };
 
 final int fps = 10; // Frame rate
 
@@ -75,20 +75,19 @@ void setup() {
   projectName = getNameWithoutExt(new File (projectArray[0]));
 
   score = loadImage(projectArray[0]);
-  clefs = loadImage(projectParent + "/" + projectName + "-clefs.png");
 
-  xpositionsPath = projectParent + "/" + projectName + "-xpositions.piscore";
-  xpositionsFile = new File(xpositionsPath);
-  if (xpositionsFile.exists()) {
-    xpositionsArray = loadStrings(xpositionsPath);
-    for (int i = 0; i < (xpositionsArray.length); i++) {
-      xpositions[i] = float(xpositionsArray[i]);
+  userSettingsPath = projectParent + "/" + projectName + ".piscore";
+  userSettingsFile = new File(userSettingsPath);
+  if (userSettingsFile.exists()) {
+    userSettingsArray = loadStrings(userSettingsPath);
+    for (int i = 0; i < (userSettingsArray.length); i++) {
+      userSettings[i] = float(userSettingsArray[i]);
     }
   } else {
-    xpositions[1] = -score.width;
+    userSettings[1] = -score.width;
   }
 
-  setPosition = xpositions[wizardStep];
+  setPosition = userSettings[wizardStep];
 
   bFastBack = loadImage(rootPath + "/gui/black-rewind-double-arrow-outlined-circular-button.png");
   bBack = loadImage(rootPath + "/gui/black-back-rounded-button-outline.png");
@@ -329,23 +328,23 @@ void mousePressed() {
     && mouseY > height-(iconSize+iconPadding)
     && mouseY < height-iconPadding) {
     if (wizardStep < 4) {
-      xpositions[wizardStep] = setPosition;
+      userSettings[wizardStep] = setPosition;
       wizardStep++;
     } else { 
       if ( (numInput.length()) > 0) {
-        xpositions[wizardStep] = float(numInput);
+        userSettings[wizardStep] = float(numInput);
         wizardStep++;
       }
     }
 
-    if (wizardStep < (xpositions.length)) {
-      setPosition = xpositions[wizardStep];
-      numInput = str(xpositions[wizardStep]);
+    if (wizardStep < ((userSettings.length)-2)) {
+      setPosition = userSettings[wizardStep];
+      numInput = str(userSettings[wizardStep]);
     } else {
-      for (int i = 0; i < (xpositions.length); i++) {
-        xpositionsArray[i] = str((xpositions[i]));
+      for (int i = 0; i < (userSettings.length); i++) {
+        userSettingsArray[i] = str((userSettings[i]));
       }
-      saveStrings(xpositionsPath, xpositionsArray);
+      saveStrings(userSettingsPath, userSettingsArray);
       exit();
     }
   }

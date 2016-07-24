@@ -47,26 +47,15 @@ File     projectFile;
 String   projectParent;
 String   projectName;
 
-String[] xpositionsArray = { null, null, null, null, null, null };
-String xpositionsPath;
-File xpositionsFile;
-float[] xpositions = { 0, 0, 0, 0, 10, 0 };
+String[] userSettingsArray = { null, null, null, null, null, null, null, null };
+String userSettingsPath;
+File userSettingsFile;
+float[] userSettings = { 0, 0, 0, 0, 10, 0, 0, 0 };
 
 String[] clientpArray = { null };
 String clientpPath;
 File clientpFile;
 boolean clientp;
-
-String[] vOffsetArray = { null };
-String vOffsetPath;
-File vOffsetFile;
-int vOffset;
-
-String[] zoomArray = { null };
-String zoomPath;
-File zoomFile;
-float zoom;
-boolean navigationChangedp = false;
 
 // To export frames set export to true
 final boolean export = false;
@@ -79,6 +68,10 @@ int clefsStart;
 int clefsEnd;
 float dur;
 float preRoll;
+float zoom;
+int vOffset;
+
+boolean navigationChangedp = false;
 
 float totalFrames; // float for use as divisor
 
@@ -149,16 +142,6 @@ void setup() {
   }
   serverIpAddr = serverIpAddrArray[0];
 
-  vOffsetPath = projectParent + "/" + projectName + "-voffset.piscore";
-  vOffsetFile = new File(vOffsetPath);
-  if (vOffsetFile.exists()) {
-    vOffsetArray = loadStrings(vOffsetPath);
-  } else {
-    vOffsetArray[0] = "0";
-    saveStrings(vOffsetPath, vOffsetArray);
-  }
-  vOffset = int(vOffsetArray[0]);
-
   clientpPath = rootPath + "/etc/clientp";
   clientpFile = new File(clientpPath);
   if (clientpFile.exists()) {
@@ -175,33 +158,37 @@ void setup() {
     scoreClient = new Client(this, serverIpAddr, serverPort);
   }
   
-  xpositionsPath = projectParent + "/" + projectName + "-xpositions.piscore";
-  xpositionsFile = new File(xpositionsPath);
-  if (xpositionsFile.exists()) {
-    xpositionsArray = loadStrings(xpositionsPath);
-    for (int i = 0; i < (xpositionsArray.length); i++) {
-      xpositions[i] = float(xpositionsArray[i]);
+  userSettingsPath = projectParent + "/" + projectName + ".piscore";
+  userSettingsFile = new File(userSettingsPath);
+  if (userSettingsFile.exists()) {
+    userSettingsArray = loadStrings(userSettingsPath);
+    for (int i = 0; i < (userSettingsArray.length); i++) {
+      userSettings[i] = float(userSettingsArray[i]);
     }
   } else {
     // Defaults adjusted for example score
-    xpositions[0] = -120.0;
-    xpositions[1] = -19921.0;
-    xpositions[2] = -57.0;
-    xpositions[3] = -99.0;
-    xpositions[4] = 540.0;
-    xpositions[5] = 0.0;
-    for (int i = 0; i < (xpositions.length); i++) {
-        xpositionsArray[i] = str((xpositions[i]));
+    userSettings[0] = -120.0;
+    userSettings[1] = -19921.0;
+    userSettings[2] = -57.0;
+    userSettings[3] = -99.0;
+    userSettings[4] = 540.0;
+    userSettings[5] = 0.0;
+    userSettings[6] = 1.0;
+    userSettings[7] = 0.0;
+    for (int i = 0; i < (userSettings.length); i++) {
+        userSettingsArray[i] = str((userSettings[i]));
       }
-    saveStrings(xpositionsPath, xpositionsArray);
+    saveStrings(userSettingsPath, userSettingsArray);
   }
   
-  start =      int(-xpositions[0]);
-  end =        int(-xpositions[1]);
-  clefsStart = int(-xpositions[2]);
-  clefsEnd =   int(-xpositions[3]);
-  dur =        xpositions[4];
-  preRoll =    xpositions[5];
+  start =      int(-userSettings[0]);
+  end =        int(-userSettings[1]);
+  clefsStart = int(-userSettings[2]);
+  clefsEnd =   int(-userSettings[3]);
+  dur =        userSettings[4];
+  preRoll =    userSettings[5];
+  zoom =       userSettings[6];
+  vOffset =    int(userSettings[7]);
   if (clefsEnd < clefsStart) {
     clefsEnd = clefsStart;
   }
@@ -247,16 +234,6 @@ void setup() {
   zeroIcon = loadImage(rootPath + "/gui/black-zero-circular-graphics-button-outlined-symbol.png");
 
   screenScale = (height/float(score.height));
-
-  zoomPath = projectParent + "/" + projectName + "-zoom.piscore";
-  zoomFile = new File(zoomPath);
-  if (zoomFile.exists()) {
-    zoomArray = loadStrings(zoomPath);
-  } else {
-    zoomArray[0] = str(screenScale);
-    saveStrings(zoomPath, zoomArray);
-  }
-  zoom = float(zoomArray[0]);
 
   iconPanelWidth = (iconSize+(iconPadding*2));
 
@@ -567,8 +544,7 @@ void mousePressed() {
             smoothScroller = 0;
             if (navigationChangedp) {
               navigationChangedp = false;
-              saveStrings(zoomPath, zoomArray);
-              saveStrings(vOffsetPath, vOffsetArray);
+              saveStrings(userSettingsPath, userSettingsArray);
             }
             if (annotationsChangedp) {
               annotationsChangedp = false; // reset
@@ -650,8 +626,7 @@ void mousePressed() {
             zoomDialog = false;
             if (navigationChangedp) {
               navigationChangedp = false;
-              saveStrings(zoomPath, zoomArray);
-              saveStrings(vOffsetPath, vOffsetArray);
+              saveStrings(userSettingsPath, userSettingsArray);
             }
           }
         }
@@ -671,18 +646,18 @@ void mousePressed() {
         if (mouseY > ((iconSize*4)+(iconPadding*5)) && mouseY < ((iconSize*5)+(iconPadding*5))) {
           navigationChangedp = true;
           zoom = zoom + 0.5;
-          zoomArray[0] = str(zoom);
+          userSettingsArray[6] = str(zoom);
         }
         if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
           navigationChangedp = true;
           zoom = screenScale;
-          zoomArray[0] = str(zoom);
+          userSettingsArray[6] = str(zoom);
         }
         if (mouseY > ((iconSize*6)+(iconPadding*7)) && mouseY < ((iconSize*7)+(iconPadding*7))) {
           navigationChangedp = true;
           if (zoom > screenScale) {
             zoom = zoom - 0.5;
-            zoomArray[0] = str(zoom);
+            userSettingsArray[6] = str(zoom);
           }
         }
       }
@@ -690,17 +665,17 @@ void mousePressed() {
         if (mouseY > ((iconSize*4)+(iconPadding*5)) && mouseY < ((iconSize*5)+(iconPadding*5))) {
           navigationChangedp = true;
           vOffset = vOffset + round(50*zoom);
-          vOffsetArray[0] = str(vOffset);
+          userSettingsArray[7] = str(vOffset);
         }
         if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
           navigationChangedp = true;
           vOffset = 0;
-          vOffsetArray[0] = str(vOffset);
+          userSettingsArray[7] = str(vOffset);
         }
         if (mouseY > ((iconSize*6)+(iconPadding*7)) && mouseY < ((iconSize*7)+(iconPadding*7))) {
           navigationChangedp = true;
           vOffset = vOffset - round(50*zoom);
-          vOffsetArray[0] = str(vOffset);
+          userSettingsArray[7] = str(vOffset);
         }
       }
     }
@@ -715,8 +690,7 @@ void mousePressed() {
         if ((mouseX > (width-(iconSize*3)-(iconPadding*3))) && mouseX < (width-(iconSize*2)-(iconPadding*3))) {
           if (navigationChangedp) {
             navigationChangedp = false;
-            saveStrings(zoomPath, zoomArray);
-            saveStrings(vOffsetPath, vOffsetArray);
+            saveStrings(userSettingsPath, userSettingsArray);
           }
           exit();
         }
