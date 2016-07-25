@@ -110,7 +110,7 @@ int adjStartScaled;
 int adjEnd;
 
 int smoothScroller = 0;
-int frameCounter = round(-(preRoll*fps));
+int frameCounter;
 boolean playingp = false; // playingp is only kept updated when !clientp
 int incrValue = 0;
 
@@ -197,6 +197,8 @@ void setup() {
   clefs = score.get(clefsStart, 0, clefsEnd-clefsStart, score.height);
 
   totalFrames = ceil(dur * fps);
+  
+  frameCounter = round(-(preRoll*fps));
 
   annotationsCanvas = createGraphics(score.width, score.height);
   annotationsPath = projectParent + "/" + projectName + "-annotations.png";
