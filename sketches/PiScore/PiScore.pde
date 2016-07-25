@@ -50,7 +50,7 @@ String   projectName;
 String[] userSettingsArray = { null, null, null, null, null, null, null, null };
 String userSettingsPath;
 File userSettingsFile;
-float[] userSettings = { 0, 0, 0, 0, 10, 0, 0, 0 };
+float[] userSettings = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 String[] clientpArray = { null };
 String clientpPath;
@@ -167,12 +167,12 @@ void setup() {
     }
   } else {
     // Defaults adjusted for example score
-    userSettings[0] = -120.0;
-    userSettings[1] = -19921.0;
-    userSettings[2] = -57.0;
-    userSettings[3] = -99.0;
-    userSettings[4] = 540.0;
-    userSettings[5] = 0.0;
+    userSettings[0] = -284.0;
+    userSettings[1] = -13404.0;
+    userSettings[2] = -160.0;
+    userSettings[3] = -240.0;
+    userSettings[4] = 180.0;
+    userSettings[5] = 4.0;
     userSettings[6] = 1.0;
     userSettings[7] = 0.0;
     for (int i = 0; i < (userSettings.length); i++) {

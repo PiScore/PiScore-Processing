@@ -33,7 +33,7 @@ String   projectName;
 String[] userSettingsArray = { null, null, null, null, null, null, null, null };
 String userSettingsPath;
 File userSettingsFile;
-float[] userSettings = { 0, 0, 0, 0, 10, 0, 1, 0 };
+float[] userSettings = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 final int fps = 10; // Frame rate
 
@@ -99,12 +99,12 @@ void setup() {
   bUp = loadImage(rootPath + "/gui/black-up-rounded-button-outline.png");
   bDown = loadImage(rootPath + "/gui/black-down-rounded-button-outline.png");
 
-  wizardText[0] = "Set music start position";
-  wizardText[1] = "Set music end position";
-  wizardText[2] = "Set clef start position";
-  wizardText[3] = "Set clef end position";
-  wizardText[4] = "Enter duration (seconds)";
-  wizardText[5] = "Enter preroll (seconds)";
+  wizardText[0] = "Where does the music start?";
+  wizardText[1] = "Where does the music end?";
+  wizardText[2] = "Where do the clefs start?";
+  wizardText[3] = "Where do the clefs end?";
+  wizardText[4] = "Enter the duration (seconds):";
+  wizardText[5] = "Enter the preroll duration (seconds):";
 } 
 
 void draw() {
