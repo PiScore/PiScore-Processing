@@ -665,6 +665,9 @@ void mousePressed() {
           }
           if (mouseY > ((iconSize*6)+(iconPadding*7)) && mouseY < ((iconSize*7)+(iconPadding*7))) {
             navigationChangedp = true;
+            if ((zoom - 0.5) < screenScale) {
+              zoom = screenScale;
+            }
             if (zoom > screenScale) {
               zoom = zoom - 0.5;
               userSettingsArray[6] = str(zoom);
