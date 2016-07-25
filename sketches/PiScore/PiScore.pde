@@ -573,7 +573,7 @@ void mousePressed() {
             loop(); //in case noLoop() is active
             incrValue = 0;
             playingp = false;
-            frameCounter = 0;
+            frameCounter = round(-(preRoll*fps));
           }
         }
       }
@@ -592,7 +592,6 @@ void mousePressed() {
             if (playingp == false) {
               incrValue = 1;
               playingp = true;
-              println(true);
             } else {
               incrValue = 0;
               playingp = false;
