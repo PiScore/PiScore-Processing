@@ -296,9 +296,9 @@ void mousePressed() {
       (mouseY > ((height/3)+((iconSize+iconPadding)*(3)))) &
       (mouseY < ((height/3)+((iconSize+iconPadding)*(3))+iconSize))
       ) {
-        if (!(numInput.contains("."))) {
-      numInput = numInput + ".";
-        }
+      if (!(numInput.contains("."))) {
+        numInput = numInput + ".";
+      }
     }
     if (
       (mouseX > ((width/2)-(iconSize*0.5)-(iconPadding+iconSize))+((iconPadding+iconSize)*(2))) &
@@ -315,11 +315,11 @@ void mousePressed() {
   if ( (mouseX > (width-iconPadding-iconSize)) && (mouseX < (width-iconPadding))) {  
     if ( (mouseY > ((height/2)-(iconPadding/2)-iconSize))
       && (mouseY < ((height/2)-(iconPadding/2)))) {
-        vOffset+=50;
+      vOffset+=50;
     }
     if ( (mouseY > ((height/2)+(iconPadding/2)))
       && (mouseY < ((height/2)+(iconPadding/2)+iconSize))) {
-        vOffset-=50;
+      vOffset-=50;
     }
   }
 

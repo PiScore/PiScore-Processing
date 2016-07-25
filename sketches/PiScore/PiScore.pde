@@ -157,7 +157,7 @@ void setup() {
   } else {
     scoreClient = new Client(this, serverIpAddr, serverPort);
   }
-  
+
   userSettingsPath = projectParent + "/" + projectName + ".piscore";
   userSettingsFile = new File(userSettingsPath);
   if (userSettingsFile.exists()) {
@@ -176,11 +176,11 @@ void setup() {
     userSettings[6] = 1.0;
     userSettings[7] = 0.0;
     for (int i = 0; i < (userSettings.length); i++) {
-        userSettingsArray[i] = str((userSettings[i]));
-      }
+      userSettingsArray[i] = str((userSettings[i]));
+    }
     saveStrings(userSettingsPath, userSettingsArray);
   }
-  
+
   start =      int(-userSettings[0]);
   end =        int(-userSettings[1]);
   clefsStart = int(-userSettings[2]);
@@ -192,12 +192,12 @@ void setup() {
   if (clefsEnd < clefsStart) {
     clefsEnd = clefsStart;
   }
-  
+
   score = loadImage(projectArray[0]);
   clefs = score.get(clefsStart, 0, clefsEnd-clefsStart, score.height);
-  
+
   totalFrames = ceil(dur * fps);
-  
+
   annotationsCanvas = createGraphics(score.width, score.height);
   annotationsPath = projectParent + "/" + projectName + "-annotations.png";
   annotationsFile = new File(annotationsPath);
@@ -428,33 +428,35 @@ void draw() {
   }
 
   //ZOOM ICON
-  if (!editMode) {
-    noStroke();
-    if (!zoomDialog) {
-      fill(buttonBGcolor);
-    } else {
-      fill(buttonActiveColor);
+  if (!playingp) {
+    if (!editMode) {
+      noStroke();
+      if (!zoomDialog) {
+        fill(buttonBGcolor);
+      } else {
+        fill(buttonActiveColor);
+      }
+      ellipse((width-iconSize-iconPadding+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
+      image(zoomIcon, (width-iconSize-iconPadding), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
     }
-    ellipse((width-iconSize-iconPadding+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
-    image(zoomIcon, (width-iconSize-iconPadding), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
-  }
-  if (zoomDialog) {
-    noStroke();
-    fill(255);
-    ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*4)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
-    ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
-    ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*6)+(iconPadding*7)+(iconSize*0.5)), iconSize, iconSize);
-    image(plusIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*4)+(iconPadding*5)), iconSize, iconSize);
-    image(zeroIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
-    image(minusIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*6)+(iconPadding*7)), iconSize, iconSize);
-    noStroke();
-    fill(255);
-    ellipse((width-(iconSize*3)-(iconPadding*3)+(iconSize*0.5)), ((iconSize*4)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
-    ellipse((width-(iconSize*3)-(iconPadding*3)+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
-    ellipse((width-(iconSize*3)-(iconPadding*3)+(iconSize*0.5)), ((iconSize*6)+(iconPadding*7)+(iconSize*0.5)), iconSize, iconSize);
-    image(upIcon, (width-(iconSize*3)-(iconPadding*3)), ((iconSize*4)+(iconPadding*5)), iconSize, iconSize);
-    image(zeroIcon, (width-(iconSize*3)-(iconPadding*3)), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
-    image(downIcon, (width-(iconSize*3)-(iconPadding*3)), ((iconSize*6)+(iconPadding*7)), iconSize, iconSize);
+    if (zoomDialog) {
+      noStroke();
+      fill(255);
+      ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*4)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
+      ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
+      ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*6)+(iconPadding*7)+(iconSize*0.5)), iconSize, iconSize);
+      image(plusIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*4)+(iconPadding*5)), iconSize, iconSize);
+      image(zeroIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
+      image(minusIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*6)+(iconPadding*7)), iconSize, iconSize);
+      noStroke();
+      fill(255);
+      ellipse((width-(iconSize*3)-(iconPadding*3)+(iconSize*0.5)), ((iconSize*4)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
+      ellipse((width-(iconSize*3)-(iconPadding*3)+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
+      ellipse((width-(iconSize*3)-(iconPadding*3)+(iconSize*0.5)), ((iconSize*6)+(iconPadding*7)+(iconSize*0.5)), iconSize, iconSize);
+      image(upIcon, (width-(iconSize*3)-(iconPadding*3)), ((iconSize*4)+(iconPadding*5)), iconSize, iconSize);
+      image(zeroIcon, (width-(iconSize*3)-(iconPadding*3)), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
+      image(downIcon, (width-(iconSize*3)-(iconPadding*3)), ((iconSize*6)+(iconPadding*7)), iconSize, iconSize);
+    }
   }
 
   //EXIT ICON
@@ -586,6 +588,7 @@ void mousePressed() {
             if (playingp == false) {
               incrValue = 1;
               playingp = true;
+              println(true);
             } else {
               incrValue = 0;
               playingp = false;
@@ -619,14 +622,16 @@ void mousePressed() {
 
       //ZOOM
       if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
-        if (!editMode) {
-          if (!zoomDialog) {
-            zoomDialog = true;
-          } else {
-            zoomDialog = false;
-            if (navigationChangedp) {
-              navigationChangedp = false;
-              saveStrings(userSettingsPath, userSettingsArray);
+        if (!playingp) {
+          if (!editMode) {
+            if (!zoomDialog) {
+              zoomDialog = true;
+            } else {
+              zoomDialog = false;
+              if (navigationChangedp) {
+                navigationChangedp = false;
+                saveStrings(userSettingsPath, userSettingsArray);
+              }
             }
           }
         }
