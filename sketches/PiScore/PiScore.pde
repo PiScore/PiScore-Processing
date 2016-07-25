@@ -189,6 +189,9 @@ void setup() {
   preRoll =    userSettings[5];
   zoom =       userSettings[6];
   vOffset =    int(userSettings[7]);
+  if (clefsStart < 0) {
+    clefsStart = 0;
+  }
   if (clefsEnd < clefsStart) {
     clefsEnd = clefsStart;
   }
@@ -197,7 +200,6 @@ void setup() {
   clefs = score.get(clefsStart, 0, clefsEnd-clefsStart, score.height);
 
   totalFrames = ceil(dur * fps);
-  
   frameCounter = round(-(preRoll*fps));
 
   annotationsCanvas = createGraphics(score.width, score.height);
