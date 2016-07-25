@@ -50,6 +50,10 @@ String clientpPath;
 File clientpFile;
 boolean clientp;
 
+String userSettingsPath;
+File userSettingsFile;
+boolean userSettingsp = false;
+
 String[] serverIpAddrArray = { null };
 String serverIpAddrPath;
 File serverIpAddrFile;
@@ -115,6 +119,12 @@ void setup () {
   }
   clientp = boolean(clientpArray[0]);
 
+  userSettingsPath = projectParent + "/" + projectName + ".piscore";
+  userSettingsFile = new File(userSettingsPath);
+  if (userSettingsFile.exists()) {
+    userSettingsp = true;
+  }
+
   launch[0] = "/usr/local/bin/processing-java";
   launch[1] = "--sketch=" + rootPath + "/sketches/PiScore/";
   launch[2] = "--run";
@@ -173,7 +183,13 @@ void draw() {
       fill(255);
       textAlign(RIGHT, CENTER);
       textSize(14);
-      text("Score setup wizard", (width-(iconPadding*2)-iconSize), (iconPadding*2)+(iconSize*0.5)+iconSize);
+      if (userSettingsp) {
+      fill(255);
+        text("Score setup wizard", (width-(iconPadding*2)-iconSize), (iconPadding*2)+(iconSize*0.5)+iconSize);
+      } else {
+        fill(255, 0, 0);
+        text("WARNING: no score information found - please run score setup wizard", (width-(iconPadding*2)-iconSize), (iconPadding*2)+(iconSize*0.5)+iconSize);
+      }
     }
 
     if (!ipEditp) {
@@ -205,7 +221,6 @@ void draw() {
       text("Please enter IP addr.:", iconPadding, ((iconPadding*3)+(iconSize*2)));
       textSize(20);
       text(serverIpAddrTemp, iconPadding, ((iconPadding*3)+(iconSize*2)+18));
-
 
       noStroke();
       fill(color(255, 100, 100));
@@ -307,6 +322,12 @@ void mousePressed() {
     if (aboutp || loadingSleep ) {
       aboutp = false;
       loadingSleep = false;
+      //Check for userSettings
+      userSettingsPath = projectParent + "/" + projectName + ".piscore";
+      userSettingsFile = new File(userSettingsPath);
+      if (userSettingsFile.exists()) {
+        userSettingsp = true;
+      }
       loop();
     } else {
       //Launch
@@ -609,6 +630,13 @@ void fileSelected(File selection) {
     //Update paths
     projectParent = (new File (projectArray[0])).getParent();
     projectName = getNameWithoutExt(new File (projectArray[0]));
+    //Check for userSettings
+    userSettingsp = false;
+    userSettingsPath = projectParent + "/" + projectName + ".piscore";
+    userSettingsFile = new File(userSettingsPath);
+    if (userSettingsFile.exists()) {
+      userSettingsp = true;
+    }
   }
 }
 
