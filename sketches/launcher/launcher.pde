@@ -163,8 +163,16 @@ void draw() {
     fill(255);
 
     if (!ipEditp) {
+      if (!userSettingsp) {
+        tint(255, 70);
+      }
       image(bLaunch, ((width/2)-(iconSizeLarge*0.5)), ((height/2)-(iconSizeLarge*0.5)));
-      fill(255);
+      noTint();
+      if (userSettingsp) {
+        fill(255);
+      } else {
+        fill(255, 255, 255, 70);
+      }
       textAlign(CENTER, CENTER);
       textSize(14);
       text("Launch", (width/2), ((height/2)+(iconSizeLarge*0.5)+iconPadding));
@@ -184,7 +192,7 @@ void draw() {
       textAlign(RIGHT, CENTER);
       textSize(14);
       if (userSettingsp) {
-      fill(255);
+        fill(255);
         text("Score setup wizard", (width-(iconPadding*2)-iconSize), (iconPadding*2)+(iconSize*0.5)+iconSize);
       } else {
         fill(255, 0, 0);
@@ -331,7 +339,7 @@ void mousePressed() {
       loop();
     } else {
       //Launch
-      if (!ipEditp) {
+      if (!ipEditp && userSettingsp) {
         if (
           (mouseX > ((width/2)-(iconSizeLarge*0.5))) &
           (mouseX < ((width/2)+(iconSizeLarge*0.5))) &
