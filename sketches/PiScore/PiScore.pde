@@ -647,40 +647,42 @@ void mousePressed() {
 
     //ZOOM DIALOG
     if (zoomDialog) {
-      if ((mouseX > (width-(iconSize*2)-(iconPadding*2))) && mouseX < (width-iconSize-(iconPadding*2))) {
-        if (mouseY > ((iconSize*4)+(iconPadding*5)) && mouseY < ((iconSize*5)+(iconPadding*5))) {
-          navigationChangedp = true;
-          zoom = zoom + 0.5;
-          userSettingsArray[6] = str(zoom);
-        }
-        if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
-          navigationChangedp = true;
-          zoom = screenScale;
-          userSettingsArray[6] = str(zoom);
-        }
-        if (mouseY > ((iconSize*6)+(iconPadding*7)) && mouseY < ((iconSize*7)+(iconPadding*7))) {
-          navigationChangedp = true;
-          if (zoom > screenScale) {
-            zoom = zoom - 0.5;
+      if (!playingp) {
+        if ((mouseX > (width-(iconSize*2)-(iconPadding*2))) && mouseX < (width-iconSize-(iconPadding*2))) {
+          if (mouseY > ((iconSize*4)+(iconPadding*5)) && mouseY < ((iconSize*5)+(iconPadding*5))) {
+            navigationChangedp = true;
+            zoom = zoom + 0.5;
             userSettingsArray[6] = str(zoom);
           }
+          if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
+            navigationChangedp = true;
+            zoom = screenScale;
+            userSettingsArray[6] = str(zoom);
+          }
+          if (mouseY > ((iconSize*6)+(iconPadding*7)) && mouseY < ((iconSize*7)+(iconPadding*7))) {
+            navigationChangedp = true;
+            if (zoom > screenScale) {
+              zoom = zoom - 0.5;
+              userSettingsArray[6] = str(zoom);
+            }
+          }
         }
-      }
-      if ((mouseX > (width-(iconSize*3)-(iconPadding*3))) && mouseX < (width-(iconSize*2)-(iconPadding*3))) {
-        if (mouseY > ((iconSize*4)+(iconPadding*5)) && mouseY < ((iconSize*5)+(iconPadding*5))) {
-          navigationChangedp = true;
-          vOffset = vOffset + round(50*zoom);
-          userSettingsArray[7] = str(vOffset);
-        }
-        if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
-          navigationChangedp = true;
-          vOffset = 0;
-          userSettingsArray[7] = str(vOffset);
-        }
-        if (mouseY > ((iconSize*6)+(iconPadding*7)) && mouseY < ((iconSize*7)+(iconPadding*7))) {
-          navigationChangedp = true;
-          vOffset = vOffset - round(50*zoom);
-          userSettingsArray[7] = str(vOffset);
+        if ((mouseX > (width-(iconSize*3)-(iconPadding*3))) && mouseX < (width-(iconSize*2)-(iconPadding*3))) {
+          if (mouseY > ((iconSize*4)+(iconPadding*5)) && mouseY < ((iconSize*5)+(iconPadding*5))) {
+            navigationChangedp = true;
+            vOffset = vOffset + round(50*zoom);
+            userSettingsArray[7] = str(vOffset);
+          }
+          if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
+            navigationChangedp = true;
+            vOffset = 0;
+            userSettingsArray[7] = str(vOffset);
+          }
+          if (mouseY > ((iconSize*6)+(iconPadding*7)) && mouseY < ((iconSize*7)+(iconPadding*7))) {
+            navigationChangedp = true;
+            vOffset = vOffset - round(50*zoom);
+            userSettingsArray[7] = str(vOffset);
+          }
         }
       }
     }
