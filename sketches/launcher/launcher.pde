@@ -35,6 +35,7 @@ String backupFile;
 
 PImage bLaunch, bReboot, bShutdown, bTerminal, bDelete, bCheck, bCross, bEmpty, bEdit, bEditSelected, bAbout, bFolder, bFile, bMusicalNote;
 PImage tReboot, tShutdown, tTerminal, tDelete, tAbout;
+PShape psIcon;
 
 String[] numpadArray = { "7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ".", "\u2190" };
 String[] numpadDecisionArray = { "Cancel", "Confirm" };
@@ -74,6 +75,7 @@ int loadingCounter = 0;
 
 final int iconSize = 50;
 final int iconSizeLarge = 100;
+final int psIconSize = 70;
 final int iconPadding = 10;
 final int textPadding = 5;
 
@@ -154,14 +156,17 @@ void setup () {
   tTerminal = loadImage(rootPath + "/gui/white-terminal.png");
   tDelete = loadImage(rootPath + "/gui/white-delete.png");
   tAbout = loadImage(rootPath + "/gui/white-about.png");
+  
+
+  psIcon = loadShape(rootPath + "/gui/icon/PiScore-icon-white.svg");
 }
 
 void draw() {
+  smooth();
   background(color(0, 90, 158));
 
   if (!loadingp) {
     fill(255);
-
     if (!ipEditp) {
       if (!userSettingsp) {
         tint(255, 70);
@@ -253,11 +258,6 @@ void draw() {
       }
     }
 
-    if (!ipEditp) {
-      image(bAbout, iconPadding, (height-iconSize-(tAbout.height)-(textPadding*2)));
-      image(tAbout, iconPadding, (height-textPadding-tAbout.height));
-    }
-
     image(bTerminal, ((width/2)-(iconSize*0.5)-iconSize-(iconPadding*2)), (height-iconSize-(tTerminal.height)-(textPadding*2)));
     image(tTerminal, ((width/2)-(iconSize*0.5)-iconSize-(iconPadding*2)), (height-textPadding-tTerminal.height));
 
@@ -295,6 +295,13 @@ void draw() {
     textAlign(CENTER, BOTTOM);
     text("Press anywhere to return...", width/2, height-textPadding);
   }
+  if (!ipEditp) {
+      shape(psIcon, iconPadding, height-iconPadding-psIconSize, psIconSize, psIconSize);
+      fill(255);
+    textAlign(LEFT, BOTTOM);
+    textSize(10);
+      text("PiScore", iconPadding+5, height-11);
+    }
 
   if (loadingp) {
     if (loadingCounter < (fps * 10)) { //Timeout
@@ -553,9 +560,9 @@ void mousePressed() {
       if (!ipEditp) {
         if (
           (mouseX > iconPadding) &
-          (mouseX < (iconPadding+iconSize)) &
-          (mouseY > (height-iconSize-(tAbout.height)-(textPadding*2))) &
-          (mouseY < (height-iconSize-(tAbout.height)-(textPadding*2))+iconSize)
+          (mouseX < (iconPadding+psIconSize)) &
+          (mouseY > (height-iconPadding-psIconSize)) &
+          (mouseY < (height-iconPadding))
           ) {
           aboutp = true;
         }
