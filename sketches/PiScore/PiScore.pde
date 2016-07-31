@@ -82,6 +82,8 @@ int exitTimeout = 0;
 
 boolean zoomDialog = false;
 
+boolean pleasewaitp = false;
+
 boolean editMode = false;
 boolean pencilMode = true;
 boolean eraserMode = false;
@@ -332,12 +334,20 @@ void draw() {
     strokeCap(SQUARE);
     line(playheadPos, 0, playheadPos, height);
   } else {
-    fill(0, 102, 0);
-    textAlign(LEFT, BOTTOM);
-    textSize(12);
     if (clientp) {
+      fill(0, 102, 0);
+      textAlign(LEFT, BOTTOM);
+      textSize(12);
       text(("Connected to Server at " + scoreClient.ip()), 0, height);
     }
+  }
+  
+  // Draw "Please Wait" on saving
+  if (pleasewaitp) {
+    fill(255, 0, 0);
+    textAlign(CENTER, CENTER);
+    textSize(24);
+    text("Please wait...", width*0.5, height*0.5);
   }
 
   // penSize cursor
@@ -549,12 +559,16 @@ void mousePressed() {
             editOffsetScaled = 0;
             smoothScroller = 0;
             if (navigationChangedp) {
+              pleasewaitp = true;
               navigationChangedp = false;
               saveStrings(userSettingsPath, userSettingsArray);
+              pleasewaitp = false;
             }
             if (annotationsChangedp) {
-              annotationsChangedp = false; // reset
+              pleasewaitp = true;
+              annotationsChangedp = false;
               annotationsCanvas.save(annotationsPath);
+              pleasewaitp = false;
             }
           }
         }
@@ -632,8 +646,10 @@ void mousePressed() {
             } else {
               zoomDialog = false;
               if (navigationChangedp) {
+                pleasewaitp = true;
                 navigationChangedp = false;
                 saveStrings(userSettingsPath, userSettingsArray);
+                pleasewaitp = false;
               }
             }
           }
@@ -702,8 +718,10 @@ void mousePressed() {
         }
         if ((mouseX > (width-(iconSize*3)-(iconPadding*3))) && mouseX < (width-(iconSize*2)-(iconPadding*3))) {
           if (navigationChangedp) {
+            pleasewaitp = true;
             navigationChangedp = false;
             saveStrings(userSettingsPath, userSettingsArray);
+            pleasewaitp = false;
           }
           exit();
         }
