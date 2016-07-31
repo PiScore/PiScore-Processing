@@ -33,7 +33,7 @@ String   projectName;
 String[] userSettingsArray = { null, null, null, null, null, null, null, null };
 String userSettingsPath;
 File userSettingsFile;
-float[] userSettings = { 0, 0, 0, 0, 0, 0, 0, 0 };
+float[] userSettings = { 0, 0, 0, 0, 0, 0, 1.0, 0 };
 
 final int fps = 10; // Frame rate
 
