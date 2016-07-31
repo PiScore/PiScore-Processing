@@ -13,14 +13,13 @@ Setup suggestions for Raspberry Pi 3
     psk="YOUR_PASSWORD"
   }
 
-- sudo reboot, login and check connection with ping -c3 http://<WEBSITE>
-  NOTE: may require a couple of minutes to find connection after reboot
-
 - To flip screen 180 degrees:
   sudo nano /boot/config.txt
   Add to end of file:
   lcd_rotate=2
-- Save and sudo reboot
+
+- sudo reboot, login and check connection with ping -c3 http://<WEBSITE>
+  NOTE: may require a couple of minutes to find connection after reboot
 
 - sudo apt-get update
 - sudo apt-get upgrade
@@ -46,13 +45,8 @@ Setup suggestions for Raspberry Pi 3
        Option         "suspend time" "0"
        Option         "off time" "0"
    EndSection
-   Section "InputClass"
-       Identifier            "Keyboard Setting"
-       MatchIsKeyboard       "yes"
-       Option                "XkbOptions" "ctrl:swapcaps"
-   EndSection
 
-- Test X11 with xinit, then exit (with exit)
+- Start X11 with startx
 
 - Download and install Processing:
   - curl https://processing.org/download/install-arm.sh | sudo sh
@@ -61,9 +55,11 @@ Setup suggestions for Raspberry Pi 3
   sudo apt-get install git
   cd ~
   git clone https://github.com/PiScore/PiScore PiScore
+  cd PiScore
+  (Optional: git checkout dev )
 
 - Test Processing in X11, and set preferences
-  xinit
+  startx
   processing
   - Uncheck welcome message on startup
   - File -> Preferences
@@ -71,11 +67,14 @@ Setup suggestions for Raspberry Pi 3
   - Quit Processing
 
 - cp /etc/X11/xinit/xinitrc ~/.xinitrc
-- nano ~./xinitrc
+- nano ~/.xinitrc
   Add before last command:
+  setxkbmap gb
   processing-java --sketch=/home/pi/PiScore/sketches/launcher/ --run
 
 - nano ~/.profile
   Add to end of file:
   bash ~/PiScore/bin/PiScore.sh
   exec startx
+
+- sudo reboot
