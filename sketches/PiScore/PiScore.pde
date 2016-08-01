@@ -35,7 +35,7 @@ String receiveData;
 int receiveInt = 0;
 
 PImage score, clefs, annotations;
-PImage editIcon, resetIcon, pencilIcon, eraserIcon, exitIcon, exitYes, exitNo, playIcon, pauseIcon, prevIcon, nextIcon, plusIcon, minusIcon, zoomIcon, upIcon, downIcon, zeroIcon;
+PImage editIcon, resetIcon, pencilIcon, eraserIcon, exitIcon, exitYes, exitNo, playIcon, pauseIcon, prevIcon, nextIcon, plusIcon, minusIcon, zoomIcon, upIcon, downIcon, zeroIcon, saveIcon;
 String annotationsPath;
 File annotationsFile;
 PGraphics annotationsCanvas;
@@ -236,6 +236,7 @@ void setup() {
   upIcon = loadImage(rootPath + "/gui/black-up-rounded-button-outline.png");
   downIcon = loadImage(rootPath + "/gui/black-down-rounded-button-outline.png");
   zeroIcon = loadImage(rootPath + "/gui/black-zero-circular-graphics-button-outlined-symbol.png");
+  saveIcon = loadImage(rootPath + "/gui/black-projector-outlined-symbol-in-circular-button.png");
 
   screenScale = (height/float(score.height));
 
@@ -432,8 +433,14 @@ void draw() {
   }
 
   //ZOOM ICON
+  if (editMode) {
+    noStroke();
+    fill(0, 255, 0);
+    ellipse((width-iconSize-iconPadding+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
+    image(saveIcon, (width-iconSize-iconPadding), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
+    
+  } else {
   if (!playingp) {
-    if (!editMode) {
       noStroke();
       if (!zoomDialog) {
         fill(buttonBGcolor);
@@ -548,14 +555,6 @@ void mousePressed() {
             editOffset = 0;
             editOffsetScaled = 0;
             smoothScroller = 0;
-            if (navigationChangedp) {
-              navigationChangedp = false;
-              saveStrings(userSettingsPath, userSettingsArray);
-            }
-            if (annotationsChangedp) {
-              annotationsChangedp = false;
-              annotationsCanvas.save(annotationsPath);
-            }
           }
         }
       }
@@ -623,18 +622,30 @@ void mousePressed() {
         }
       }
 
-      //ZOOM
+      //ZOOM/SAVE
       if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
+        
+        //SAVE
+        if (editMode) {
+          if (navigationChangedp) {
+                navigationChangedp = false;
+                saveStrings(userSettingsPath, userSettingsArray);
+              }
+              if (annotationsChangedp) {
+              annotationsChangedp = false;
+              annotationsCanvas.save(annotationsPath);
+            }
+        } else {
+          //ZOOM
         if (!playingp) {
-          if (!editMode) {
             if (!zoomDialog) {
               zoomDialog = true;
             } else {
               zoomDialog = false;
-              if (navigationChangedp) {
-                navigationChangedp = false;
-                saveStrings(userSettingsPath, userSettingsArray);
-              }
+            //  if (navigationChangedp) {
+            //    navigationChangedp = false;
+            //    saveStrings(userSettingsPath, userSettingsArray);
+            //  }
             }
           }
         }
@@ -705,6 +716,10 @@ void mousePressed() {
             navigationChangedp = false;
             saveStrings(userSettingsPath, userSettingsArray);
           }
+          if (annotationsChangedp) {
+              annotationsChangedp = false;
+              annotationsCanvas.save(annotationsPath);
+            }
           exit();
         }
       }
