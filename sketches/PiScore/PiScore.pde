@@ -114,6 +114,8 @@ int frameCounter;
 boolean playingp = false; // playingp is only kept updated when !clientp
 int incrValue = 0;
 
+int saveTextOpacity = 0;
+
 void setup() {
   frameRate(fps);
   size(800, 480);
@@ -334,12 +336,28 @@ void draw() {
     line(playheadPos, 0, playheadPos, height);
   } else {
     if (clientp) {
-      fill(0, 102, 0);
+      fill(0, 128, 0);
       textAlign(LEFT, BOTTOM);
       textSize(12);
       text(("Connected to Server at " + scoreClient.ip()), 0, height);
     }
   }
+  
+  // Draw save text?
+  if (saveTextOpacity != 0) {
+    int perFrame = round(255/(fps*3));
+    if (saveTextOpacity < perFrame) {
+      saveTextOpacity = 0;
+    } else {
+        saveTextOpacity -= perFrame;
+    }
+    fill(0, 128, 0, saveTextOpacity);
+      textAlign(RIGHT, CENTER);
+      textSize(32);
+    text("Saved!", (width-iconSize-(iconPadding*2)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)));
+  }
+  
+  
 
   // penSize cursor
   if (editMode) {
@@ -435,7 +453,7 @@ void draw() {
   //ZOOM ICON
   if (editMode) {
     noStroke();
-    fill(0, 255, 0);
+    fill(160, 255, 160);
     ellipse((width-iconSize-iconPadding+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
     image(saveIcon, (width-iconSize-iconPadding), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
     
@@ -635,6 +653,7 @@ void mousePressed() {
               annotationsChangedp = false;
               annotationsCanvas.save(annotationsPath);
             }
+            saveTextOpacity = 255;
         } else {
           //ZOOM
         if (!playingp) {
@@ -642,10 +661,6 @@ void mousePressed() {
               zoomDialog = true;
             } else {
               zoomDialog = false;
-            //  if (navigationChangedp) {
-            //    navigationChangedp = false;
-            //    saveStrings(userSettingsPath, userSettingsArray);
-            //  }
             }
           }
         }
