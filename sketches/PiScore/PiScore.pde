@@ -342,22 +342,22 @@ void draw() {
       text(("Connected to Server at " + scoreClient.ip()), 0, height);
     }
   }
-  
+
   // Draw save text?
   if (saveTextOpacity != 0) {
     int perFrame = round(255/(fps*3));
     if (saveTextOpacity < perFrame) {
       saveTextOpacity = 0;
     } else {
-        saveTextOpacity -= perFrame;
+      saveTextOpacity -= perFrame;
     }
     fill(0, 128, 0, saveTextOpacity);
-      textAlign(RIGHT, CENTER);
-      textSize(32);
+    textAlign(RIGHT, CENTER);
+    textSize(32);
     text("Saved!", (width-iconSize-(iconPadding*2)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)));
   }
-  
-  
+
+
 
   // penSize cursor
   if (editMode) {
@@ -453,12 +453,15 @@ void draw() {
   //ZOOM ICON
   if (editMode) {
     noStroke();
+    if (annotationsChangedp || navigationChangedp) {
     fill(160, 255, 160);
+    } else {
+      fill(255);
+    }
     ellipse((width-iconSize-iconPadding+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
     image(saveIcon, (width-iconSize-iconPadding), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
-    
   } else {
-  if (!playingp) {
+    if (!playingp) {
       noStroke();
       if (!zoomDialog) {
         fill(buttonBGcolor);
@@ -642,21 +645,21 @@ void mousePressed() {
 
       //ZOOM/SAVE
       if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
-        
+
         //SAVE
         if (editMode) {
           if (navigationChangedp) {
-                navigationChangedp = false;
-                saveStrings(userSettingsPath, userSettingsArray);
-              }
-              if (annotationsChangedp) {
-              annotationsChangedp = false;
-              annotationsCanvas.save(annotationsPath);
-            }
-            saveTextOpacity = 255;
+            navigationChangedp = false;
+            saveStrings(userSettingsPath, userSettingsArray);
+          }
+          if (annotationsChangedp) {
+            annotationsChangedp = false;
+            annotationsCanvas.save(annotationsPath);
+          }
+          saveTextOpacity = 255;
         } else {
           //ZOOM
-        if (!playingp) {
+          if (!playingp) {
             if (!zoomDialog) {
               zoomDialog = true;
             } else {
@@ -732,9 +735,9 @@ void mousePressed() {
             saveStrings(userSettingsPath, userSettingsArray);
           }
           if (annotationsChangedp) {
-              annotationsChangedp = false;
-              annotationsCanvas.save(annotationsPath);
-            }
+            annotationsChangedp = false;
+            annotationsCanvas.save(annotationsPath);
+          }
           exit();
         }
       }
