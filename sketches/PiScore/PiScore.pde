@@ -450,16 +450,18 @@ void draw() {
     image(nextIcon, (width-iconSize-iconPadding), ((iconSize*4)+(iconPadding*5)), iconSize, iconSize);
   }
 
-  //ZOOM ICON
+  //ZOOM/SAVE ICON
   if (editMode) {
     noStroke();
     if (annotationsChangedp || navigationChangedp) {
     fill(160, 255, 160);
     } else {
-      fill(255);
+      fill(255, 255, 255, 70);
+      tint(255, 70);
     }
     ellipse((width-iconSize-iconPadding+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
     image(saveIcon, (width-iconSize-iconPadding), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
+    noTint();
   } else {
     if (!playingp) {
       noStroke();
@@ -651,12 +653,13 @@ void mousePressed() {
           if (navigationChangedp) {
             navigationChangedp = false;
             saveStrings(userSettingsPath, userSettingsArray);
+            saveTextOpacity = 255;
           }
           if (annotationsChangedp) {
             annotationsChangedp = false;
             annotationsCanvas.save(annotationsPath);
+            saveTextOpacity = 255;
           }
-          saveTextOpacity = 255;
         } else {
           //ZOOM
           if (!playingp) {
