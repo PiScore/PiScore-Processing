@@ -24,6 +24,8 @@ import processing.net.*;
 Server scoreServer;
 Client scoreClient;
 
+String rootPath;
+
 String[] serverIpAddrArray = { null };
 String serverIpAddrPath;
 File serverIpAddrFile;
@@ -33,40 +35,45 @@ String receiveData;
 int receiveInt = 0;
 
 PImage score, clefs, annotations;
-PImage editIcon, resetIcon, pencilIcon, eraserIcon, exitIcon, exitYes, exitNo, playIcon, pauseIcon, prevIcon, nextIcon, plusIcon, minusIcon, zoomIcon, upIcon, downIcon, zeroIcon;
+PImage editIcon, resetIcon, pencilIcon, eraserIcon, exitIcon, exitYes, exitNo, playIcon, pauseIcon, prevIcon, nextIcon, plusIcon, minusIcon, zoomIcon, upIcon, downIcon, zeroIcon, saveIcon;
 String annotationsPath;
 File annotationsFile;
 PGraphics annotationsCanvas;
 boolean annotationsChangedp = false; // Only save when annotationsChangedp
+
+String[] projectArray = { null };
+String   projectPath;
+File     projectFile;
+String   projectParent;
+String   projectName;
+
+String[] userSettingsArray = { null, null, null, null, null, null, null, null };
+String userSettingsPath;
+File userSettingsFile;
+float[] userSettings = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 String[] clientpArray = { null };
 String clientpPath;
 File clientpFile;
 boolean clientp;
 
-String[] vOffsetArray = { null };
-String vOffsetPath;
-File vOffsetFile;
-int vOffset;
-
-String[] zoomArray = { null };
-String zoomPath;
-File zoomFile;
-float zoom;
-boolean navigationChangedp = false;
-
 // To export frames set export to true
 final boolean export = false;
 
 final int fps = 25; // Frame rate
 
-final int start = 121;     // Enter px for first event here
-final int end = 19920;     // Enter px for "final barline" here
-final int clefsStart = 56; // Enter px for start of clefs
-final float dur = 540;     // Enter durata in seconds here
-final float preRoll = 8;   // Enter preroll in seconds here
+int start;
+int end;
+int clefsStart;
+int clefsEnd;
+float dur;
+float preRoll;
+float zoom;
+int vOffset;
 
-final float totalFrames = ceil(dur * fps); // float for use as divisor
+boolean navigationChangedp = false;
+
+float totalFrames; // float for use as divisor
 
 float screenScale = 1.0;
 
@@ -103,16 +110,31 @@ int adjStartScaled;
 int adjEnd;
 
 int smoothScroller = 0;
-int frameCounter = round(-(preRoll*fps));
+int frameCounter;
 boolean playingp = false; // playingp is only kept updated when !clientp
 int incrValue = 0;
+
+int saveTextOpacity = 0;
 
 void setup() {
   frameRate(fps);
   size(800, 480);
   noSmooth();
 
-  serverIpAddrPath = sketchPath("../../etc/server-ip-addr.txt");
+  rootPath = ((new File((new File (sketchPath(""))).getParent())).getParent());
+
+  projectPath = rootPath + "/etc/project-path";
+  projectFile = new File(projectPath);
+  if (projectFile.exists()) {
+    projectArray = loadStrings(projectPath);
+  } else {
+    projectArray[0] = rootPath + "/examplescore/examplescore.png"; // Default to example score
+    saveStrings(projectPath, projectArray);
+  }
+  projectParent = (new File (projectArray[0])).getParent();
+  projectName = getNameWithoutExt(new File (projectArray[0]));
+
+  serverIpAddrPath = rootPath + "/etc/server-ip-addr";
   serverIpAddrFile = new File(serverIpAddrPath);
   if (serverIpAddrFile.exists()) {
     serverIpAddrArray = loadStrings(serverIpAddrPath);
@@ -122,17 +144,7 @@ void setup() {
   }
   serverIpAddr = serverIpAddrArray[0];
 
-  vOffsetPath = sketchPath("../../etc/voffset.txt");
-  vOffsetFile = new File(vOffsetPath);
-  if (vOffsetFile.exists()) {
-    vOffsetArray = loadStrings(vOffsetPath);
-  } else {
-    vOffsetArray[0] = "0";
-    saveStrings(vOffsetPath, vOffsetArray);
-  }
-  vOffset = int(vOffsetArray[0]);
-
-  clientpPath = sketchPath("../../etc/clientp.txt");
+  clientpPath = rootPath + "/etc/clientp";
   clientpFile = new File(clientpPath);
   if (clientpFile.exists()) {
     clientpArray = loadStrings(clientpPath);
@@ -148,14 +160,56 @@ void setup() {
     scoreClient = new Client(this, serverIpAddr, serverPort);
   }
 
-  score = loadImage("../../files/SCORE.PNG");
-  clefs = loadImage("../../files/SCORE_CLEFS.PNG");
+  userSettingsPath = projectParent + "/" + projectName + ".piscore";
+  userSettingsFile = new File(userSettingsPath);
+  if (userSettingsFile.exists()) {
+    userSettingsArray = loadStrings(userSettingsPath);
+    for (int i = 0; i < (userSettingsArray.length); i++) {
+      userSettings[i] = float(userSettingsArray[i]);
+    }
+  } else {
+    // Defaults adjusted for example score
+    userSettings[0] = -284.0;
+    userSettings[1] = -13404.0;
+    userSettings[2] = -160.0;
+    userSettings[3] = -240.0;
+    userSettings[4] = 180.0;
+    userSettings[5] = 4.0;
+    userSettings[6] = 1.0;
+    userSettings[7] = 0.0;
+    for (int i = 0; i < (userSettings.length); i++) {
+      userSettingsArray[i] = str((userSettings[i]));
+    }
+    saveStrings(userSettingsPath, userSettingsArray);
+  }
+
+  start =      int(-userSettings[0]);
+  end =        int(-userSettings[1]);
+  clefsStart = int(-userSettings[2]);
+  clefsEnd =   int(-userSettings[3]);
+  dur =        userSettings[4];
+  preRoll =    userSettings[5];
+  zoom =       userSettings[6];
+  vOffset =    int(userSettings[7]);
+  if (clefsStart < 0) {
+    clefsStart = 0;
+  }
+  if (clefsEnd < clefsStart) {
+    clefsEnd = clefsStart;
+  }
+
+  score = loadImage(projectArray[0]);
+  clefs = score.get(clefsStart, 0, clefsEnd-clefsStart, score.height);
+
+  totalFrames = ceil(dur * fps);
+  frameCounter = round(-(preRoll*fps));
+
   annotationsCanvas = createGraphics(score.width, score.height);
-  annotationsPath = sketchPath("../../files/annotations.png");
+  annotationsPath = projectParent + "/" + projectName + "-annotations.png";
   annotationsFile = new File(annotationsPath);
   if (annotationsFile.exists())
   {
-    annotations = loadImage("../../files/annotations.png");
+    annotations = loadImage(annotationsPath);
     annotationsCanvas.beginDraw();
     annotations.loadPixels();
     annotationsCanvas.loadPixels();
@@ -167,35 +221,26 @@ void setup() {
     annotationsCanvas.beginDraw();
     annotationsCanvas.endDraw();
   }
-  editIcon = loadImage("../../files/gui/edit-pencil-outline-in-circular-button.png");
-  resetIcon = loadImage("../../files/gui/two-arrows-in-circular-outlined-interface-button.png");
-  pencilIcon = loadImage("../../files/gui/pencil-outline-in-circular-button.png");
-  eraserIcon = loadImage("../../files/gui/edit-eraser-outline-in-circular-button.png");
-  exitIcon = loadImage("../../files/gui/upload-up-arrow-outline-in-circular-button.png");
-  exitYes = loadImage("../../files/gui/checkmark-outlined-circular-button.png");
-  exitNo = loadImage("../../files/gui/close-cross-thin-circular-button.png");
-  playIcon = loadImage("../../files/gui/play-rounded-button-outline.png");
-  pauseIcon = loadImage("../../files/gui/pause-thin-rounded-button.png");
-  prevIcon = loadImage("../../files/gui/rewind-double-arrow-outlined-circular-button.png");
-  nextIcon = loadImage("../../files/gui/fast-forward-thin-outlined-symbol-in-circular-button.png");
-  plusIcon = loadImage("../../files/gui/add-circular-button-thin-symbol.png");
-  minusIcon = loadImage("../../files/gui/minus-sign-in-a-circle.png");
-  zoomIcon = loadImage("../../files/gui/magnifier-search-interface-circular-button.png");
-  upIcon = loadImage("../../files/gui/up-rounded-button-outline.png");
-  downIcon = loadImage("../../files/gui/down-rounded-button-outline.png");
-  zeroIcon = loadImage("../../files/gui/zero-circular-graphics-button-outlined-symbol.png");
+  editIcon = loadImage(rootPath + "/gui/black-edit-pencil-outline-in-circular-button.png");
+  resetIcon = loadImage(rootPath + "/gui/black-two-arrows-in-circular-outlined-interface-button.png");
+  pencilIcon = loadImage(rootPath + "/gui/black-pencil-outline-in-circular-button.png");
+  eraserIcon = loadImage(rootPath + "/gui/black-edit-eraser-outline-in-circular-button.png");
+  exitIcon = loadImage(rootPath + "/gui/black-upload-up-arrow-outline-in-circular-button.png");
+  exitYes = loadImage(rootPath + "/gui/black-checkmark-outlined-circular-button.png");
+  exitNo = loadImage(rootPath + "/gui/black-close-cross-thin-circular-button.png");
+  playIcon = loadImage(rootPath + "/gui/black-play-rounded-button-outline.png");
+  pauseIcon = loadImage(rootPath + "/gui/black-pause-thin-rounded-button.png");
+  prevIcon = loadImage(rootPath + "/gui/black-rewind-double-arrow-outlined-circular-button.png");
+  nextIcon = loadImage(rootPath + "/gui/black-fast-forward-thin-outlined-symbol-in-circular-button.png");
+  plusIcon = loadImage(rootPath + "/gui/black-add-circular-button-thin-symbol.png");
+  minusIcon = loadImage(rootPath + "/gui/black-minus-sign-in-a-circle.png");
+  zoomIcon = loadImage(rootPath + "/gui/black-magnifier-search-interface-circular-button.png");
+  upIcon = loadImage(rootPath + "/gui/black-up-rounded-button-outline.png");
+  downIcon = loadImage(rootPath + "/gui/black-down-rounded-button-outline.png");
+  zeroIcon = loadImage(rootPath + "/gui/black-zero-circular-graphics-button-outlined-symbol.png");
+  saveIcon = loadImage(rootPath + "/gui/black-projector-outlined-symbol-in-circular-button.png");
 
   screenScale = (height/float(score.height));
-
-  zoomPath = sketchPath("../../etc/zoom.txt");
-  zoomFile = new File(zoomPath);
-  if (zoomFile.exists()) {
-    zoomArray = loadStrings(zoomPath);
-  } else {
-    zoomArray[0] = str(screenScale);
-    saveStrings(zoomPath, zoomArray);
-  }
-  zoom = float(zoomArray[0]);
 
   iconPanelWidth = (iconSize+(iconPadding*2));
 
@@ -268,9 +313,9 @@ void draw() {
   image(score, localScoreX-(editOffset-smoothScroller)+playheadPos-(start*zoom), vOffset, round((score.width)*zoom), (score.height)*zoom);
   image(annotationsCanvas, localScoreX-(editOffset-smoothScroller)+playheadPos-(start*zoom), vOffset, (annotationsCanvas.width)*zoom, (annotationsCanvas.height)*zoom);
 
-  if ((((clefs.width)*zoom)-(clefsStart*zoom)) < playheadPos) {
-    if (localScoreX-editOffset < (0 + adjStartScaled - (clefsStart*zoom))) {
-      image(clefs, (clefsStart*(-1)*zoom), vOffset, (clefs.width)*zoom, (clefs.height)*zoom);
+  if ((((clefs.width)*zoom)) < playheadPos) {
+    if (localScoreX-editOffset+(clefsStart*zoom) < (0 + adjStartScaled)) {
+      image(clefs, 0, vOffset, (clefs.width)*zoom, (clefs.height)*zoom);
     }
   }
 
@@ -290,13 +335,29 @@ void draw() {
     strokeCap(SQUARE);
     line(playheadPos, 0, playheadPos, height);
   } else {
-    fill(0, 102, 0);
-    textAlign(LEFT, BOTTOM);
-    textSize(12);
     if (clientp) {
+      fill(0, 128, 0);
+      textAlign(LEFT, BOTTOM);
+      textSize(12);
       text(("Connected to Server at " + scoreClient.ip()), 0, height);
     }
   }
+
+  // Draw save text?
+  if (saveTextOpacity != 0) {
+    int perFrame = round(255/(fps*3));
+    if (saveTextOpacity < perFrame) {
+      saveTextOpacity = 0;
+    } else {
+      saveTextOpacity -= perFrame;
+    }
+    fill(0, 128, 0, saveTextOpacity);
+    textAlign(RIGHT, CENTER);
+    textSize(32);
+    text("Saved!", (width-iconSize-(iconPadding*2)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)));
+  }
+
+
 
   // penSize cursor
   if (editMode) {
@@ -389,34 +450,47 @@ void draw() {
     image(nextIcon, (width-iconSize-iconPadding), ((iconSize*4)+(iconPadding*5)), iconSize, iconSize);
   }
 
-  //ZOOM ICON
-  if (!editMode) {
+  //ZOOM/SAVE ICON
+  if (editMode) {
     noStroke();
-    if (!zoomDialog) {
-      fill(buttonBGcolor);
+    if (annotationsChangedp || navigationChangedp) {
+    fill(160, 255, 160);
     } else {
-      fill(buttonActiveColor);
+      fill(255, 255, 255, 70);
+      tint(255, 70);
     }
     ellipse((width-iconSize-iconPadding+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
-    image(zoomIcon, (width-iconSize-iconPadding), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
-  }
-  if (zoomDialog) {
-    noStroke();
-    fill(255);
-    ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*4)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
-    ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
-    ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*6)+(iconPadding*7)+(iconSize*0.5)), iconSize, iconSize);
-    image(plusIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*4)+(iconPadding*5)), iconSize, iconSize);
-    image(zeroIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
-    image(minusIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*6)+(iconPadding*7)), iconSize, iconSize);
-    noStroke();
-    fill(255);
-    ellipse((width-(iconSize*3)-(iconPadding*3)+(iconSize*0.5)), ((iconSize*4)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
-    ellipse((width-(iconSize*3)-(iconPadding*3)+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
-    ellipse((width-(iconSize*3)-(iconPadding*3)+(iconSize*0.5)), ((iconSize*6)+(iconPadding*7)+(iconSize*0.5)), iconSize, iconSize);
-    image(upIcon, (width-(iconSize*3)-(iconPadding*3)), ((iconSize*4)+(iconPadding*5)), iconSize, iconSize);
-    image(zeroIcon, (width-(iconSize*3)-(iconPadding*3)), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
-    image(downIcon, (width-(iconSize*3)-(iconPadding*3)), ((iconSize*6)+(iconPadding*7)), iconSize, iconSize);
+    image(saveIcon, (width-iconSize-iconPadding), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
+    noTint();
+  } else {
+    if (!playingp) {
+      noStroke();
+      if (!zoomDialog) {
+        fill(buttonBGcolor);
+      } else {
+        fill(buttonActiveColor);
+      }
+      ellipse((width-iconSize-iconPadding+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
+      image(zoomIcon, (width-iconSize-iconPadding), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
+    }
+    if (zoomDialog) {
+      noStroke();
+      fill(255);
+      ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*4)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
+      ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
+      ellipse((width-(iconSize*2)-(iconPadding*2)+(iconSize*0.5)), ((iconSize*6)+(iconPadding*7)+(iconSize*0.5)), iconSize, iconSize);
+      image(plusIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*4)+(iconPadding*5)), iconSize, iconSize);
+      image(zeroIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
+      image(minusIcon, (width-(iconSize*2)-(iconPadding*2)), ((iconSize*6)+(iconPadding*7)), iconSize, iconSize);
+      noStroke();
+      fill(255);
+      ellipse((width-(iconSize*3)-(iconPadding*3)+(iconSize*0.5)), ((iconSize*4)+(iconPadding*5)+(iconSize*0.5)), iconSize, iconSize);
+      ellipse((width-(iconSize*3)-(iconPadding*3)+(iconSize*0.5)), ((iconSize*5)+(iconPadding*6)+(iconSize*0.5)), iconSize, iconSize);
+      ellipse((width-(iconSize*3)-(iconPadding*3)+(iconSize*0.5)), ((iconSize*6)+(iconPadding*7)+(iconSize*0.5)), iconSize, iconSize);
+      image(upIcon, (width-(iconSize*3)-(iconPadding*3)), ((iconSize*4)+(iconPadding*5)), iconSize, iconSize);
+      image(zeroIcon, (width-(iconSize*3)-(iconPadding*3)), ((iconSize*5)+(iconPadding*6)), iconSize, iconSize);
+      image(downIcon, (width-(iconSize*3)-(iconPadding*3)), ((iconSize*6)+(iconPadding*7)), iconSize, iconSize);
+    }
   }
 
   //EXIT ICON
@@ -444,7 +518,7 @@ void draw() {
   // Redraw
   if (frameCounter < totalFrames) {
     if (export) {
-      saveFrame("../../export/frames/score#######.png");
+      saveFrame(rootPath + "/etc/export/frames/score#######.png");
     }
   } else {
     if (export) {
@@ -504,15 +578,6 @@ void mousePressed() {
             editOffset = 0;
             editOffsetScaled = 0;
             smoothScroller = 0;
-            if (navigationChangedp) {
-              navigationChangedp = false;
-              saveStrings(zoomPath, zoomArray);
-              saveStrings(vOffsetPath, vOffsetArray);
-            }
-            if (annotationsChangedp) {
-              annotationsChangedp = false; // reset
-              annotationsCanvas.save("../../files/annotations.png");
-            }
           }
         }
       }
@@ -530,7 +595,7 @@ void mousePressed() {
             loop(); //in case noLoop() is active
             incrValue = 0;
             playingp = false;
-            frameCounter = 0;
+            frameCounter = round(-(preRoll*fps));
           }
         }
       }
@@ -580,17 +645,28 @@ void mousePressed() {
         }
       }
 
-      //ZOOM
+      //ZOOM/SAVE
       if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
-        if (!editMode) {
-          if (!zoomDialog) {
-            zoomDialog = true;
-          } else {
-            zoomDialog = false;
-            if (navigationChangedp) {
-              navigationChangedp = false;
-              saveStrings(zoomPath, zoomArray);
-              saveStrings(vOffsetPath, vOffsetArray);
+
+        //SAVE
+        if (editMode) {
+          if (navigationChangedp) {
+            navigationChangedp = false;
+            saveStrings(userSettingsPath, userSettingsArray);
+            saveTextOpacity = 255;
+          }
+          if (annotationsChangedp) {
+            annotationsChangedp = false;
+            annotationsCanvas.save(annotationsPath);
+            saveTextOpacity = 255;
+          }
+        } else {
+          //ZOOM
+          if (!playingp) {
+            if (!zoomDialog) {
+              zoomDialog = true;
+            } else {
+              zoomDialog = false;
             }
           }
         }
@@ -606,40 +682,45 @@ void mousePressed() {
 
     //ZOOM DIALOG
     if (zoomDialog) {
-      if ((mouseX > (width-(iconSize*2)-(iconPadding*2))) && mouseX < (width-iconSize-(iconPadding*2))) {
-        if (mouseY > ((iconSize*4)+(iconPadding*5)) && mouseY < ((iconSize*5)+(iconPadding*5))) {
-          navigationChangedp = true;
-          zoom = zoom + 0.5;
-          zoomArray[0] = str(zoom);
-        }
-        if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
-          navigationChangedp = true;
-          zoom = screenScale;
-          zoomArray[0] = str(zoom);
-        }
-        if (mouseY > ((iconSize*6)+(iconPadding*7)) && mouseY < ((iconSize*7)+(iconPadding*7))) {
-          navigationChangedp = true;
-          if (zoom > screenScale) {
-            zoom = zoom - 0.5;
-            zoomArray[0] = str(zoom);
+      if (!playingp) {
+        if ((mouseX > (width-(iconSize*2)-(iconPadding*2))) && mouseX < (width-iconSize-(iconPadding*2))) {
+          if (mouseY > ((iconSize*4)+(iconPadding*5)) && mouseY < ((iconSize*5)+(iconPadding*5))) {
+            navigationChangedp = true;
+            zoom = zoom + 0.5;
+            userSettingsArray[6] = str(zoom);
+          }
+          if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
+            navigationChangedp = true;
+            zoom = screenScale;
+            userSettingsArray[6] = str(zoom);
+          }
+          if (mouseY > ((iconSize*6)+(iconPadding*7)) && mouseY < ((iconSize*7)+(iconPadding*7))) {
+            navigationChangedp = true;
+            if ((zoom - 0.5) < screenScale) {
+              zoom = screenScale;
+            }
+            if (zoom > screenScale) {
+              zoom = zoom - 0.5;
+              userSettingsArray[6] = str(zoom);
+            }
           }
         }
-      }
-      if ((mouseX > (width-(iconSize*3)-(iconPadding*3))) && mouseX < (width-(iconSize*2)-(iconPadding*3))) {
-        if (mouseY > ((iconSize*4)+(iconPadding*5)) && mouseY < ((iconSize*5)+(iconPadding*5))) {
-          navigationChangedp = true;
-          vOffset = vOffset + round(50*zoom);
-          vOffsetArray[0] = str(vOffset);
-        }
-        if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
-          navigationChangedp = true;
-          vOffset = 0;
-          vOffsetArray[0] = str(vOffset);
-        }
-        if (mouseY > ((iconSize*6)+(iconPadding*7)) && mouseY < ((iconSize*7)+(iconPadding*7))) {
-          navigationChangedp = true;
-          vOffset = vOffset - round(50*zoom);
-          vOffsetArray[0] = str(vOffset);
+        if ((mouseX > (width-(iconSize*3)-(iconPadding*3))) && mouseX < (width-(iconSize*2)-(iconPadding*3))) {
+          if (mouseY > ((iconSize*4)+(iconPadding*5)) && mouseY < ((iconSize*5)+(iconPadding*5))) {
+            navigationChangedp = true;
+            vOffset = vOffset + round(50*zoom);
+            userSettingsArray[7] = str(vOffset);
+          }
+          if (mouseY > ((iconSize*5)+(iconPadding*6)) && mouseY < ((iconSize*6)+(iconPadding*6))) {
+            navigationChangedp = true;
+            vOffset = 0;
+            userSettingsArray[7] = str(vOffset);
+          }
+          if (mouseY > ((iconSize*6)+(iconPadding*7)) && mouseY < ((iconSize*7)+(iconPadding*7))) {
+            navigationChangedp = true;
+            vOffset = vOffset - round(50*zoom);
+            userSettingsArray[7] = str(vOffset);
+          }
         }
       }
     }
@@ -654,8 +735,11 @@ void mousePressed() {
         if ((mouseX > (width-(iconSize*3)-(iconPadding*3))) && mouseX < (width-(iconSize*2)-(iconPadding*3))) {
           if (navigationChangedp) {
             navigationChangedp = false;
-            saveStrings(zoomPath, zoomArray);
-            saveStrings(vOffsetPath, vOffsetArray);
+            saveStrings(userSettingsPath, userSettingsArray);
+          }
+          if (annotationsChangedp) {
+            annotationsChangedp = false;
+            annotationsCanvas.save(annotationsPath);
           }
           exit();
         }
@@ -681,7 +765,7 @@ void mousePressed() {
 
 
 void mouseDragged() {
-  if (mouseX > clefs.width && mouseX < (width-iconSize-(iconPadding*2))) {
+  if (mouseX > ((clefs.width)*zoom) && mouseX < (width-iconSize-(iconPadding*2))) {
     if (editMode) {
       if (!annotationsChangedp) {
         // Notify when annotations are made
@@ -738,4 +822,13 @@ void eraseFunction(color c) {
     }
   }
   annotationsCanvas.updatePixels();
+}
+
+String getNameWithoutExt (File infile) {
+  String name = infile.getName();
+  int pos = name.lastIndexOf(".");
+  if (pos > 0) {
+    name = name.substring(0, pos);
+  }
+  return name;
 }

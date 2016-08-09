@@ -15,8 +15,8 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="reboot.svg"
-   inkscape:export-filename="C:\Users\david\Dropbox\00_ComputerSync\Documents\00_Music\Scores\David_Stephen_Grant\Classical\2016_nunord_strQuar\PROCESSING\dev\launcher\guiText\reboot.png"
+   sodipodi:docname="white-reboot.svg"
+   inkscape:export-filename="C:\Users\david\Desktop\white-reboot.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -29,7 +29,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="4.7714286"
-     inkscape:cx="74.766495"
+     inkscape:cx="43.43416"
      inkscape:cy="18.571429"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -48,7 +48,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
