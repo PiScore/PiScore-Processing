@@ -321,7 +321,7 @@ void draw() {
 
 
   // Draw ID markers
-  for (int i = 0, j = 0; i < score.width; i+=500, j++) {
+  for (int i = 0, j = 0; i < (score.width)-playheadPos; i+=((score.width)/dur*10), j++) {
     textAlign(CENTER, TOP);
     textSize(32);
     fill(0, 102, 153);
