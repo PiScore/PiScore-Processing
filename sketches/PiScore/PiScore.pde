@@ -342,6 +342,12 @@ void draw() {
       text(("Connected to Server at " + scoreClient.ip()), 0, height);
     }
   }
+  
+  if (frameCounter < totalFrames) {
+    if (export) {
+      saveFrame(rootPath + "/etc/export/frames/score#######.png");
+    }
+  }
 
   // Draw save text?
   if (saveTextOpacity != 0) {
@@ -517,9 +523,7 @@ void draw() {
 
   // Redraw
   if (frameCounter < totalFrames) {
-    if (export) {
-      saveFrame(rootPath + "/etc/export/frames/score#######.png");
-    }
+    // looping...
   } else {
     if (export) {
       noLoop();
