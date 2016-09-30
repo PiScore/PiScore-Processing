@@ -671,9 +671,11 @@ void mousePressed() {
             smoothScroller = smoothScroller - editOffsetValue;
             editOffsetScaled = round(editOffset/zoom);
           } else {
-            frameCounter = frameCounter - (fps*5);
-            playbackFile.stop(); // Will re-cue and autorestart at next frame
-            audioplayingp = false;
+            frameCounter = frameCounter - (fps*10);
+            if (audioplayingp) {
+              playbackFile.stop(); // Will re-cue and autorestart at next frame
+              audioplayingp = false;
+            }
           }
         }
         //NEXT
@@ -683,9 +685,11 @@ void mousePressed() {
             smoothScroller = smoothScroller + editOffsetValue;
             editOffsetScaled = round(editOffset/zoom);
           } else {
-            frameCounter = frameCounter + (fps*5);
-            playbackFile.stop(); // Will re-cue and autorestart at next frame
-            audioplayingp = false;
+            frameCounter = frameCounter + (fps*10);
+            if (audioplayingp) {
+              playbackFile.stop(); // Will re-cue and autorestart at next frame
+              audioplayingp = false;
+            }
           }
         }
       }
