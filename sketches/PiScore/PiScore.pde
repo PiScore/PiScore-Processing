@@ -81,6 +81,7 @@ int vOffset;
 boolean navigationChangedp = false;
 
 float totalFrames; // float for use as divisor
+float endOfFile;
 
 float screenScale = 1.0;
 
@@ -123,7 +124,7 @@ int incrValue = 0;
 
 boolean audioplayingp = false;
 float audioDuration = 0;
-float audioOffset = 31.377; // At what time does the audio file line up with score event 0?
+float audioOffset = 31.877; // At what time does the audio file line up with score event 0?
 
 int saveTextOpacity = 0;
 
@@ -223,6 +224,12 @@ void setup() {
   clefs = score.get(clefsStart, 0, clefsEnd-clefsStart, score.height);
 
   totalFrames = ceil(dur * fps);
+  if (audioArray[0] != null && totalFrames < (ceil(audioDuration-audioOffset)*fps)) { 
+    //Prevent score from stopping prematurely if audio file is longer
+    endOfFile = ceil(audioDuration-audioOffset)*fps;
+  } else {
+    endOfFile = totalFrames;
+  }
   frameCounter = round(-(preRoll*fps));
 
   annotationsCanvas = createGraphics(score.width, score.height);
@@ -278,9 +285,12 @@ void setup() {
 void draw() {
   background(255);
 
-  println(frameCounter);
-  println((float(frameCounter)/fps)+audioOffset);
-  println(audioDuration);
+  //TODO: REMOVE FOLLOWING LINES
+  println("frameCounter: " + frameCounter);
+  println("EOF: " + endOfFile);
+  println("Seconds: " + ((float(frameCounter)/fps)+audioOffset));
+  println("TotalFrames: " + totalFrames);
+  ////
 
   if (!clientp) {
     if (playingp) {
@@ -560,7 +570,7 @@ void draw() {
   }
 
   // Redraw
-  if (frameCounter < totalFrames) {
+  if (frameCounter < endOfFile) {
     // looping...
   } else {
     if (export) {
@@ -568,6 +578,10 @@ void draw() {
     }
     incrValue = 0;
     playingp = false;
+    if (audioplayingp) {
+      playbackFile.stop(); // Will re-cue and autorestart at next frame
+      audioplayingp = false;
+    }
   }
 
   frameCounter+=(incrValue);
@@ -638,6 +652,10 @@ void mousePressed() {
             incrValue = 0;
             playingp = false;
             frameCounter = round(-(preRoll*fps));
+            if (audioplayingp) {
+              playbackFile.stop(); // Will re-cue and autorestart at next frame
+              audioplayingp = false;
+            }
           }
         }
       }
@@ -659,8 +677,10 @@ void mousePressed() {
             } else {
               incrValue = 0;
               playingp = false;
-              playbackFile.stop();
-              audioplayingp = false;
+              if (audioplayingp) {
+                playbackFile.stop(); // Will re-cue and autorestart at next frame
+                audioplayingp = false;
+              }
             }
           }
         }
