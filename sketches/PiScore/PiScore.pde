@@ -122,6 +122,8 @@ boolean playingp = false; // playingp is only kept updated when !clientp
 int incrValue = 0;
 
 boolean audioplayingp = false;
+float audioDuration = 0;
+float audioOffset = 31.377; // At what time does the audio file line up with score event 0?
 
 int saveTextOpacity = 0;
 
@@ -175,6 +177,7 @@ void setup() {
     if (audioFile.exists()) {
       audioArray = loadStrings(audioPath);
       playbackFile = new SoundFile(this, audioArray[0]);
+      audioDuration = playbackFile.duration();
     } // else audioArray[0] = null
   }
 
@@ -276,16 +279,16 @@ void draw() {
   background(255);
 
   println(frameCounter);
-
+  println((float(frameCounter)/fps)+audioOffset);
+  println(audioDuration);
 
   if (!clientp) {
     if (playingp) {
-      if (frameCounter >= 0) {
+      if (((float(frameCounter)/fps)+audioOffset) >= 0) {
         if (audioArray[0] != null) {
           if (!audioplayingp) {
             audioplayingp = true;
-            playbackFile.jump(float(frameCounter/fps));
-            //playbackFile.play();
+            playbackFile.jump((float(frameCounter)/fps)+audioOffset);
           }
         }
       }
