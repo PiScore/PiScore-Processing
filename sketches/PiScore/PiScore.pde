@@ -21,6 +21,8 @@
 //be protected by Copyright.
 
 import processing.net.*;
+import processing.sound.*;
+
 Server scoreServer;
 Client scoreClient;
 
@@ -46,6 +48,11 @@ String   projectPath;
 File     projectFile;
 String   projectParent;
 String   projectName;
+
+String[] audioArray = { null };
+String   audioPath;
+File     audioFile;
+SoundFile playbackFile;
 
 String[] userSettingsArray = { null, null, null, null, null, null, null, null };
 String userSettingsPath;
@@ -114,6 +121,8 @@ int frameCounter;
 boolean playingp = false; // playingp is only kept updated when !clientp
 int incrValue = 0;
 
+boolean audioplayingp = false;
+
 int saveTextOpacity = 0;
 
 void setup() {
@@ -158,6 +167,15 @@ void setup() {
     scoreServer = new Server(this, serverPort);
   } else {
     scoreClient = new Client(this, serverIpAddr, serverPort);
+  }
+
+  if (!clientp) {
+    audioPath = rootPath + "/etc/audio-path";
+    audioFile = new File(audioPath);
+    if (audioFile.exists()) {
+      audioArray = loadStrings(audioPath);
+      playbackFile = new SoundFile(this, audioArray[0]);
+    } // else audioArray[0] = null
   }
 
   userSettingsPath = projectParent + "/" + projectName + ".piscore";
@@ -257,6 +275,23 @@ void setup() {
 void draw() {
   background(255);
 
+  println(frameCounter);
+
+
+  if (!clientp) {
+    if (playingp) {
+      if (frameCounter >= 0) {
+        if (audioArray[0] != null) {
+          if (!audioplayingp) {
+            audioplayingp = true;
+            playbackFile.jump(float(frameCounter/fps));
+            //playbackFile.play();
+          }
+        }
+      }
+    }
+  }
+
   adjStart = (start - playheadPos);
   adjStartScaled = round((start*zoom) - playheadPos);
   adjEnd = (end - playheadPos);
@@ -342,7 +377,7 @@ void draw() {
       text(("Connected to Server at " + scoreClient.ip()), 0, height);
     }
   }
-  
+
   if (frameCounter < totalFrames) {
     if (export) {
       saveFrame(rootPath + "/etc/export/frames/score#######.png");
@@ -460,7 +495,7 @@ void draw() {
   if (editMode) {
     noStroke();
     if (annotationsChangedp || navigationChangedp) {
-    fill(160, 255, 160);
+      fill(160, 255, 160);
     } else {
       fill(255, 255, 255, 70);
       tint(255, 70);
@@ -621,6 +656,8 @@ void mousePressed() {
             } else {
               incrValue = 0;
               playingp = false;
+              playbackFile.stop();
+              audioplayingp = false;
             }
           }
         }
@@ -635,6 +672,8 @@ void mousePressed() {
             editOffsetScaled = round(editOffset/zoom);
           } else {
             frameCounter = frameCounter - (fps*5);
+            playbackFile.stop(); // Will re-cue and autorestart at next frame
+            audioplayingp = false;
           }
         }
         //NEXT
@@ -645,6 +684,8 @@ void mousePressed() {
             editOffsetScaled = round(editOffset/zoom);
           } else {
             frameCounter = frameCounter + (fps*5);
+            playbackFile.stop(); // Will re-cue and autorestart at next frame
+            audioplayingp = false;
           }
         }
       }
