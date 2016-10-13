@@ -21,6 +21,8 @@
 //be protected by Copyright.
 
 import processing.net.*;
+import processing.sound.*;
+
 Server scoreServer;
 Client scoreClient;
 
@@ -46,6 +48,11 @@ String   projectPath;
 File     projectFile;
 String   projectParent;
 String   projectName;
+
+String[] audioArray = { null };
+String   audioPath;
+File     audioFile;
+SoundFile playbackFile;
 
 String[] userSettingsArray = { null, null, null, null, null, null, null, null };
 String userSettingsPath;
@@ -74,6 +81,7 @@ int vOffset;
 boolean navigationChangedp = false;
 
 float totalFrames; // float for use as divisor
+float endOfFile;
 
 float screenScale = 1.0;
 
@@ -113,6 +121,10 @@ int smoothScroller = 0;
 int frameCounter;
 boolean playingp = false; // playingp is only kept updated when !clientp
 int incrValue = 0;
+
+boolean audioplayingp = false;
+float audioDuration = 0;
+float audioOffset = 31.877; // At what time does the audio file line up with score event 0?
 
 int saveTextOpacity = 0;
 
@@ -160,6 +172,16 @@ void setup() {
     scoreClient = new Client(this, serverIpAddr, serverPort);
   }
 
+  if (!clientp) {
+    audioPath = rootPath + "/etc/audio-path";
+    audioFile = new File(audioPath);
+    if (audioFile.exists()) {
+      audioArray = loadStrings(audioPath);
+      playbackFile = new SoundFile(this, audioArray[0]);
+      audioDuration = playbackFile.duration();
+    } // else audioArray[0] = null
+  }
+
   userSettingsPath = projectParent + "/" + projectName + ".piscore";
   userSettingsFile = new File(userSettingsPath);
   if (userSettingsFile.exists()) {
@@ -202,6 +224,12 @@ void setup() {
   clefs = score.get(clefsStart, 0, clefsEnd-clefsStart, score.height);
 
   totalFrames = ceil(dur * fps);
+  if (audioArray[0] != null && totalFrames < (ceil(audioDuration-audioOffset)*fps)) { 
+    //Prevent score from stopping prematurely if audio file is longer
+    endOfFile = ceil(audioDuration-audioOffset)*fps;
+  } else {
+    endOfFile = totalFrames;
+  }
   frameCounter = round(-(preRoll*fps));
 
   annotationsCanvas = createGraphics(score.width, score.height);
@@ -256,6 +284,26 @@ void setup() {
 
 void draw() {
   background(255);
+
+  //TODO: REMOVE FOLLOWING LINES
+  println("frameCounter: " + frameCounter);
+  println("EOF: " + endOfFile);
+  println("Seconds: " + ((float(frameCounter)/fps)+audioOffset));
+  println("TotalFrames: " + totalFrames);
+  ////
+
+  if (!clientp) {
+    if (playingp) {
+      if (((float(frameCounter)/fps)+audioOffset) >= 0) {
+        if (audioArray[0] != null) {
+          if (!audioplayingp) {
+            audioplayingp = true;
+            playbackFile.jump((float(frameCounter)/fps)+audioOffset);
+          }
+        }
+      }
+    }
+  }
 
   adjStart = (start - playheadPos);
   adjStartScaled = round((start*zoom) - playheadPos);
@@ -342,7 +390,7 @@ void draw() {
       text(("Connected to Server at " + scoreClient.ip()), 0, height);
     }
   }
-  
+
   if (frameCounter < totalFrames) {
     if (export) {
       saveFrame(rootPath + "/etc/export/frames/score#######.png");
@@ -460,7 +508,7 @@ void draw() {
   if (editMode) {
     noStroke();
     if (annotationsChangedp || navigationChangedp) {
-    fill(160, 255, 160);
+      fill(160, 255, 160);
     } else {
       fill(255, 255, 255, 70);
       tint(255, 70);
@@ -522,7 +570,7 @@ void draw() {
   }
 
   // Redraw
-  if (frameCounter < totalFrames) {
+  if (frameCounter < endOfFile) {
     // looping...
   } else {
     if (export) {
@@ -530,6 +578,10 @@ void draw() {
     }
     incrValue = 0;
     playingp = false;
+    if (audioplayingp) {
+      playbackFile.stop(); // Will re-cue and autorestart at next frame
+      audioplayingp = false;
+    }
   }
 
   frameCounter+=(incrValue);
@@ -600,6 +652,10 @@ void mousePressed() {
             incrValue = 0;
             playingp = false;
             frameCounter = round(-(preRoll*fps));
+            if (audioplayingp) {
+              playbackFile.stop(); // Will re-cue and autorestart at next frame
+              audioplayingp = false;
+            }
           }
         }
       }
@@ -621,6 +677,10 @@ void mousePressed() {
             } else {
               incrValue = 0;
               playingp = false;
+              if (audioplayingp) {
+                playbackFile.stop(); // Will re-cue and autorestart at next frame
+                audioplayingp = false;
+              }
             }
           }
         }
@@ -634,7 +694,11 @@ void mousePressed() {
             smoothScroller = smoothScroller - editOffsetValue;
             editOffsetScaled = round(editOffset/zoom);
           } else {
-            frameCounter = frameCounter - (fps*5);
+            frameCounter = frameCounter - (fps*10);
+            if (audioplayingp) {
+              playbackFile.stop(); // Will re-cue and autorestart at next frame
+              audioplayingp = false;
+            }
           }
         }
         //NEXT
@@ -644,7 +708,11 @@ void mousePressed() {
             smoothScroller = smoothScroller + editOffsetValue;
             editOffsetScaled = round(editOffset/zoom);
           } else {
-            frameCounter = frameCounter + (fps*5);
+            frameCounter = frameCounter + (fps*10);
+            if (audioplayingp) {
+              playbackFile.stop(); // Will re-cue and autorestart at next frame
+              audioplayingp = false;
+            }
           }
         }
       }
