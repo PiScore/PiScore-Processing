@@ -129,8 +129,8 @@ float audioOffset = 31.877; // At what time does the audio file line up with sco
 int saveTextOpacity = 0;
 
 void setup() {
-  frameRate(fps);
   size(800, 480);
+  frameRate(fps);
   noSmooth();
 
   rootPath = ((new File((new File (sketchPath(""))).getParent())).getParent());
