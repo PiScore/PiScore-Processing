@@ -80,8 +80,8 @@ final int iconPadding = 10;
 final int textPadding = 5;
 
 void setup () {
-  frameRate(fps);
   size(800, 480);
+  frameRate(fps);
   smooth();
   cursor(HAND);
 
