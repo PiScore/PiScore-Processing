@@ -55,8 +55,8 @@ int vOffset = 0;
 int playheadPos;
 
 void setup() {
-  frameRate(fps);
   size(800, 480);
+  frameRate(fps);
   smooth();
 
   rootPath = ((new File((new File (sketchPath(""))).getParent())).getParent());
